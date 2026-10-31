@@ -277,7 +277,10 @@ button.yolo-go, button.yolo-go:hover { border: 0; color: var(--yolo-ink); font-w
 .empty code { font: 12px var(--mono); background: var(--surface-2); padding: 2px 6px; border-radius: 5px; border: 1px solid var(--border); }
 
 /* Board view */
-#kanban { position: absolute; inset: 0; display: flex; gap: 12px; padding: 14px; overflow-x: auto; }
+#kanban, #today { position: absolute; inset: 0; display: flex; gap: 12px; padding: 14px; overflow-x: auto; }
+#today .col { max-width: none; }
+.s-follow { --c: var(--danger); }
+.col.s-follow .col-head .dot { -webkit-mask: none; mask: none; border-radius: 50%; width: 9px; height: 9px; background: var(--danger); }
 #col-tabs { display: none; }
 .col { flex: 1 0 214px; max-width: 360px; display: flex; flex-direction: column; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; min-height: 0; transition: border-color .15s, background .15s; }
 .col.drop { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, var(--surface-2)); }
@@ -803,6 +806,7 @@ dialog.dlg[open]:has(> form > .help) { display: flex; flex-direction: column; }
   <div class="tools">
     <label class="search"><span class="sicon" data-icon="search"></span><input id="search" type="search" placeholder="Filter tasks" aria-label="Filter tasks" autocomplete="off"><kbd>/</kbd></label>
     <div class="seg track" role="group" aria-label="View">
+      <button id="view-today" data-icon="sun" data-tip="Lo que te toca hoy" aria-label="Hoy"><span class="lbl">Hoy</span></button>
       <button id="view-graph" data-icon="graph" data-tip="Dependency graph" data-key="G" aria-label="Graph"><span class="lbl">Graph</span></button>
       <button id="view-board" data-icon="columns" data-tip="Board by state" data-key="B" aria-label="Board"><span class="lbl">Board</span></button>
       <button id="view-mail" data-icon="mail" data-tip="Correos de las tareas" aria-label="Correos"><span class="lbl">Correos</span></button>
@@ -854,6 +858,7 @@ dialog.dlg[open]:has(> form > .help) { display: flex; flex-direction: column; }
   </section>
   <section class="view" id="board-view" hidden><nav id="col-tabs" class="track" aria-label="Columns"></nav><div id="kanban"></div></section>
   <section class="view" id="mail-view" hidden></section>
+  <section class="view" id="today-view" hidden><div id="today"></div></section>
 </main>
 <div id="welcome" hidden></div>
 <div id="toasts" aria-live="polite"></div>
@@ -1054,7 +1059,7 @@ function canonical(b) {
   const out = { kanvas: 1, title: b.title || "" };
   out.groups = b.groups.map((g) => ordered(g, ["id", "name"], ["id", "name"]));
   out.tasks = b.tasks.map((t) => {
-    const o = ordered(t, ["id", "title", "state", "group", "owner", "due", "deps", "yolo", "at", "by", "desc", "notes"], ["id", "title", "state"]);
+    const o = ordered(t, ["id", "title", "state", "group", "owner", "due", "done", "deps", "yolo", "at", "by", "desc", "notes"], ["id", "title", "state"]);
     if (o.notes) o.notes = o.notes.map((n) => ordered(n, ["at", "by", "edited", "text"], ["at", "by", "text"]));
     return o;
   });
@@ -1123,7 +1128,7 @@ function yoloOn(b, id) {
     if (!x || x.state === "done") continue;
     if (x !== t) delete x.yolo;
     if (x.state === "proposed") x.state = "todo";
-    else if (x.state === "review" && x !== t) x.state = "done";
+    else if (x.state === "review" && x !== t) setState(x, "done");
   }
 }
 
@@ -2197,6 +2202,13 @@ const mailWho = (p) => (p.name && p.email && p.name.toLowerCase() !== p.email.to
 // Who sent a message, as compared with the address remembered as one's own.
 const mailSender = (m) => (m.from.email || m.from.name).toLowerCase();
 
+const isoDay = (d) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+// A finished task keeps the day it was finished (local time, as kanvas.py writes it), for the Today view.
+const setState = (t, state) => {
+  t.state = state;
+  if (state === "done") t.done = isoDay(new Date()); else delete t.done;
+};
+
 // The note a mail leaves on its task. `file` is where the .msg was kept, or null.
 function mailNote(m, sent, file) {
   const lines = [`✉ **${sent ? "Correo enviado" : "Correo recibido"}** · ${mailDate(m.date)}`, "",
@@ -2769,7 +2781,7 @@ const ops = {
     if (from === "proposed" && t.state === "proposed" && state !== "proposed" && revisedSince(t, seen)) {
       throw new Error(`${t.id} was revised since you opened it; read the new version first`);
     }
-    t.state = state;
+    setState(t, state);
     if (text) addNote(t, text, at);
   },
   note: (id, text, at = nowIso()) => (b) => addNote(mustFind(b, id), text, at),
@@ -2873,9 +2885,11 @@ function render() {
   $("#graph-view").hidden = ui.view !== "graph";
   $("#board-view").hidden = ui.view !== "board";
   $("#mail-view").hidden = ui.view !== "mail";
+  $("#today-view").hidden = ui.view !== "today";
   renderPanel();
   if (ui.view === "graph") renderGraph();
   else if (ui.view === "mail") renderMail();
+  else if (ui.view === "today") renderToday();
   else renderKanban();
   if (picking) applyPick();
   applyMulti();
@@ -2971,7 +2985,7 @@ function renderHeader() {
     chip.setAttribute("aria-label", `YOLO on ${targets.map((t) => t.id).join(", ")}: ${charged} task${charged > 1 ? "s" : ""} without approval`);
     chip.onclick = () => { const i = targets.findIndex((t) => same(t.id, ui.selected)); select(targets[(i + 1) % targets.length].id); };
   }
-  for (const v of ["graph", "board", "mail"]) {
+  for (const v of ["today", "graph", "board", "mail"]) {
     const btn = $(`#view-${v}`);
     btn.classList.toggle("on", ui.view === v);
     btn.setAttribute("aria-pressed", ui.view === v ? "true" : "false");
@@ -5527,7 +5541,6 @@ function ownerOf(t) {
 }
 const AGENTS = ["Claude", "Copilot"];
 const boardPeople = () => [...new Set(board.tasks.map(ownerOf).filter((o) => o.kind === "person").map((o) => o.name))].sort((a, b) => a.localeCompare(b));
-const isoDay = (d) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
 // "late" past the due date, "near" on it or the day before; finished tasks are never late.
 function dueState(t) {
   if (!/^\d{4}-\d\d-\d\d$/.test(t.due || "") || t.state === "done") return "";
@@ -5577,6 +5590,38 @@ function ownerSection(t, ro) {
     h("div", { class: "owner-row" }, h("span", { class: "owner-label" }, "Fecha límite"), due,
       dueState(t) ? h("span", { class: `due ${dueState(t)}` }, dueState(t) === "late" ? "vencida" : "vence pronto") : null,
       t.due && !ro ? h("button", { class: "ghost", onclick: () => { const fresh = get(t.id) || t; commit(ops.set(t.id, { due: "" }, { due: fresh.due })); } }, "Quitar") : null));
+}
+
+// ---------------------------------------------------------------------------
+// Today view: what needs the human today, across the whole board
+// ---------------------------------------------------------------------------
+
+// Tasks with a due date first, the earliest first; the rest keep the board's order.
+const byDue = (a, b) => (a.due || "9999") .localeCompare(b.due || "9999");
+
+function todayColumns() {
+  const tasks = boardOrder(board).filter(matches), today = isoDay(new Date());
+  const open = (t) => ["todo", "doing"].includes(vstate(t));
+  return [
+    // Work the human gave to themselves.
+    { key: "mine", label: "Mis pendientes", cls: "s-todo", items: tasks.filter((t) => ownerOf(t).kind === "me" && open(t)).sort(byDue) },
+    // Work that waits on the human's word: finished work to accept, and proposals to approve.
+    { key: "review", label: "Para revisar", cls: "s-review", items: tasks.filter((t) => ["review", "proposed"].includes(vstate(t))) },
+    // Work given to people, to chase.
+    { key: "follow", label: "Seguimiento", cls: "s-follow", items: tasks.filter((t) => ownerOf(t).kind === "person" && open(t)).sort(byDue) },
+    { key: "done", label: "Hecho hoy", cls: "s-done", items: tasks.filter((t) => t.state === "done" && t.done === today) },
+  ];
+}
+
+function renderToday() {
+  $("#today").replaceChildren(...todayColumns().map((c) => {
+    const head = h("div", { class: "col-head" }, h("span", { class: "dot" }), c.label, h("span", { class: "count" }, c.items.length));
+    const body = h("div", { class: "col-body", role: c.items.length ? "listbox" : null, "aria-label": c.items.length ? c.label : null },
+      c.items.length ? c.items.map(kanbanCard) : h("div", { class: "col-empty" }, "Nada"));
+    const col = h("div", { class: `col ${c.cls}`, "data-today": c.key }, head, body);
+    // A card dropped on Hecho hoy is done.
+    return c.key === "done" ? acceptDrops(col, "done") : col;
+  }));
 }
 
 // ---------------------------------------------------------------------------
@@ -5887,6 +5932,7 @@ function setupChrome() {
   $("#view-graph").onclick = () => setView("graph");
   $("#view-board").onclick = () => setView("board");
   $("#view-mail").onclick = () => setView("mail");
+  $("#view-today").onclick = () => setView("today");
   phone.addEventListener("change", () => { if (board && !picking && ui.view !== prefs[viewPref()]) setView(prefs[viewPref()], false); });
   // Phone keyboards shrink only the visual viewport, so dialogs size themselves to it.
   const vv = window.visualViewport;

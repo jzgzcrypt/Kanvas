@@ -46,7 +46,7 @@ STATES = ("proposed", "todo", "doing", "review", "done")
 ID_RE = re.compile(r"^[A-Za-z][A-Za-z0-9]*-\d+$")
 PREFIX_RE = re.compile(r"^[A-Z][A-Z0-9]{0,5}$")
 UNGROUPED_PREFIX = "G"
-TASK_KEYS = ("id", "title", "state", "group", "owner", "due", "deps", "yolo", "at", "by", "desc", "notes")
+TASK_KEYS = ("id", "title", "state", "group", "owner", "due", "done", "deps", "yolo", "at", "by", "desc", "notes")
 REQUIRED_TASK_KEYS = ("id", "title", "state")
 GROUP_KEYS = ("id", "name")
 NOTE_KEYS = ("at", "by", "edited", "text")
@@ -1091,6 +1091,8 @@ def cmd_finish(args):
         add_note(t, summary, actor(args))
         via = yolo_cover(board).get(t["id"].upper())
         t["state"] = "done" if via and via.upper() != t["id"].upper() else "review"
+        if t["state"] == "done":
+            t["done"] = time.strftime("%Y-%m-%d")  # the day it was finished, local time, as the browser writes it
         return t, via
 
     t, via = mutate(path, op)

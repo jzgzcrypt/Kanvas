@@ -174,6 +174,7 @@ class FormatTests(unittest.TestCase):
         board["tasks"][2]["yolo"] = True
         board["tasks"][2]["owner"] = "agente:claude"
         board["tasks"][2]["due"] = "2026-11-14"
+        board["tasks"][2]["done"] = "2026-11-13"
         board["tasks"][3]["yolo"] = False
         board["tasks"][3]["owner"] = ""
         board["tasks"][3]["notes"] = [
