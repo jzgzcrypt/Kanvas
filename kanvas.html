@@ -273,6 +273,8 @@ button.yolo-go, button.yolo-go:hover { border: 0; color: var(--yolo-ink); font-w
 #col-tabs { display: none; }
 .col { flex: 1 0 214px; max-width: 360px; display: flex; flex-direction: column; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; min-height: 0; transition: border-color .15s, background .15s; }
 .col.drop { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, var(--surface-2)); }
+.mail-drop { outline: 3px solid var(--accent); outline-offset: 2px; }
+#panel.mail-drop { outline-offset: -3px; }
 .col-head { display: flex; align-items: center; gap: 8px; height: 42px; padding: 0 12px; font-weight: 650; }
 .col-head .count { color: var(--muted); font-weight: 500; font-variant-numeric: tabular-nums; }
 .col-head button { margin-left: auto; padding: 2px 8px; font-size: 12px; }
@@ -1956,6 +1958,230 @@ function readableView(r, L, tiers, readable) {
 }
 
 // ---------------------------------------------------------------------------
+// Outlook mail (pure: reads a .msg file into the fields a mail note shows)
+// ---------------------------------------------------------------------------
+
+// A .msg file is a Compound File, the container of old Office documents: a small file system of storages and
+// streams. readCfb walks it; readMsg picks out the properties Outlook keeps for a message.
+const utf16 = (b) => new TextDecoder("utf-16le").decode(b).replace(/\0+$/, "");
+const cp1252 = (b) => new TextDecoder("windows-1252").decode(b).replace(/\0+$/, "");
+
+function readCfb(buf) {
+  const u8 = new Uint8Array(buf), v = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
+  if (u8.length < 512 || v.getUint32(0, true) !== 0xe011cfd0 || v.getUint32(4, true) !== 0xe11ab1a1) throw new Error("no es un correo de Outlook (.msg)");
+  const size = 1 << v.getUint16(30, true), miniSize = 1 << v.getUint16(32, true), cutoff = v.getUint32(56, true);
+  const END = 0xfffffffa, NONE = 0xffffffff;
+  const at = (sid) => (sid + 1) * size;
+  const words = (bytes) => { const d = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength), out = []; for (let o = 0; o + 4 <= bytes.length; o += 4) out.push(d.getUint32(o, true)); return out; };
+  const sector = (sid) => { if (at(sid) + size > u8.length) throw new Error("el .msg está incompleto"); return u8.subarray(at(sid), at(sid) + size); };
+  // The FAT's own sectors: 109 listed in the header, the rest in a chain of DIFAT sectors.
+  const fatSids = words(u8.subarray(76, 512));
+  for (let sid = v.getUint32(68, true), n = v.getUint32(72, true); n > 0 && sid < END; n--) {
+    const w = words(sector(sid));
+    fatSids.push(...w.slice(0, -1));
+    sid = w[w.length - 1];
+  }
+  const fat = [].concat(...fatSids.slice(0, v.getUint32(44, true)).map((sid) => words(sector(sid))));
+  // A chain longer than its table loops, which only a damaged file does.
+  const chain = (sid, next) => { const out = []; while (sid < END && sid < next.length && out.length < next.length) { out.push(sid); sid = next[sid]; } return out; };
+  const join = (parts, len) => { const out = new Uint8Array(len); let o = 0; for (const p of parts) { if (o >= len) break; out.set(p.subarray(0, len - o), o); o += p.length; } return out; };
+  const big = (sid, len) => { const sids = chain(sid, fat); return join(sids.map(sector), len == null ? sids.length * size : len); };
+  const dir = big(v.getUint32(48, true)), dv = new DataView(dir.buffer);
+  const entries = [];
+  for (let o = 0; o + 128 <= dir.length; o += 128) {
+    const nameLen = dv.getUint16(o + 64, true);
+    entries.push({ name: utf16(dir.subarray(o, o + Math.max(0, Math.min(64, nameLen) - 2))), type: dir[o + 66],
+      left: dv.getUint32(o + 68, true), right: dv.getUint32(o + 72, true), child: dv.getUint32(o + 76, true),
+      start: dv.getUint32(o + 116, true), size: dv.getUint32(o + 120, true) });
+  }
+  const root = entries[0];
+  if (!root) throw new Error("el .msg está vacío");
+  const miniFat = words(big(v.getUint32(60, true)));
+  const ministream = big(root.start, root.size);
+  const stream = (e) => {
+    if (e.size >= cutoff) return big(e.start, e.size);
+    const parts = chain(e.start, miniFat).map((sid) => ministream.subarray(sid * miniSize, (sid + 1) * miniSize));
+    return join(parts, e.size);
+  };
+  // A storage's children are a tree of siblings hanging from its child entry.
+  const kids = (e) => {
+    const out = new Map(), seen = new Set(), todo = [e.child];
+    while (todo.length) {
+      const i = todo.pop();
+      if (i === NONE || i >= entries.length || seen.has(i)) continue;
+      seen.add(i);
+      const k = entries[i];
+      out.set(k.name, k);
+      todo.push(k.left, k.right);
+    }
+    return out;
+  };
+  return { root, kids, stream };
+}
+
+// The properties of one storage of a message: strings and binaries are streams of their own, while numbers and
+// times sit in fixed slots of the property stream, after a header of 32 bytes for the message and 8 for the rest.
+function msgProps(cfb, storage, headerSize) {
+  const k = cfb.kids(storage);
+  const raw = (id, type) => { const e = k.get(`__substg1.0_${id}${type}`); return e ? cfb.stream(e) : null; };
+  const fixed = new Map();
+  const p = k.get("__properties_version1.0");
+  if (p) {
+    const b = cfb.stream(p), d = new DataView(b.buffer, b.byteOffset, b.byteLength);
+    for (let o = headerSize; o + 16 <= b.length; o += 16) fixed.set(d.getUint16(o + 2, true).toString(16).toUpperCase().padStart(4, "0"), { type: d.getUint16(o, true), d, o: o + 8 });
+  }
+  return {
+    k,
+    str: (id) => { let b = raw(id, "001F"); if (b) return utf16(b); b = raw(id, "001E"); return b ? cp1252(b) : ""; },
+    bin: (id) => raw(id, "0102"),
+    int: (id) => { const f = fixed.get(id); return f ? f.d.getInt32(f.o, true) : null; },
+    // FILETIME: hundreds of nanoseconds since 1601.
+    time: (id) => { const f = fixed.get(id); if (!f || f.type !== 0x40) return null; const t = (f.d.getUint32(f.o + 4, true) * 2 ** 32 + f.d.getUint32(f.o, true)) / 1e4 - 11644473600000; return t > 0 ? new Date(t) : null; },
+  };
+}
+
+// Compressed RTF (MS-OXRTFCP): a run of literal bytes and back-references into a 4 KB dictionary that starts
+// with a fixed text.
+const RTF_PREBUF = "{\\rtf1\\ansi\\mac\\deff0\\deftab720{\\fonttbl;}{\\f0\\fnil \\froman \\fswiss \\fmodern \\fscript \\fdecor MS Sans SerifSymbolArialTimes New RomanCourier{\\colortbl\\red0\\green0\\blue0\r\n\\par \\pard\\plain\\f0\\fs20\\b\\i\\u\\tab\\tx";
+function decompressRtf(b) {
+  const d = new DataView(b.buffer, b.byteOffset, b.byteLength);
+  if (b.length < 16) return "";
+  const compSize = d.getUint32(0, true), rawSize = d.getUint32(4, true), kind = d.getUint32(8, true);
+  if (kind === 0x414c454d) return cp1252(b.subarray(16, 16 + rawSize)); // "MELA": stored as it is
+  if (kind !== 0x75465a4c) return ""; // not "LZFu"
+  const dict = new Uint8Array(4096);
+  for (let i = 0; i < RTF_PREBUF.length; i++) dict[i] = RTF_PREBUF.charCodeAt(i);
+  let w = RTF_PREBUF.length, i = 16;
+  const end = Math.min(b.length, compSize + 4), out = [];
+  while (i < end) {
+    const flags = b[i++];
+    for (let bit = 0; bit < 8 && i < end; bit++) {
+      if (!(flags & (1 << bit))) { const c = b[i++]; out.push(c); dict[w] = c; w = (w + 1) % 4096; continue; }
+      if (i + 1 >= end) return cp1252(Uint8Array.from(out));
+      const ref = (b[i] << 8) | b[i + 1];
+      i += 2;
+      const off = ref >> 4, len = (ref & 15) + 2;
+      if (off === w) return cp1252(Uint8Array.from(out));
+      for (let n = 0; n < len; n++) { const c = dict[(off + n) % 4096]; out.push(c); dict[w] = c; w = (w + 1) % 4096; }
+    }
+  }
+  return cp1252(Uint8Array.from(out));
+}
+
+// The text of an RTF body, roughly: groups that hold no text (fonts, colours, \* destinations) are skipped, and so
+// is the RTF-only markup that Outlook wraps around HTML it converted (\htmlrtf ... \htmlrtf0).
+function rtfToText(rtf) {
+  const skipWords = new Set(["fonttbl", "colortbl", "stylesheet", "info", "pict", "header", "footer", "object", "listtable", "listoverridetable"]);
+  let out = "", depth = 0, skipFrom = Infinity, html = false, i = 0, uc = 1;
+  while (i < rtf.length) {
+    const c = rtf[i];
+    if (c === "{") { depth++; i++; if (rtf.startsWith("\\*", i) && depth < skipFrom) skipFrom = depth; continue; }
+    if (c === "}") { if (depth === skipFrom) skipFrom = Infinity; depth--; i++; continue; }
+    const skipping = depth >= skipFrom || html;
+    if (c === "\\") {
+      const m = /^\\(?:([a-zA-Z]+)(-?\d+)? ?|'([0-9a-fA-F]{2})|([\s\S]))/.exec(rtf.slice(i, i + 40));
+      i += m[0].length;
+      if (m[3]) { if (!skipping) out += cp1252(Uint8Array.of(parseInt(m[3], 16))); continue; }
+      if (m[4]) { if (!skipping) out += m[4] === "~" ? " " : /[{}\\]/.test(m[4]) ? m[4] : ""; continue; }
+      const word = m[1], arg = m[2];
+      if (word === "htmlrtf") { html = arg !== "0"; continue; }
+      if (skipWords.has(word) && depth < skipFrom) { skipFrom = depth; continue; }
+      if (skipping) continue;
+      if (word === "par" || word === "line") out += "\n";
+      else if (word === "tab") out += "\t";
+      else if (word === "uc") uc = Number(arg);
+      else if (word === "u") { out += String.fromCharCode((Number(arg) + 65536) % 65536); i += uc; }
+      continue;
+    }
+    if (c !== "\r" && c !== "\n" && !skipping) out += c;
+    i++;
+  }
+  return out;
+}
+
+const htmlToText = (html) => html
+  .replace(/<(style|script|head)[\s\S]*?<\/\1>/gi, "")
+  .replace(/<br\s*\/?>|<\/(p|div|tr|li|h\d)>/gi, "\n")
+  .replace(/<[^>]+>/g, "")
+  .replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+  .replace(/&#(\d+);/g, (all, n) => String.fromCharCode(Number(n)))
+  .replace(/&amp;/g, "&");
+
+function readMsg(buf) {
+  const cfb = readCfb(buf), msg = msgProps(cfb, cfb.root, 32);
+  const person = (name, address, smtp) => ({ name: name.trim(), email: (smtp || (address.includes("@") ? address : "")).trim() });
+  const recipients = [], attachments = [];
+  for (const [name, e] of msg.k) {
+    if (e.type !== 1) continue;
+    if (name.startsWith("__recip_version1.0_")) {
+      const r = msgProps(cfb, e, 8);
+      recipients.push(Object.assign(person(r.str("3001"), r.str("3003"), r.str("39FE")), { kind: r.int("0C15") }));
+    } else if (name.startsWith("__attach_version1.0_")) {
+      const a = msgProps(cfb, e, 8);
+      // Pictures inside the text, such as a signature's logo, are marked hidden.
+      if (a.int("7FFE") & 0xff) continue;
+      attachments.push(a.str("3707") || a.str("3704") || a.str("3001") || "adjunto");
+    }
+  }
+  // Recipients without a type listed are taken for To; the display lines are the fallback when there are none.
+  const listed = (kind, line) => {
+    const r = recipients.filter((x) => (x.kind == null ? 1 : x.kind) === kind);
+    return r.length ? r : line.split(";").map((s) => s.trim()).filter(Boolean).map((s) => person(s, "", ""));
+  };
+  let body = msg.str("1000");
+  if (!body.trim()) { const html = msg.bin("1013"); if (html) body = htmlToText(new TextDecoder("utf-8").decode(html)); }
+  if (!body.trim()) { const rtf = msg.bin("1009"); if (rtf) body = rtfToText(decompressRtf(rtf)); }
+  // The first 22 bytes of the conversation index are the same for every message of a conversation.
+  const index = msg.bin("0071");
+  return {
+    subject: msg.str("0037"),
+    from: person(msg.str("0C1A"), msg.str("0C1F"), msg.str("5D01")),
+    to: listed(1, msg.str("0E04")),
+    cc: listed(2, msg.str("0E03")),
+    date: msg.time("0039") || msg.time("0E06") || msg.time("3007"),
+    body,
+    attachments,
+    topic: msg.str("0070"),
+    thread: index && index.length >= 22 ? [...index.subarray(0, 22)].map((x) => x.toString(16).padStart(2, "0")).join("") : "",
+  };
+}
+
+// What a reply adds: the text before the quoted message it answers, whichever way the quote is introduced.
+function newText(body) {
+  const text = String(body).replace(/\r\n?/g, "\n");
+  const quote = /^(_{8,}\s*$|-{2,}\s*(original message|mensaje original)|(de|from):[^\n]*\n(enviado|sent|fecha|date):|(el|on) [^\n]+ (escribió|wrote):\s*$)/im.exec(text);
+  return (quote ? text.slice(0, quote.index) : text).replace(/[ \t]+$/gm, "").replace(/\n{3,}/g, "\n\n").trim();
+}
+
+const pad2 = (n) => String(n).padStart(2, "0");
+const mailDate = (d) => (d ? `${pad2(d.getDate())}/${pad2(d.getMonth() + 1)}/${d.getFullYear()} ${pad2(d.getHours())}:${pad2(d.getMinutes())}` : "sin fecha");
+const mailWho = (p) => (p.name && p.email && p.name.toLowerCase() !== p.email.toLowerCase() ? `${p.name} <${p.email}>` : p.name || p.email || "?");
+// Who sent a message, as compared with the address remembered as one's own.
+const mailSender = (m) => (m.from.email || m.from.name).toLowerCase();
+
+// The note a mail leaves on its task. `file` is where the .msg was kept, or null.
+function mailNote(m, sent, file) {
+  const lines = [`✉ **${sent ? "Correo enviado" : "Correo recibido"}** · ${mailDate(m.date)}`, "",
+    `- **De:** ${mailWho(m.from)}`, `- **Para:** ${m.to.map(mailWho).join(", ") || "?"}`];
+  if (m.cc.length) lines.push(`- **CC:** ${m.cc.map(mailWho).join(", ")}`);
+  lines.push(`- **Asunto:** ${m.subject || "(sin asunto)"}`);
+  if (m.attachments.length) lines.push(`- **Adjuntos:** ${m.attachments.join(", ")}`);
+  lines.push(`- **Archivo:** ${file ? `\`${file}\`` : "no guardado"}`);
+  if (m.thread) lines.push(`- **Conversación:** \`${m.thread}\``);
+  let text = newText(m.body);
+  if (text.length > 1500) text = `${text.slice(0, 1500).trimEnd()} …`;
+  if (text) lines.push("", ...text.split("\n").map((l) => `> ${l}`.trimEnd()));
+  return lines.join("\n");
+}
+
+function mailFileName(id, m, sent) {
+  const d = m.date || new Date();
+  const stamp = `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())} ${pad2(d.getHours())}${pad2(d.getMinutes())}`;
+  const subject = (m.subject || "sin asunto").replace(/[\\/:*?"<>|\u0000-\u001f]/g, "").replace(/\s+/g, " ").trim().slice(0, 80);
+  return `${id} ${stamp} ${sent ? "enviado" : "recibido"} - ${subject}.msg`;
+}
+
+// ---------------------------------------------------------------------------
 // App state
 // ---------------------------------------------------------------------------
 
@@ -2075,6 +2301,7 @@ function fileStore(handle) {
   return {
     kind: "file",
     name: handle.name,
+    handle,
     async load() {
       const f = await handle.getFile();
       const text = await f.text();
@@ -2131,6 +2358,7 @@ function snapshotStore(el) {
 async function open(s) {
   const b = await s.load();
   store = s;
+  mailDir = null;
   confirmed = b;
   setBoard(clone(b));
   edits.undo = [];
@@ -5183,6 +5411,102 @@ function toggleTask(src, text, rank, checked) {
 }
 
 // ---------------------------------------------------------------------------
+// Outlook mail dropped on a task
+// ---------------------------------------------------------------------------
+
+// The board's "correos" folder, chosen once per opened board: a page cannot reach the folder of a file it opened.
+let mailDir = null;
+
+// The task under a drag: a card in either view, or the open task panel.
+function mailTarget(e) {
+  const card = e.target.closest && e.target.closest("[data-id]");
+  if (card && get(card.dataset.id)) return card;
+  const panel = e.target.closest && e.target.closest("#panel");
+  return panel && !panel.hidden && get(panel.dataset.task) ? panel : null;
+}
+
+function setupMailDrop() {
+  let lit = null;
+  const light = (el) => {
+    if (lit === el) return;
+    if (lit) lit.classList.remove("mail-drop");
+    lit = el;
+    if (el) el.classList.add("mail-drop");
+  };
+  // Only files: cards dragged within the board, and text dragged into a field, are left to their own handlers.
+  const outside = (e) => board && store && !store.readOnly && e.dataTransfer.types.includes("Files");
+  document.addEventListener("dragover", (e) => {
+    if (!outside(e)) return;
+    const el = mailTarget(e);
+    light(el);
+    // Taken anywhere, so a file let go beside a task does not replace the board in the tab.
+    e.preventDefault();
+    e.dataTransfer.dropEffect = el ? "copy" : "none";
+  });
+  document.addEventListener("dragleave", (e) => { if (!e.relatedTarget) light(null); });
+  document.addEventListener("drop", (e) => {
+    if (!outside(e)) return;
+    e.preventDefault();
+    const el = lit;
+    light(null);
+    if (!el) return;
+    attachMail(get(el.id === "panel" ? el.dataset.task : el.dataset.id).id, [...e.dataTransfer.files]);
+  });
+}
+
+async function attachMail(id, files) {
+  // Outlook may hand over the message in a form the browser does not turn into a file.
+  if (!files.length) { toast("No ha llegado el archivo del correo. Arrástralo desde Outlook al escritorio y, desde ahí, a la tarea.", "error", 9000); return; }
+  for (const f of files) {
+    if (!/\.msg$/i.test(f.name)) { toast(`${f.name}: solo se adjuntan correos de Outlook (.msg)`, "error"); continue; }
+    let m;
+    try { m = readMsg(await f.arrayBuffer()); } catch (e) { toast(`${f.name}: ${e.message}`, "error"); continue; }
+    const sent = await sentByMe(m);
+    if (sent == null) continue;
+    const file = await keepMail(id, f, m, sent);
+    if (await commit(ops.note(id, mailNote(m, sent, file)))) toast(`${sent ? "Correo enviado" : "Correo recibido"} adjunto a ${id}`);
+  }
+}
+
+// A mail from the address remembered as one's own was sent; any other was received. Until one is known, and for a
+// mail without a sender, the human says which.
+async function sentByMe(m) {
+  const sender = mailSender(m);
+  if (prefs.myMail && sender) return sender === prefs.myMail;
+  const choice = (value, text) => h("label", { class: "check" }, h("input", { type: "radio", name: "dir", value, required: true }), text);
+  const data = await modal(m.subject || "(sin asunto)", h("div", { class: "field" },
+    h("p", {}, `De: ${mailWho(m.from)}`),
+    choice("sent", "Lo envié yo"),
+    choice("received", "Lo recibí")), { ok: "Adjuntar", cancel: "Cancelar" });
+  if (!data) return null;
+  const sent = data.get("dir") === "sent";
+  if (sent && sender) { prefs.myMail = sender; savePrefs(); }
+  return sent;
+}
+
+// Writes the .msg into the board's "correos" folder and returns its path there, or null when it is not kept.
+async function keepMail(id, f, m, sent) {
+  if (!("showDirectoryPicker" in window)) return null;
+  try {
+    if (!mailDir) {
+      if (!(await modal("Carpeta del tablero", h("p", {}, "Elige la carpeta donde está el tablero. Los correos se guardan dentro, en «correos»."), { ok: "Elegir carpeta", cancel: "Cancelar" }))) return null;
+      const folder = await window.showDirectoryPicker({ id: "kanvas-correos", mode: "readwrite", startIn: store.handle || "documents" });
+      mailDir = await folder.getDirectoryHandle("correos", { create: true });
+    }
+    const base = mailFileName(id, m, sent).slice(0, -4);
+    let name = `${base}.msg`;
+    for (let n = 2; await mailDir.getFileHandle(name).then(() => true, () => false); n++) name = `${base} (${n}).msg`;
+    const w = await (await mailDir.getFileHandle(name, { create: true })).createWritable();
+    await w.write(f);
+    await w.close();
+    return `correos/${name}`;
+  } catch (e) {
+    if (e.name !== "AbortError") toast(`No se guardó el .msg: ${e.message}`, "error");
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Opening a board without the server
 // ---------------------------------------------------------------------------
 
@@ -5536,6 +5860,7 @@ function unsaved() {
 
 async function boot() {
   setupChrome();
+  setupMailDrop();
   // Browsers show their own message, and only to a page the human has interacted with.
   addEventListener("beforeunload", (e) => { if (unsaved()) { e.preventDefault(); e.returnValue = ""; } });
   const snap = document.getElementById("kanvas-snapshot");
