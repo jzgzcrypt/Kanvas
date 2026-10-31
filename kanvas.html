@@ -275,6 +275,33 @@ button.yolo-go, button.yolo-go:hover { border: 0; color: var(--yolo-ink); font-w
 .col.drop { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, var(--surface-2)); }
 .mail-drop { outline: 3px solid var(--accent); outline-offset: 2px; }
 #panel.mail-drop { outline-offset: -3px; }
+#mail-view { display: flex; gap: 12px; padding: 14px; overflow: hidden; }
+#mail-view .mail-empty { margin: auto; color: var(--muted); }
+.mail-list { width: 330px; flex: none; display: flex; flex-direction: column; gap: 8px; padding: 10px; overflow-y: auto; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; }
+.mail-list .khead { display: flex; align-items: center; gap: 6px; font-weight: 650; padding: 2px 4px 4px; }
+.mail-list .khead .n { color: var(--muted); font-weight: 500; }
+.mail-conv { --c: var(--border-strong); background: var(--surface); }
+.mail-conv .head-end { color: var(--muted); font-size: 12px; }
+.mail-conv .foot { display: flex; gap: 8px; font-size: 12px; color: var(--muted); }
+.mail-conv .foot .count { margin-left: auto; }
+.mail-conv.sel { box-shadow: 0 0 0 2px var(--accent), var(--shadow); }
+.mail-thread { flex: 1; min-width: 0; overflow-y: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 22px; display: flex; flex-direction: column; gap: 4px; }
+.mail-title { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+.mail-title b { font-size: 17px; }
+.mail-title span { color: var(--muted); font-size: 13px; }
+.mail-task { display: flex; align-items: center; gap: 8px; margin: 12px 0 2px; padding: 0; border: 0; background: none; font-weight: 600; font-size: 13px; text-align: left; }
+.mail-task:hover { background: none; text-decoration: underline; }
+.mail-task::after { content: ""; flex: 1; height: 1px; background: var(--border); margin-left: 4px; }
+.mail-msg { position: relative; margin-left: 9px; padding: 8px 0 10px 20px; border-left: 1.5px solid var(--border); }
+.mail-msg::before { content: ""; position: absolute; left: -6px; top: 13px; width: 9px; height: 9px; border-radius: 50%; background: var(--text); border: 2px solid var(--text); box-sizing: border-box; }
+.mail-msg.sent::before { background: var(--surface); border-color: var(--border-strong); }
+.mail-meta { display: flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--muted); }
+.mail-meta b { color: var(--text); font-weight: 600; }
+.mail-text { font-size: 13.5px; margin-top: 3px; max-width: 860px; }
+.mail-files { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.mail-files span { font-size: 12px; border: 1px solid var(--border); border-radius: 6px; padding: 2px 8px; background: var(--surface-2); }
+.mail-files .msg { color: var(--muted); font-family: var(--mono); }
+.mail-open { margin-top: 4px; padding: 2px 6px; font-size: 12px; color: var(--muted); }
 .col-head { display: flex; align-items: center; gap: 8px; height: 42px; padding: 0 12px; font-weight: 650; }
 .col-head .count { color: var(--muted); font-weight: 500; font-variant-numeric: tabular-nums; }
 .col-head button { margin-left: auto; padding: 2px 8px; font-size: 12px; }
@@ -770,6 +797,7 @@ dialog.dlg[open]:has(> form > .help) { display: flex; flex-direction: column; }
     <div class="seg track" role="group" aria-label="View">
       <button id="view-graph" data-icon="graph" data-tip="Dependency graph" data-key="G" aria-label="Graph"><span class="lbl">Graph</span></button>
       <button id="view-board" data-icon="columns" data-tip="Board by state" data-key="B" aria-label="Board"><span class="lbl">Board</span></button>
+      <button id="view-mail" data-icon="mail" data-tip="Correos de las tareas" aria-label="Correos"><span class="lbl">Correos</span></button>
     </div>
     <button id="display" data-icon="sliders" data-tip="Direction, card order, finished tasks and theme" aria-haspopup="dialog" aria-expanded="false" aria-label="Display options"><span class="lbl">Display</span></button>
     <button id="inbox" aria-haspopup="dialog" aria-expanded="false" hidden></button>
@@ -817,6 +845,7 @@ dialog.dlg[open]:has(> form > .help) { display: flex; flex-direction: column; }
     <div class="empty" id="graph-empty" hidden></div>
   </section>
   <section class="view" id="board-view" hidden><nav id="col-tabs" class="track" aria-label="Columns"></nav><div id="kanban"></div></section>
+  <section class="view" id="mail-view" hidden></section>
 </main>
 <div id="welcome" hidden></div>
 <div id="toasts" aria-live="polite"></div>
@@ -847,6 +876,7 @@ const STUB = 44, FOLD_MIN = 3; // height of the stub a lane's finished tasks fol
 const POLL_MS = 1000;
 
 const ICONS = {
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
   filter: '<path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/>',
   graph: '<rect x="3" y="3.5" width="6" height="5" rx="1.2"/><rect x="15" y="3.5" width="6" height="5" rx="1.2"/><rect x="9" y="15.5" width="6" height="5" rx="1.2"/><path d="M6 8.5v2a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-2M12 12.5v3"/>',
@@ -2181,6 +2211,56 @@ function mailFileName(id, m, sent) {
   return `${id} ${stamp} ${sent ? "enviado" : "recibido"} - ${subject}.msg`;
 }
 
+// A mail note read back into its fields, or null for any other note. The inverse of mailNote.
+function parseMailNote(text) {
+  const lines = String(text || "").split("\n");
+  const head = /^✉ \*\*Correo (enviado|recibido)\*\* · (.*)$/.exec(lines[0] || "");
+  if (!head) return null;
+  const field = (name) => { const l = lines.find((x) => x.startsWith(`- **${name}:** `)); return l ? l.slice(name.length + 8) : ""; };
+  const code = (s) => (/^`(.*)`$/.exec(s) || [])[1] || "";
+  const d = /^(\d\d)\/(\d\d)\/(\d{4}) (\d\d):(\d\d)$/.exec(head[2]);
+  const attachments = field("Adjuntos");
+  return {
+    sent: head[1] === "enviado",
+    date: d ? new Date(Number(d[3]), Number(d[2]) - 1, Number(d[1]), Number(d[4]), Number(d[5])) : null,
+    from: field("De"), to: field("Para"), cc: field("CC"), subject: field("Asunto"),
+    attachments: attachments ? attachments.split(", ") : [],
+    file: code(field("Archivo")), thread: code(field("Conversación")),
+    text: lines.filter((l) => l.startsWith(">")).map((l) => l.replace(/^> ?/, "")).join("\n"),
+  };
+}
+
+// A subject without the reply and forward prefixes and the [ID] tags, which differ along one conversation.
+const mailTopic = (subject) => String(subject || "").replace(/^\s*((re|rv|fw|fwd|reenviar|respuesta)\s*:\s*)+/i, "").replace(/\s*\[[^\]]*\]\s*/g, " ").trim();
+const mailName = (who) => String(who || "").replace(/\s*<[^>]*>\s*$/, "") || who;
+
+// The board's mail grouped into conversations, newest first: by Outlook's conversation mark, else by subject.
+// Each holds its mails in the order they were written, with the task each one was kept on.
+function mailThreads(tasks) {
+  const threads = new Map();
+  for (const t of tasks) {
+    for (const n of t.notes || []) {
+      const m = parseMailNote(n.text);
+      if (!m) continue;
+      const k = m.thread || `asunto:${mailTopic(m.subject).toLowerCase()}`;
+      if (!threads.has(k)) threads.set(k, { key: k, items: [] });
+      threads.get(k).items.push({ task: t, note: n, mail: m, at: m.date ? m.date.getTime() : Date.parse(n.at) || 0 });
+    }
+  }
+  const out = [...threads.values()];
+  for (const th of out) {
+    th.items.sort((a, b) => a.at - b.at);
+    th.last = th.items[th.items.length - 1].at;
+    th.subject = mailTopic(th.items[0].mail.subject) || "(sin asunto)";
+    // Who the conversation is with: the senders of received mail and the recipients of sent mail.
+    const people = [];
+    for (const { mail } of th.items) for (const p of mail.sent ? mail.to.split(", ") : [mail.from]) { const name = mailName(p); if (name && name !== "?" && !people.includes(name)) people.push(name); }
+    th.people = people;
+    th.tasks = [...new Set(th.items.map((i) => i.task.id))];
+  }
+  return out.sort((a, b) => b.last - a.last);
+}
+
 // ---------------------------------------------------------------------------
 // App state
 // ---------------------------------------------------------------------------
@@ -2784,8 +2864,10 @@ function render() {
   renderProblems();
   $("#graph-view").hidden = ui.view !== "graph";
   $("#board-view").hidden = ui.view !== "board";
+  $("#mail-view").hidden = ui.view !== "mail";
   renderPanel();
   if (ui.view === "graph") renderGraph();
+  else if (ui.view === "mail") renderMail();
   else renderKanban();
   if (picking) applyPick();
   applyMulti();
@@ -2881,7 +2963,7 @@ function renderHeader() {
     chip.setAttribute("aria-label", `YOLO on ${targets.map((t) => t.id).join(", ")}: ${charged} task${charged > 1 ? "s" : ""} without approval`);
     chip.onclick = () => { const i = targets.findIndex((t) => same(t.id, ui.selected)); select(targets[(i + 1) % targets.length].id); };
   }
-  for (const v of ["graph", "board"]) {
+  for (const v of ["graph", "board", "mail"]) {
     const btn = $(`#view-${v}`);
     btn.classList.toggle("on", ui.view === v);
     btn.setAttribute("aria-pressed", ui.view === v ? "true" : "false");
@@ -4224,7 +4306,16 @@ function noteEl(t, n, ro) {
     h("div", { class: "avatar", style: `--a:${by === "human" ? "#64748b" : colorFor(by)}`, title: by }, by.slice(0, 1)),
     h("div", { class: "note-main" },
       h("div", { class: "note-meta", title: noteTimes(n) }, h("b", {}, by), " · ", ago(n.at), n.edited ? ` · edited ${ago(n.edited)}` : null, ro || editing ? null : noteEditBtn(t, n)),
-      editing ? noteEditor(t, n) : h("div", { class: "note-text md", html: markdown(n.text || ""), ondblclick: ro ? null : () => editNote(t, n) })));
+      editing ? noteEditor(t, n) : h("div", { class: "note-text md", html: markdown(n.text || ""), ondblclick: ro ? null : () => editNote(t, n) }),
+      editing ? null : mailThreadLink(n)));
+}
+
+// "Ver hilo" under a mail note opens its conversation in the mail view.
+function mailThreadLink(n) {
+  const m = parseMailNote(n.text);
+  if (!m) return null;
+  const k = m.thread || `asunto:${mailTopic(m.subject).toLowerCase()}`;
+  return h("button", { class: "ghost mail-open", onclick: () => { ui.mailThread = k; setView("mail"); } }, icon("mail"), "Ver hilo");
 }
 
 function noteTimes(n) {
@@ -5411,6 +5502,50 @@ function toggleTask(src, text, rank, checked) {
 }
 
 // ---------------------------------------------------------------------------
+// Mail view: the conversations kept on the board's tasks
+// ---------------------------------------------------------------------------
+
+function renderMail() {
+  const view = $("#mail-view"), threads = mailThreads(board.tasks);
+  if (!threads.length) {
+    view.replaceChildren(h("div", { class: "empty mail-empty" }, "Aún no hay correos. Suelta un correo de Outlook encima de una tarea."));
+    return;
+  }
+  const open = threads.find((th) => th.key === ui.mailThread) || threads[0];
+  ui.mailThread = open.key;
+  const when = (ms) => { const d = new Date(ms); return ms ? `${pad2(d.getDate())}/${pad2(d.getMonth() + 1)} · ${pad2(d.getHours())}:${pad2(d.getMinutes())}` : ""; };
+  const list = h("div", { class: "kcol mail-list" }, h("div", { class: "khead" }, "Conversaciones ", h("span", { class: "n" }, String(threads.length))),
+    threads.map((th) => h("div", {
+      class: `kcard mail-conv${th === open ? " sel" : ""}`, role: "button", tabindex: "0",
+      onclick: () => { ui.mailThread = th.key; renderMail(); },
+      onkeydown: (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); ui.mailThread = th.key; renderMail(); } },
+    },
+    h("div", { class: "card-head" }, h("span", { class: "cid" }, th.tasks.join(" · ")), h("span", { class: "head-end" }, when(th.last))),
+    h("div", { class: "card-title" }, th.subject),
+    h("div", { class: "foot" }, h("span", {}, th.people.join(", ") || "—"), h("span", { class: "count" }, String(th.items.length))))));
+  // The conversation, split where it moves from one task to the next.
+  const body = [];
+  let lastTask = null;
+  for (const { task, mail } of open.items) {
+    if (!lastTask || !same(lastTask, task.id)) {
+      const t = get(task.id) || task;
+      body.push(h("button", { class: `mail-task s-${vstate(t)}`, onclick: () => select(t.id) }, h("i", { class: "dot" }), h("span", { class: "cid" }, t.id), t.title));
+      lastTask = task.id;
+    }
+    body.push(h("div", { class: `mail-msg${mail.sent ? " sent" : ""}` },
+      h("div", { class: "mail-meta" }, h("b", {}, mail.sent ? "tú" : mailName(mail.from)), mail.sent ? ` → ${mail.to.split(", ").map(mailName).join(", ")}` : "",
+        h("span", { class: "spacer" }), mail.date ? when(mail.date.getTime()) : ""),
+      mail.text ? h("div", { class: "md mail-text", html: markdown(mail.text) }) : null,
+      mail.attachments.length || mail.file ? h("div", { class: "mail-files" },
+        mail.attachments.map((a) => h("span", {}, a)),
+        mail.file ? h("span", { class: "msg", title: mail.file }, ".msg") : null) : null));
+  }
+  view.replaceChildren(list, h("div", { class: "mail-thread" },
+    h("div", { class: "mail-title" }, h("b", {}, open.subject), h("span", {}, open.people.join(", "))),
+    ...body));
+}
+
+// ---------------------------------------------------------------------------
 // Outlook mail dropped on a task
 // ---------------------------------------------------------------------------
 
@@ -5632,6 +5767,7 @@ function setupChrome() {
   setupTips();
   $("#view-graph").onclick = () => setView("graph");
   $("#view-board").onclick = () => setView("board");
+  $("#view-mail").onclick = () => setView("mail");
   phone.addEventListener("change", () => { if (board && !picking && ui.view !== prefs[viewPref()]) setView(prefs[viewPref()], false); });
   // Phone keyboards shrink only the visual viewport, so dialogs size themselves to it.
   const vv = window.visualViewport;
