@@ -5549,7 +5549,7 @@ function renderMail() {
 // Outlook mail dropped on a task
 // ---------------------------------------------------------------------------
 
-// The board's "correos" folder, chosen once per opened board: a page cannot reach the folder of a file it opened.
+// The open board's "correos" folder, once known in this visit: a page cannot reach the folder of a file it opened.
 let mailDir = null;
 
 // The task under a drag: a card in either view, or the open task panel.
@@ -5619,19 +5619,60 @@ async function sentByMe(m) {
   return sent;
 }
 
+// The "correos" folder of each board, kept in the browser between visits: a board opened as a file is known by its
+// file handle, a board served by Kanvas by its address.
+function mailDirs(mode, fn) {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open("kanvas", 1);
+    req.onupgradeneeded = () => req.result.createObjectStore("mailDirs", { autoIncrement: true });
+    req.onerror = () => reject(req.error);
+    req.onsuccess = () => {
+      const tx = req.result.transaction("mailDirs", mode), out = fn(tx.objectStore("mailDirs"));
+      tx.oncomplete = () => { req.result.close(); resolve(out.result); };
+      tx.onerror = () => { req.result.close(); reject(tx.error); };
+    };
+  });
+}
+
+async function rememberedMailDir() {
+  const all = await mailDirs("readonly", (os) => os.getAll());
+  for (const r of all || []) {
+    if (store.handle ? r.board instanceof FileSystemHandle && (await r.board.isSameEntry(store.handle)) : r.board === location.pathname) return r.dir;
+  }
+  return null;
+}
+
+// The board's "correos" folder, asking for it the first time and for leave to write in it when the browser has
+// forgotten that leave. Null when the human declines.
+async function boardMailDir() {
+  if (mailDir) return mailDir;
+  let dir = await rememberedMailDir().catch(() => null);
+  if (dir && (await dir.queryPermission({ mode: "readwrite" })) !== "granted") {
+    // The browser asks for leave only right after a click.
+    if (!(await modal("Carpeta de correos", h("p", {}, `Los correos de este tablero se guardan en «${dir.name}».`), { ok: "Permitir", cancel: "Cancelar" }))) return null;
+    if ((await dir.requestPermission({ mode: "readwrite" })) !== "granted") return null;
+  }
+  if (!dir) {
+    if (!(await modal("Carpeta del tablero", h("p", {}, "Elige la carpeta donde está el tablero. Los correos se guardan dentro, en «correos»."), { ok: "Elegir carpeta", cancel: "Cancelar" }))) return null;
+    const folder = await window.showDirectoryPicker({ id: "kanvas-correos", mode: "readwrite", startIn: store.handle || "documents" });
+    dir = await folder.getDirectoryHandle("correos", { create: true });
+    const board = store.handle || location.pathname;
+    await mailDirs("readwrite", (os) => os.add({ board, dir })).catch(() => {});
+  }
+  mailDir = dir;
+  return dir;
+}
+
 // Writes the .msg into the board's "correos" folder and returns its path there, or null when it is not kept.
 async function keepMail(id, f, m, sent) {
   if (!("showDirectoryPicker" in window)) return null;
   try {
-    if (!mailDir) {
-      if (!(await modal("Carpeta del tablero", h("p", {}, "Elige la carpeta donde está el tablero. Los correos se guardan dentro, en «correos»."), { ok: "Elegir carpeta", cancel: "Cancelar" }))) return null;
-      const folder = await window.showDirectoryPicker({ id: "kanvas-correos", mode: "readwrite", startIn: store.handle || "documents" });
-      mailDir = await folder.getDirectoryHandle("correos", { create: true });
-    }
+    const dir = await boardMailDir();
+    if (!dir) return null;
     const base = mailFileName(id, m, sent).slice(0, -4);
     let name = `${base}.msg`;
-    for (let n = 2; await mailDir.getFileHandle(name).then(() => true, () => false); n++) name = `${base} (${n}).msg`;
-    const w = await (await mailDir.getFileHandle(name, { create: true })).createWritable();
+    for (let n = 2; await dir.getFileHandle(name).then(() => true, () => false); n++) name = `${base} (${n}).msg`;
+    const w = await (await dir.getFileHandle(name, { create: true })).createWritable();
     await w.write(f);
     await w.close();
     return `correos/${name}`;

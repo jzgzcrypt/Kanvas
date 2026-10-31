@@ -1,6 +1,6 @@
 # Changelog
 ## Unreleased
-- Drop an Outlook mail (`.msg`) on a task, in either view or on its open panel, to keep it on the task: a note records whether it was sent or received, from and to whom, when, the subject, the attachments, the conversation it belongs to and the new text of the message, and the `.msg` itself is saved in a `correos` folder you choose next to the board. The mail is read in the browser; nothing is sent anywhere
+- Drop an Outlook mail (`.msg`) on a task, in either view or on its open panel, to keep it on the task: a note records whether it was sent or received, from and to whom, when, the subject, the attachments, the conversation it belongs to and the new text of the message, and the `.msg` itself is saved in a `correos` folder you choose next to the board. The mail is read in the browser; nothing is sent anywhere. The browser remembers each board's mail folder between visits
 - A Correos view lists the conversations kept on the board's tasks and shows each one in order, split by the task each mail was kept on, with what was sent and what was received; Ver hilo under a mail note opens its conversation
 
 ## v0.4.0 — 2026-10-27
