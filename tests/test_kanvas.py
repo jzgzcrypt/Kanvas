@@ -172,7 +172,10 @@ class FormatTests(unittest.TestCase):
         board["tasks"][1]["deps"] = []
         board["tasks"][1]["extra"] = {"nested": [1, 2.5, None, True]}
         board["tasks"][2]["yolo"] = True
+        board["tasks"][2]["owner"] = "agente:claude"
+        board["tasks"][2]["due"] = "2026-11-14"
         board["tasks"][3]["yolo"] = False
+        board["tasks"][3]["owner"] = ""
         board["tasks"][3]["notes"] = [
             {"text": "Edited", "edited": "2026-10-21T10:16:00Z", "by": "human", "at": "2026-10-19T08:00:00Z"},
             {"at": "2026-10-19T09:00:00Z", "by": "codex", "text": "Not edited", "edited": ""},
@@ -1282,6 +1285,35 @@ class WorkflowTests(TempBoard):
         board["tasks"].append(task("DV-05", deps=["DV-77"]))
         write_board(self.path, board)
         self.assertNotEqual(self.run_cli("check", check=False)[0], 0)
+
+
+class OwnerTests(TempBoard):
+    """A task the human gave to themselves, to a person or to one agent is left to them."""
+
+    def set_owner(self, tid, owner):
+        board = self.board()
+        kanvas.find_task(board, tid)["owner"] = owner
+        write_board(self.path, board)
+
+    def test_agents_take_only_tasks_for_an_agent(self):
+        for owner, label in (("yo", "the human"), ("Juan Pérez", "Juan Pérez")):
+            self.set_owner("DV-02", owner)
+            self.assertIn(f"DV-02 is for {label}; agents take only tasks for an agent", self.fails("start", "DV-02"))
+            _, out, _ = self.run_cli("ready")
+            self.assertNotIn("DV-02", out)
+            _, out, _ = self.run_cli("status")
+            self.assertIn(f"(for {label}, not for you)", out)
+        self.set_owner("DV-02", "agente")
+        self.run_cli("start", "DV-02")
+        self.assertEqual(self.get("DV-02")["state"], "doing")
+
+    def test_a_task_for_one_agent_is_that_agents(self):
+        self.set_owner("DV-02", "agente:Claude")
+        self.assertIn("is for agent Claude, not copilot", self.fails("start", "DV-02", env={"KANVAS_AGENT": "copilot"}))
+        _, out, _ = self.run_cli("ready", env={"KANVAS_AGENT": "claude"})
+        self.assertIn("DV-02", out)
+        self.run_cli("start", "DV-02", env={"KANVAS_AGENT": "claude"})
+        self.assertEqual(self.get("DV-02")["state"], "doing")
 
 
 class QuestionTests(TempBoard):

@@ -48,7 +48,7 @@ Only the human can turn YOLO on or off. A proposal you link into a YOLO chain wi
 ## Session protocol
 
 1. **Read the board:** `status`. Tell the user what waits for review, what is ready, what is blocked and what is proposed, and repeat any question still marked `(waiting for the human: ...)`. Revise proposals marked `(changes requested: ...)` as the human asked.
-2. **Pick a task:** if the user named one, `show ID`. Otherwise `ready`; when several tasks are ready, ask which one to take.
+2. **Pick a task:** if the user named one, `show ID`. Otherwise `ready`; when several tasks are ready, ask which one to take. A task the human gave to themselves, to a person or to another agent is not yours: `ready` leaves it out, `status` marks it, and `start` refuses it.
 3. **Start it:** `start ID -m "Plan: ..."`. Read the description and every note. A note starting with "Sent back:" is review feedback you must address.
 4. **Work.** Record findings with `note ID "..."`. Propose any extra work you discover with `propose`, linking it with `--deps`.
 5. **Finish:** `finish ID -m "..."` with a summary the human can accept or send back from: what changed for them, how you verified it, and what they should check. Tell the user the task is ready for review, then stop. Start the next task only when asked. Under YOLO, the tasks the YOLO task depends on are done instead of waiting for review, and you may go on with the next ready `(YOLO)` task without asking. The YOLO task itself goes to review; stop when no `(YOLO)` task is ready and summarize what you did.

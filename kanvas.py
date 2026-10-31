@@ -46,7 +46,7 @@ STATES = ("proposed", "todo", "doing", "review", "done")
 ID_RE = re.compile(r"^[A-Za-z][A-Za-z0-9]*-\d+$")
 PREFIX_RE = re.compile(r"^[A-Z][A-Z0-9]{0,5}$")
 UNGROUPED_PREFIX = "G"
-TASK_KEYS = ("id", "title", "state", "group", "deps", "yolo", "at", "by", "desc", "notes")
+TASK_KEYS = ("id", "title", "state", "group", "owner", "due", "deps", "yolo", "at", "by", "desc", "notes")
 REQUIRED_TASK_KEYS = ("id", "title", "state")
 GROUP_KEYS = ("id", "name")
 NOTE_KEYS = ("at", "by", "edited", "text")
@@ -696,6 +696,27 @@ def actor(args):
     return getattr(args, "as_name", None) or os.environ.get("KANVAS_AGENT") or "agent"
 
 
+def owner_refusal(task, name):
+    """Why the agent `name` may not take `task`, or None. A task's owner, set in the browser, is "yo" (the human),
+    a person's name, "agente" (any agent) or "agente:NAME" (that agent); a task without one is any agent's."""
+    owner = str(task.get("owner") or "").strip()
+    if not owner or owner.lower() == "agente":
+        return None
+    if owner.lower().startswith("agente:"):
+        agent = owner.split(":", 1)[1].strip()
+        return None if agent.lower() == name.lower() else f"{task['id']} is for agent {agent}, not {name}"
+    return f"{task['id']} is for {owner_label(owner)}; agents take only tasks for an agent"
+
+
+def owner_label(owner):
+    owner = str(owner or "").strip()
+    if owner.lower() == "yo":
+        return "the human"
+    if owner.lower().startswith("agente:"):
+        return "agent " + owner.split(":", 1)[1].strip()
+    return "any agent" if owner.lower() == "agente" else owner
+
+
 def read_input(value, use_stdin=False, file_path=None, what="text"):
     """Text from an argument, stdin, or a file.
 
@@ -765,6 +786,10 @@ def print_task(board, task):
         print(f"Revise: the human asked for changes (see the notes); change the proposal with "
               f"`{command_line('edit ' + task['id'])}` and say what you changed with -m, which answers the request")
     print(f"Group:  {group_label(board, task.get('group'))}")
+    if task.get("owner"):
+        print(f"Owner:  {owner_label(task['owner'])}")
+    if task.get("due"):
+        print(f"Due:    {task['due']}")
     if task.get("by"):
         print(f"By:     {task['by']}" + (f", {task['at']}" if task.get("at") else ""))
     via = cover.get(task["id"].upper())
@@ -924,6 +949,8 @@ def cmd_status(args):
             if key == "blocked":
                 line += f"  (waiting on {', '.join(unmet_deps(t, tasks))})"
             line += yolo_mark(t, cover) + waiting_mark(t) + changes_mark(t, cover)
+            if key in ("todo", "blocked") and owner_refusal(t, actor(args)):
+                line += f"  (for {owner_label(t['owner'])}, not for you)"
             print(line)
     errors, warnings = problems(board)
     if errors or warnings:
@@ -977,7 +1004,7 @@ def cmd_ready(args):
     board = load_board(board_path(args))
     tasks = task_map(board)
     cover = yolo_cover(board)
-    ready = [t for t in board["tasks"] if view_state(t, tasks) == "todo"]
+    ready = [t for t in board["tasks"] if view_state(t, tasks) == "todo" and not owner_refusal(t, actor(args))]
     if ready:
         print_rows(ready, tasks, indent="", show_state=False, cover=cover)
         return
@@ -1034,6 +1061,8 @@ def cmd_start(args):
             raise KanvasError(f"{t['id']} is blocked by unfinished {', '.join(unmet_deps(t, tasks))}")
         if vs != "todo":
             raise KanvasError(f"{t['id']} cannot be started: {STATE_HINTS[vs]}")
+        if refusal := owner_refusal(t, actor(args)):
+            raise KanvasError(refusal)
         t["state"] = "doing"
         if note:
             add_note(t, note, actor(args))

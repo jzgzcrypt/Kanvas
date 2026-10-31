@@ -226,6 +226,14 @@ button.yolo-go, button.yolo-go:hover { border: 0; color: var(--yolo-ink); font-w
 .card-foot .who > .t { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .card-foot .live { margin-right: 1px; }
 .card-foot .q { min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+.card-foot .due { font-variant-numeric: tabular-nums; }
+.due.late { color: var(--danger); font-weight: 650; }
+.due.near { color: color-mix(in srgb, var(--doing) 80%, var(--text)); font-weight: 650; }
+.owner-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.owner-row .track > button.on { background: var(--raise); color: var(--text); font-weight: 600; box-shadow: 0 0 0 1px var(--border), 0 1px 2px rgb(16 24 40 / .08); }
+.owner-row input[type=date] { height: 28px; padding: 0 8px; }
+.owner-label { font-size: 12.5px; color: var(--muted); }
+.owner-name { height: 28px; gap: 6px; }
 .handle { position: absolute; right: -8px; top: 50%; width: 16px; height: 16px; margin-top: -8px; border-radius: 50%; background: var(--surface); border: 2px solid var(--c); opacity: 0; cursor: crosshair; transition: opacity .15s, scale .15s; }
 .handle.in { right: auto; left: -8px; }
 #world.vertical .handle { right: auto; top: auto; left: 50%; bottom: -8px; margin: 0 0 0 -8px; }
@@ -1046,7 +1054,7 @@ function canonical(b) {
   const out = { kanvas: 1, title: b.title || "" };
   out.groups = b.groups.map((g) => ordered(g, ["id", "name"], ["id", "name"]));
   out.tasks = b.tasks.map((t) => {
-    const o = ordered(t, ["id", "title", "state", "group", "deps", "yolo", "at", "by", "desc", "notes"], ["id", "title", "state"]);
+    const o = ordered(t, ["id", "title", "state", "group", "owner", "due", "deps", "yolo", "at", "by", "desc", "notes"], ["id", "title", "state"]);
     if (o.notes) o.notes = o.notes.map((n) => ordered(n, ["at", "by", "edited", "text"], ["at", "by", "text"]));
     return o;
   });
@@ -3025,7 +3033,8 @@ function cardFoot(t) {
   } else {
     left = h("span", { class: "grow" });
   }
-  return h("div", { class: "card-foot" }, left, notes ? h("span", { title: `${notes} note${notes > 1 ? "s" : ""}` }, icon("note"), ` ${notes}`) : null);
+  const due = t.due && /^\d{4}-\d\d-\d\d$/.test(t.due) ? h("span", { class: `due ${dueState(t)}`, title: `Fecha límite ${t.due}` }, dueText(t.due)) : null;
+  return h("div", { class: "card-foot" }, left, due, ownerMark(t), notes ? h("span", { title: `${notes} note${notes > 1 ? "s" : ""}` }, icon("note"), ` ${notes}`) : null);
 }
 
 const isYoloTarget = (t) => yoloActive(t) && same(yoloVia(t), t.id);
@@ -4192,6 +4201,7 @@ function fillPanel(panel, t) {
     h("div", { class: "p-body" },
       title,
       nowCard(t, vs, ro, top),
+      ownerSection(t, ro),
       desc ? h("section", { class: "p-sec" },
         t.desc || ui.editingDesc ? h("div", { class: "section-head" }, "Description",
           checks.length ? [h("span", { class: "lane-bar", title: `${done} of ${checks.length} checked` }, h("i", { style: `width:${(100 * done) / checks.length}%` })), h("span", { class: "count" }, `${done}/${checks.length}`)] : null,
@@ -5499,6 +5509,74 @@ function toggleTask(src, text, rank, checked) {
   const item = taskItems(src).filter((x) => x.text === text)[rank];
   if (!item) return null;
   return item.checked === checked ? src : src.slice(0, item.at) + (checked ? "x" : " ") + src.slice(item.at + 1);
+}
+
+// ---------------------------------------------------------------------------
+// Owner and due date
+// ---------------------------------------------------------------------------
+
+// Who does a task, from its owner field: "yo" (the human), a person's name, "agente" (any agent) or
+// "agente:NAME" (that agent). Agents keep to tasks for an agent (owner_refusal in kanvas.py).
+function ownerOf(t) {
+  const o = String(t.owner || "").trim(), l = o.toLowerCase();
+  if (!o) return { kind: null };
+  if (l === "yo") return { kind: "me", label: "Yo" };
+  if (l === "agente") return { kind: "agent", name: "", label: "Cualquier agente" };
+  if (l.startsWith("agente:")) { const name = o.slice(7).trim(); return { kind: "agent", name, label: name }; }
+  return { kind: "person", name: o, label: o };
+}
+const AGENTS = ["Claude", "Copilot"];
+const boardPeople = () => [...new Set(board.tasks.map(ownerOf).filter((o) => o.kind === "person").map((o) => o.name))].sort((a, b) => a.localeCompare(b));
+const isoDay = (d) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+// "late" past the due date, "near" on it or the day before; finished tasks are never late.
+function dueState(t) {
+  if (!/^\d{4}-\d\d-\d\d$/.test(t.due || "") || t.state === "done") return "";
+  const today = new Date(), tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+  return t.due < isoDay(today) ? "late" : t.due <= isoDay(tomorrow) ? "near" : "";
+}
+const dueText = (iso) => { const [y, m, d] = iso.split("-"); return `${d}/${m}${y === String(new Date().getFullYear()) ? "" : `/${y}`}`; };
+
+function ownerMark(t) {
+  const o = ownerOf(t);
+  if (!o.kind) return null;
+  const letter = o.kind === "me" ? "T" : o.kind === "agent" && !o.name ? "A" : o.label.slice(0, 1).toUpperCase();
+  const color = o.kind === "me" ? "#475569" : o.kind === "agent" && !o.name ? "#64748b" : colorFor(o.label.toLowerCase());
+  return h("span", { class: "agent owner", style: `--a:${color}`, title: `Responsable: ${o.label}` }, letter);
+}
+
+async function askPerson(t) {
+  const now = ownerOf(t);
+  const list = h("datalist", { id: "people-list" }, boardPeople().map((p) => h("option", { value: p })));
+  const data = await modal("¿Quién la hace?", h("label", { class: "field" }, "Nombre",
+    h("input", { name: "name", required: true, list: "people-list", autocomplete: "off", value: now.kind === "person" ? now.name : "" }), list), { ok: "Guardar", cancel: "Cancelar" });
+  const name = data && String(data.get("name") || "").replace(/\s+/g, " ").trim();
+  if (!name) return;
+  if (/^(yo|agente)(:|$)/i.test(name)) { toast("Ese nombre está reservado: elige Yo o Agente", "error"); return; }
+  const fresh = get(t.id) || t;
+  commit(ops.set(t.id, { owner: name }, { owner: fresh.owner }));
+}
+
+function ownerSection(t, ro) {
+  const o = ownerOf(t);
+  const setOwner = (owner) => { const fresh = get(t.id) || t; commit(ops.set(t.id, { owner }, { owner: fresh.owner })); };
+  const seg = (items, on) => h("div", { class: "track" }, items.map(([value, label, act]) =>
+    h("button", { class: value === on ? "on" : "", "aria-pressed": value === on ? "true" : "false", disabled: ro, onclick: act || (() => value !== on && setOwner(value)) }, label)));
+  const kinds = seg([["me", "Yo", () => o.kind !== "me" && setOwner("yo")], ["person", "Persona", () => askPerson(t)], ["agent", "Agente", () => o.kind !== "agent" && setOwner("agente")]], o.kind);
+  let detail = null;
+  if (o.kind === "person") detail = h("button", { class: "owner-name", disabled: ro, title: "Cambiar la persona", onclick: () => askPerson(t) }, ownerMark(t), o.name);
+  if (o.kind === "agent") {
+    const names = [...new Set([...AGENTS, ...(o.name && !AGENTS.some((a) => same(a, o.name)) ? [o.name] : [])])];
+    const on = o.name ? `agente:${names.find((n) => n.toLowerCase() === o.name.toLowerCase())}` : "agente";
+    detail = seg([["agente", "Cualquiera"], ...names.map((n) => [`agente:${n}`, n])], on);
+  }
+  const due = h("input", { type: "date", value: t.due || "", disabled: ro, "aria-label": "Fecha límite" });
+  due.addEventListener("change", () => { const fresh = get(t.id) || t; commit(ops.set(t.id, { due: due.value }, { due: fresh.due })); });
+  return h("section", { class: "p-sec owner-sec" },
+    h("div", { class: "section-head" }, "Responsable"),
+    h("div", { class: "owner-row" }, kinds, detail),
+    h("div", { class: "owner-row" }, h("span", { class: "owner-label" }, "Fecha límite"), due,
+      dueState(t) ? h("span", { class: `due ${dueState(t)}` }, dueState(t) === "late" ? "vencida" : "vence pronto") : null,
+      t.due && !ro ? h("button", { class: "ghost", onclick: () => { const fresh = get(t.id) || t; commit(ops.set(t.id, { due: "" }, { due: fresh.due })); } }, "Quitar") : null));
 }
 
 // ---------------------------------------------------------------------------
