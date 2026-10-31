@@ -704,7 +704,9 @@ def owner_refusal(task, name):
         return None
     if owner.lower().startswith("agente:"):
         agent = owner.split(":", 1)[1].strip()
-        return None if agent.lower() == name.lower() else f"{task['id']} is for agent {agent}, not {name}"
+        # Agents sign with their tool's name, and a suffix when several share a board: "claude-code", "copilot-docs".
+        mine = name.lower() == agent.lower() or name.lower().startswith(agent.lower() + "-")
+        return None if mine else f"{task['id']} is for agent {agent}, not {name}"
     return f"{task['id']} is for {owner_label(owner)}; agents take only tasks for an agent"
 
 

@@ -1312,7 +1312,8 @@ class OwnerTests(TempBoard):
         self.assertIn("is for agent Claude, not copilot", self.fails("start", "DV-02", env={"KANVAS_AGENT": "copilot"}))
         _, out, _ = self.run_cli("ready", env={"KANVAS_AGENT": "claude"})
         self.assertIn("DV-02", out)
-        self.run_cli("start", "DV-02", env={"KANVAS_AGENT": "claude"})
+        self.assertIn("is for agent Claude, not claudette", self.fails("start", "DV-02", env={"KANVAS_AGENT": "claudette"}))
+        self.run_cli("start", "DV-02", env={"KANVAS_AGENT": "claude-code"})
         self.assertEqual(self.get("DV-02")["state"], "doing")
 
 
