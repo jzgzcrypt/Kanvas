@@ -232,7 +232,7 @@ button.yolo-go, button.yolo-go:hover { border: 0; color: var(--yolo-ink); font-w
 .owner-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .owner-row .track > button.on { background: var(--raise); color: var(--text); font-weight: 600; box-shadow: 0 0 0 1px var(--border), 0 1px 2px rgb(16 24 40 / .08); }
 .owner-row input[type=date] { height: 28px; padding: 0 8px; }
-.owner-label { font-size: 12.5px; color: var(--muted); }
+.owner-label { font-size: 12.5px; color: var(--muted); width: 84px; }
 .owner-name { height: 28px; gap: 6px; }
 .handle { position: absolute; right: -8px; top: 50%; width: 16px; height: 16px; margin-top: -8px; border-radius: 50%; background: var(--surface); border: 2px solid var(--c); opacity: 0; cursor: crosshair; transition: opacity .15s, scale .15s; }
 .handle.in { right: auto; left: -8px; }
@@ -277,10 +277,7 @@ button.yolo-go, button.yolo-go:hover { border: 0; color: var(--yolo-ink); font-w
 .empty code { font: 12px var(--mono); background: var(--surface-2); padding: 2px 6px; border-radius: 5px; border: 1px solid var(--border); }
 
 /* Board view */
-#kanban, #today { position: absolute; inset: 0; display: flex; gap: 12px; padding: 14px; overflow-x: auto; }
-#today .col { max-width: none; }
-.s-follow { --c: var(--danger); }
-.col.s-follow .col-head .dot { -webkit-mask: none; mask: none; border-radius: 50%; width: 9px; height: 9px; background: var(--danger); }
+#kanban { position: absolute; inset: 0; display: flex; gap: 12px; padding: 14px; overflow-x: auto; }
 #col-tabs { display: none; }
 .col { flex: 1 0 214px; max-width: 360px; display: flex; flex-direction: column; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; min-height: 0; transition: border-color .15s, background .15s; }
 .col.drop { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, var(--surface-2)); }
@@ -582,6 +579,60 @@ dialog.dlg[open]:has(> form > .help) { display: flex; flex-direction: column; }
 .ib-sub .agent { width: 13px; height: 13px; font-size: 8.5px; }
 .ib-q { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; padding-left: 7px; border-left: 2px solid var(--accent); font-size: 12.5px; line-height: 1.35; color: var(--muted); }
 .inbox-body .cid { margin-right: 2px; }
+#home { position: fixed; inset: 0; z-index: 18; background: var(--bg); display: flex; flex-direction: column; }
+.home-top { display: flex; align-items: center; gap: 14px; padding: 8px 18px; background: var(--surface); border-bottom: 1px solid var(--border); height: 48px; }
+.home-top .logo { width: 28px; height: 28px; }
+.home-name { font-weight: 650; font-size: 15px; }
+.home-tabs > button.on { background: var(--raise); color: var(--text); font-weight: 600; box-shadow: 0 0 0 1px var(--border), 0 1px 2px rgb(16 24 40 / .08); }
+.home-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr minmax(360px, 520px); gap: 22px; padding: 20px 24px; overflow: hidden; }
+.home-main, .home-side { overflow-y: auto; min-height: 0; }
+.home-main h1 { font-size: 22px; font-weight: 650; margin: 0 0 14px; }
+.home-main h1 small { font-size: 13.5px; color: var(--muted); font-weight: 400; margin-left: 6px; }
+.home-side h2 { font-size: 17px; margin: 6px 0 14px; }
+.home-empty { color: var(--muted); }
+.hlist { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow); margin-bottom: 14px; overflow: hidden; }
+.hhead { display: flex; align-items: center; gap: 8px; padding: 8px 10px 8px 14px; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+.hhead .count { color: var(--muted); font-size: 13px; }
+.hhead button { margin-left: auto; color: var(--accent); font-size: 12.5px; }
+.hrow { position: relative; display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-top: 1px solid var(--border); cursor: pointer; }
+.hhead + .hrow, .hday + .hrow { border-top: 0; }
+.hrow:hover { background: var(--surface-2); }
+.hrow.sel { background: color-mix(in srgb, var(--text) 5%, var(--surface)); box-shadow: inset 3px 0 0 var(--text); }
+.hrow.late::before { content: ""; position: absolute; left: 5px; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 50%; background: var(--danger); }
+.hrow input[type=checkbox] { width: 18px; height: 18px; flex: none; accent-color: var(--done); cursor: pointer; }
+.htext { flex: 1; min-width: 0; }
+.ht { font-size: 14px; }
+.hs { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+.hs b { color: var(--text); font-weight: 600; }
+.hs .owner { margin-right: 2px; }
+.hrow .cid { flex: none; }
+.hrow.done { background: color-mix(in srgb, var(--done) 6%, var(--surface)); }
+.hrow.done .ht { color: var(--muted); text-decoration: line-through; }
+.hdone { font-size: 12.5px; color: var(--done); font-weight: 650; }
+.hrow.sm { padding: 7px 14px; }
+.hday { font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; padding: 10px 14px 2px; }
+.detail { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow-lg); padding: 14px 20px 18px; display: flex; flex-direction: column; gap: 12px; align-self: start; max-height: 100%; }
+.detail h2 { margin: 0; font-size: 19px; line-height: 1.3; }
+.dhead { display: flex; align-items: center; justify-content: space-between; font-size: 12.5px; color: var(--muted); font-weight: 600; }
+.facts { display: flex; flex-direction: column; gap: 7px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 10px 0; }
+.fact { display: grid; grid-template-columns: 120px 1fr; font-size: 13.5px; }
+.fact > span { color: var(--muted); }
+.fact > b { font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.dacts { display: flex; flex-wrap: wrap; gap: 8px; }
+.dacts .primary { background: var(--text); border-color: var(--text); color: var(--surface); }
+.dacts .other-day { position: absolute; width: 0; height: 0; opacity: 0; border: 0; padding: 0; }
+.dsec { display: flex; align-items: center; font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: 4px; }
+.dsec button { margin-left: auto; text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--accent); font-size: 12.5px; }
+.dmsg { border-left: 2px solid var(--border); padding: 2px 0 2px 12px; }
+.dm { display: flex; gap: 4px; font-size: 12.5px; color: var(--muted); }
+.dm b { color: var(--text); font-weight: 600; }
+.dt { font-size: 13.5px; line-height: 1.45; margin-top: 2px; }
+.detail textarea { resize: vertical; }
+.pgrid { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; align-content: start; }
+.pcard { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 16px 18px; border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); text-align: left; white-space: normal; min-height: 92px; }
+.pcard b { font-size: 16px; }
+.pmeta { font-size: 12.5px; color: var(--muted); }
+.pcard.new { justify-content: center; align-items: center; border-style: dashed; color: var(--muted); font-weight: 600; box-shadow: none; }
 #welcome { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--bg); z-index: 20; padding: 20px; }
 #welcome.drag { background: color-mix(in srgb, var(--accent) 8%, var(--bg)); }
 .welcome-card { max-width: 480px; width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 30px; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: 14px; }
@@ -792,6 +843,7 @@ dialog.dlg[open]:has(> form > .help) { display: flex; flex-direction: column; }
 <header class="top">
   <div class="brand">
     <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><path d="M19 14V50M46 14L28 32L46 50" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M37.5 13H47V22.5ZM37.5 51H47V41.5Z" fill="currentColor" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>
+    <button id="home-back" class="ghost" hidden>‹ Proyectos</button>
     <span id="title-slot"></span>
     <span id="sync" class="sync" role="status"><span class="dot"></span><span class="label"></span></span>
     <span class="meter" id="meter" role="img"><span class="progress" id="progress" aria-hidden="true"></span><b id="meter-pct"></b></span>
@@ -806,7 +858,6 @@ dialog.dlg[open]:has(> form > .help) { display: flex; flex-direction: column; }
   <div class="tools">
     <label class="search"><span class="sicon" data-icon="search"></span><input id="search" type="search" placeholder="Filter tasks" aria-label="Filter tasks" autocomplete="off"><kbd>/</kbd></label>
     <div class="seg track" role="group" aria-label="View">
-      <button id="view-today" data-icon="sun" data-tip="Lo que te toca hoy" aria-label="Hoy"><span class="lbl">Hoy</span></button>
       <button id="view-graph" data-icon="graph" data-tip="Dependency graph" data-key="G" aria-label="Graph"><span class="lbl">Graph</span></button>
       <button id="view-board" data-icon="columns" data-tip="Board by state" data-key="B" aria-label="Board"><span class="lbl">Board</span></button>
       <button id="view-mail" data-icon="mail" data-tip="Correos de las tareas" aria-label="Correos"><span class="lbl">Correos</span></button>
@@ -858,9 +909,12 @@ dialog.dlg[open]:has(> form > .help) { display: flex; flex-direction: column; }
   </section>
   <section class="view" id="board-view" hidden><nav id="col-tabs" class="track" aria-label="Columns"></nav><div id="kanban"></div></section>
   <section class="view" id="mail-view" hidden></section>
-  <section class="view" id="today-view" hidden><div id="today"></div></section>
 </main>
 <div id="welcome" hidden></div>
+<div id="home" hidden>
+  <header class="home-top"><svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><path d="M19 14V50M46 14L28 32L46 50" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M37.5 13H47V22.5ZM37.5 51H47V41.5Z" fill="currentColor" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg><span class="home-name"></span><div class="track home-tabs"><button data-tab="today">Hoy</button><button data-tab="projects">Proyectos</button></div></header>
+  <div class="home-body"></div>
+</div>
 <div id="toasts" aria-live="polite"></div>
 <script>
 "use strict";
@@ -1059,7 +1113,7 @@ function canonical(b) {
   const out = { kanvas: 1, title: b.title || "" };
   out.groups = b.groups.map((g) => ordered(g, ["id", "name"], ["id", "name"]));
   out.tasks = b.tasks.map((t) => {
-    const o = ordered(t, ["id", "title", "state", "group", "owner", "due", "done", "deps", "yolo", "at", "by", "desc", "notes"], ["id", "title", "state"]);
+    const o = ordered(t, ["id", "title", "state", "group", "owner", "due", "day", "done", "deps", "yolo", "at", "by", "desc", "notes"], ["id", "title", "state"]);
     if (o.notes) o.notes = o.notes.map((n) => ordered(n, ["at", "by", "edited", "text"], ["at", "by", "text"]));
     return o;
   });
@@ -2885,11 +2939,9 @@ function render() {
   $("#graph-view").hidden = ui.view !== "graph";
   $("#board-view").hidden = ui.view !== "board";
   $("#mail-view").hidden = ui.view !== "mail";
-  $("#today-view").hidden = ui.view !== "today";
   renderPanel();
   if (ui.view === "graph") renderGraph();
   else if (ui.view === "mail") renderMail();
-  else if (ui.view === "today") renderToday();
   else renderKanban();
   if (picking) applyPick();
   applyMulti();
@@ -2985,7 +3037,7 @@ function renderHeader() {
     chip.setAttribute("aria-label", `YOLO on ${targets.map((t) => t.id).join(", ")}: ${charged} task${charged > 1 ? "s" : ""} without approval`);
     chip.onclick = () => { const i = targets.findIndex((t) => same(t.id, ui.selected)); select(targets[(i + 1) % targets.length].id); };
   }
-  for (const v of ["today", "graph", "board", "mail"]) {
+  for (const v of ["graph", "board", "mail"]) {
     const btn = $(`#view-${v}`);
     btn.classList.toggle("on", ui.view === v);
     btn.setAttribute("aria-pressed", ui.view === v ? "true" : "false");
@@ -5582,46 +5634,18 @@ function ownerSection(t, ro) {
     const on = o.name ? `agente:${names.find((n) => n.toLowerCase() === o.name.toLowerCase())}` : "agente";
     detail = seg([["agente", "Cualquiera"], ...names.map((n) => [`agente:${n}`, n])], on);
   }
+  const plan = h("input", { type: "date", value: t.day || "", disabled: ro, "aria-label": "Para el día" });
+  plan.addEventListener("change", () => { const fresh = get(t.id) || t; commit(ops.set(t.id, { day: plan.value }, { day: fresh.day })); });
   const due = h("input", { type: "date", value: t.due || "", disabled: ro, "aria-label": "Fecha límite" });
   due.addEventListener("change", () => { const fresh = get(t.id) || t; commit(ops.set(t.id, { due: due.value }, { due: fresh.due })); });
   return h("section", { class: "p-sec owner-sec" },
     h("div", { class: "section-head" }, "Responsable"),
     h("div", { class: "owner-row" }, kinds, detail),
+    h("div", { class: "owner-row" }, h("span", { class: "owner-label" }, "Para el día"), plan,
+      t.day && !ro ? h("button", { class: "ghost", onclick: () => { const fresh = get(t.id) || t; commit(ops.set(t.id, { day: "" }, { day: fresh.day })); } }, "Quitar") : null),
     h("div", { class: "owner-row" }, h("span", { class: "owner-label" }, "Fecha límite"), due,
       dueState(t) ? h("span", { class: `due ${dueState(t)}` }, dueState(t) === "late" ? "vencida" : "vence pronto") : null,
       t.due && !ro ? h("button", { class: "ghost", onclick: () => { const fresh = get(t.id) || t; commit(ops.set(t.id, { due: "" }, { due: fresh.due })); } }, "Quitar") : null));
-}
-
-// ---------------------------------------------------------------------------
-// Today view: what needs the human today, across the whole board
-// ---------------------------------------------------------------------------
-
-// Tasks with a due date first, the earliest first; the rest keep the board's order.
-const byDue = (a, b) => (a.due || "9999") .localeCompare(b.due || "9999");
-
-function todayColumns() {
-  const tasks = boardOrder(board).filter(matches), today = isoDay(new Date());
-  const open = (t) => ["todo", "doing"].includes(vstate(t));
-  return [
-    // Work the human gave to themselves.
-    { key: "mine", label: "Mis pendientes", cls: "s-todo", items: tasks.filter((t) => ownerOf(t).kind === "me" && open(t)).sort(byDue) },
-    // Work that waits on the human's word: finished work to accept, and proposals to approve.
-    { key: "review", label: "Para revisar", cls: "s-review", items: tasks.filter((t) => ["review", "proposed"].includes(vstate(t))) },
-    // Work given to people, to chase.
-    { key: "follow", label: "Seguimiento", cls: "s-follow", items: tasks.filter((t) => ownerOf(t).kind === "person" && open(t)).sort(byDue) },
-    { key: "done", label: "Hecho hoy", cls: "s-done", items: tasks.filter((t) => t.state === "done" && t.done === today) },
-  ];
-}
-
-function renderToday() {
-  $("#today").replaceChildren(...todayColumns().map((c) => {
-    const head = h("div", { class: "col-head" }, h("span", { class: "dot" }), c.label, h("span", { class: "count" }, c.items.length));
-    const body = h("div", { class: "col-body", role: c.items.length ? "listbox" : null, "aria-label": c.items.length ? c.label : null },
-      c.items.length ? c.items.map(kanbanCard) : h("div", { class: "col-empty" }, "Nada"));
-    const col = h("div", { class: `col ${c.cls}`, "data-today": c.key }, head, body);
-    // A card dropped on Hecho hoy is done.
-    return c.key === "done" ? acceptDrops(col, "done") : col;
-  }));
 }
 
 // ---------------------------------------------------------------------------
@@ -5742,15 +5766,17 @@ async function sentByMe(m) {
   return sent;
 }
 
-// The "correos" folder of each board, kept in the browser between visits: a board opened as a file is known by its
-// file handle, a board served by Kanvas by its address.
-function mailDirs(mode, fn) {
+// Folders kept in the browser between visits ("places": the projects folder; "mailDirs": the "correos" folder of each board, a board opened as a file is known by its
+// a board opened as a file known by its file handle, a board served by Kanvas by its address).
+function idb(name, mode, fn) {
   return new Promise((resolve, reject) => {
-    const req = indexedDB.open("kanvas", 1);
-    req.onupgradeneeded = () => req.result.createObjectStore("mailDirs", { autoIncrement: true });
+    const req = indexedDB.open("kanvas", 2);
+    req.onupgradeneeded = () => {
+      for (const [n, opts] of [["mailDirs", { autoIncrement: true }], ["places", {}]]) if (!req.result.objectStoreNames.contains(n)) req.result.createObjectStore(n, opts);
+    };
     req.onerror = () => reject(req.error);
     req.onsuccess = () => {
-      const tx = req.result.transaction("mailDirs", mode), out = fn(tx.objectStore("mailDirs"));
+      const tx = req.result.transaction(name, mode), out = fn(tx.objectStore(name));
       tx.oncomplete = () => { req.result.close(); resolve(out.result); };
       tx.onerror = () => { req.result.close(); reject(tx.error); };
     };
@@ -5758,7 +5784,7 @@ function mailDirs(mode, fn) {
 }
 
 async function rememberedMailDir() {
-  const all = await mailDirs("readonly", (os) => os.getAll());
+  const all = await idb("mailDirs", "readonly", (os) => os.getAll());
   for (const r of all || []) {
     if (store.handle ? r.board instanceof FileSystemHandle && (await r.board.isSameEntry(store.handle)) : r.board === location.pathname) return r.dir;
   }
@@ -5780,7 +5806,7 @@ async function boardMailDir() {
     const folder = await window.showDirectoryPicker({ id: "kanvas-correos", mode: "readwrite", startIn: store.handle || "documents" });
     dir = await folder.getDirectoryHandle("correos", { create: true });
     const board = store.handle || location.pathname;
-    await mailDirs("readwrite", (os) => os.add({ board, dir })).catch(() => {});
+    await idb("mailDirs", "readwrite", (os) => os.add({ board, dir })).catch(() => {});
   }
   mailDir = dir;
   return dir;
@@ -5806,6 +5832,274 @@ async function keepMail(id, f, m, sent) {
 }
 
 // ---------------------------------------------------------------------------
+// Projects folder: one board per project, and a Today list across them
+// ---------------------------------------------------------------------------
+
+// The folder of projects once opened: every subfolder holding a kanvas.json is a project.
+// `open` is the project whose board is on screen, null while the home screen shows.
+let workspace = null; // { dir, projects: [{ folder, handle, store, board }], open, tab, selected }
+
+async function loadProjects(dir) {
+  const projects = [];
+  for await (const [name, entry] of dir.entries()) {
+    if (entry.kind !== "directory") continue;
+    const handle = await entry.getFileHandle(BOARD_NAME).catch(() => null);
+    if (!handle) continue;
+    const store = fileStore(handle);
+    try { projects.push({ folder: name, handle, store, board: await store.load() }); } catch (e) { toast(`${name}: ${e.message}`, "error"); }
+  }
+  return projects.sort((a, b) => projectName(a).localeCompare(projectName(b)));
+}
+const BOARD_NAME = "kanvas.json";
+const projectName = (p) => p.board.title || p.folder;
+
+async function openWorkspace(dir) {
+  if ((await dir.queryPermission({ mode: "readwrite" })) !== "granted" && (await dir.requestPermission({ mode: "readwrite" })) !== "granted") return;
+  workspace = { dir, projects: await loadProjects(dir), open: null, tab: "today", selected: null };
+  await idb("places", "readwrite", (os) => os.put(dir, "workspace")).catch(() => {});
+  showHome();
+}
+
+async function pickWorkspace() {
+  try { await openWorkspace(await window.showDirectoryPicker({ id: "kanvas-proyectos", mode: "readwrite" })); } catch (e) { if (e.name !== "AbortError") toast(e.message, "error"); }
+}
+
+function showHome() {
+  workspace.open = null;
+  store = null;
+  board = null;
+  $("#welcome").hidden = true;
+  $("#home").hidden = false;
+  $("#home-back").hidden = true;
+  renderHome();
+}
+
+async function openProject(p, taskId = null, view = null) {
+  workspace.open = p;
+  $("#home").hidden = true;
+  $("#home-back").hidden = false;
+  await open(p.store);
+  if (view) setView(view, false);
+  if (taskId) select(taskId);
+}
+
+async function backHome() {
+  workspace.projects = await loadProjects(workspace.dir);
+  showHome();
+}
+
+// Writes `fn` into project `p` and shows the result; the same store as the project's board view.
+async function changeProject(p, fn) {
+  try { p.board = (await p.store.save(fn, p.board)).board; } catch (e) { toast(`No guardado: ${e.message}`, "error"); }
+  renderHome();
+}
+
+// Agents and people change the projects while the list shows; their files are read again every few seconds.
+async function pollProjects() {
+  // Not while the human types a note or picks a date, which a new list would throw away.
+  const typing = document.activeElement && $("#home").contains(document.activeElement) && document.activeElement.matches("input, textarea");
+  if (workspace && !workspace.open && document.visibilityState === "visible" && !typing) {
+    let changed = false;
+    for (const p of workspace.projects) {
+      try { const fresh = await p.store.poll(); if (fresh) { fresh.accept(); p.board = fresh.board; changed = true; } } catch (e) { /* read again next time */ }
+    }
+    if (changed) renderHome();
+  }
+  setTimeout(pollProjects, POLL_MS);
+}
+
+// ---- Dates in words
+
+const DOW = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+const MONTHS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+const dayDate = (iso) => { const [y, m, d] = iso.split("-").map(Number); return new Date(y, m - 1, d); };
+const daysFrom = (iso, today) => Math.round((dayDate(iso) - dayDate(today)) / 864e5);
+const isDay = (v) => /^\d{4}-\d\d-\d\d$/.test(v || "");
+// "hoy", "ayer", "mañana", "el jueves" within a week, else "el 20/11".
+function onDay(iso, today) {
+  const n = daysFrom(iso, today), d = dayDate(iso);
+  if (n === 0) return "hoy";
+  if (n === -1) return "ayer";
+  if (n === 1) return "mañana";
+  return Math.abs(n) < 7 ? `el ${DOW[d.getDay()]}` : `el ${pad2(d.getDate())}/${pad2(d.getMonth() + 1)}`;
+}
+const sinceDays = (n) => (n <= 0 ? "hoy" : n === 1 ? "ayer" : `hace ${n} días`);
+function dueWords(iso, today) {
+  const n = daysFrom(iso, today);
+  return n < 0 ? (n === -1 ? "vencida desde ayer" : `vencida hace ${-n} días`) : n === 0 ? "vence hoy" : `vence ${onDay(iso, today)}`;
+}
+const longDate = (d) => `${DOW[d.getDay()]} ${d.getDate()} de ${MONTHS[d.getMonth()]}`;
+
+// ---- What each project asks of the human today
+
+const firstName = (by) => { const s = String(by || "").split("-")[0]; return s ? s[0].toUpperCase() + s.slice(1) : "?"; };
+function lastMailDays(t, today) {
+  const at = t.notes.map((n) => parseMailNote(n.text)).filter((m) => m && m.date).map((m) => m.date.getTime());
+  return at.length ? Math.max(0, daysFrom(today, isoDay(new Date(Math.max(...at))))) : null;
+}
+
+// A row of the Today list: who has the task and what is pending, as parts of text, `strong` for what to act on.
+function todayRow(t, ix, today) {
+  const vs = vstateIn(ix, t), o = ownerOf(t);
+  if (t.state === "done") return t.done === today ? { t, done: true } : null;
+  if (vs === "review") {
+    const last = t.notes[t.notes.length - 1], who = !last || last.by === "human" ? "Tú" : firstName(last.by);
+    return { t, who, parts: [[`la terminó ${last ? onDay(isoDay(new Date(last.at)), today) : ""}`], ["te toca revisarla", true]], act: "Revisar", order: 0 };
+  }
+  if (vs === "proposed") return { t, who: firstName(t.by || "agent"), parts: [["la propone"], ["te toca aprobarla", true]], act: "Revisar", order: 0 };
+  if (vs === "blocked") return null;
+  if (o.kind === "person" && isDay(t.due) && daysFrom(t.due, today) <= 0) {
+    const mail = lastMailDays(t, today), parts = [[dueWords(t.due, today), true]];
+    if (mail != null) parts.push([`último correo ${sinceDays(mail)}`]);
+    return { t, who: o.name, parts, late: daysFrom(t.due, today) < 0, order: 1 };
+  }
+  if (o.kind !== "me") return null;
+  const planned = isDay(t.day) && daysFrom(t.day, today) <= 0, due = isDay(t.due) && daysFrom(t.due, today) <= 0;
+  if (!planned && !due) return null;
+  const parts = [];
+  if (planned) parts.push(daysFrom(t.day, today) === 0 ? ["para hoy"] : [`se quedó ${daysFrom(t.day, today) === -1 ? "de ayer" : `del ${onDay(t.day, today).slice(3)}`}`, true]);
+  if (isDay(t.due)) parts.push([dueWords(t.due, today), daysFrom(t.due, today) <= 0]);
+  return { t, who: "Tú", parts, late: isDay(t.due) && daysFrom(t.due, today) < 0, order: 2 };
+}
+
+function todayList(p, today) {
+  const ix = indexOf(p.board);
+  const rows = p.board.tasks.map((t) => todayRow(t, ix, today)).filter(Boolean);
+  return { open: rows.filter((r) => !r.done).sort((a, b) => a.order - b.order), done: rows.filter((r) => r.done) };
+}
+
+// The next seven days: what the human planned, and the due dates of open work.
+function upcoming(today) {
+  const days = new Map();
+  const add = (iso, row) => { if (!days.has(iso)) days.set(iso, []); days.get(iso).push(row); };
+  for (const p of workspace.projects) {
+    const ix = indexOf(p.board);
+    for (const t of p.board.tasks) {
+      if (t.state === "done" || vstateIn(ix, t) === "proposed") continue;
+      const o = ownerOf(t);
+      if (o.kind === "me" && isDay(t.day) && daysFrom(t.day, today) > 0 && daysFrom(t.day, today) <= 7) add(t.day, { p, t, title: t.title, sub: projectName(p) });
+      if (isDay(t.due) && daysFrom(t.due, today) > 0 && daysFrom(t.due, today) <= 7) add(t.due, { p, t, title: `Límite · ${t.title}`, sub: `${projectName(p)}${o.kind === "person" ? ` · la tiene ${o.name}` : ""}` });
+    }
+  }
+  return [...days.entries()].sort(([a], [b]) => a.localeCompare(b));
+}
+
+// ---- Home screen
+
+const whoMark = (who) => h("span", { class: "agent owner", style: `--a:${who === "Tú" ? "#475569" : colorFor(who.toLowerCase())}` }, who === "Tú" ? "T" : who.slice(0, 1).toUpperCase());
+
+function renderHome() {
+  const home = $("#home"), today = isoDay(new Date());
+  home.querySelector(".home-name").textContent = workspace.dir.name;
+  for (const b of home.querySelectorAll(".home-tabs button")) b.classList.toggle("on", b.dataset.tab === workspace.tab);
+  const body = home.querySelector(".home-body");
+  if (workspace.tab === "projects") { body.replaceChildren(projectsGrid()); return; }
+  const lists = workspace.projects.map((p) => ({ p, ...todayList(p, today) })).filter((l) => l.open.length || l.done.length);
+  const pending = lists.reduce((n, l) => n + l.open.length, 0);
+  const sel = workspace.selected && findSelected();
+  if (workspace.selected && !sel) workspace.selected = null;
+  const row = (p, r) => {
+    const on = sel && sel.p === p && same(sel.t.id, r.t.id);
+    const box = h("input", { type: "checkbox", checked: !!r.done, "aria-label": r.done ? `Reabrir ${r.t.id}` : `Marcar ${r.t.id} como hecha`,
+      onclick: (e) => { e.stopPropagation(); changeProject(p, ops.state(r.t.id, seenOf(r.t), r.done ? "todo" : "done")); } });
+    return h("div", { class: `hrow${r.done ? " done" : ""}${r.late ? " late" : ""}${on ? " sel" : ""}`, onclick: () => { workspace.selected = { folder: p.folder, id: r.t.id }; renderHome(); } },
+      box,
+      h("div", { class: "htext" }, h("div", { class: "ht" }, r.t.title),
+        r.done ? null : h("div", { class: "hs" }, whoMark(r.who), h("b", {}, r.who), ...r.parts.map(([text, strong]) => [" · ", strong ? h("b", {}, text) : text]))),
+      h("span", { class: "cid" }, r.t.id),
+      r.done ? h("span", { class: "hdone" }, "Hecha") : r.act ? h("button", { onclick: (e) => { e.stopPropagation(); openProject(p, r.t.id); } }, r.act) : null);
+  };
+  const main = h("div", { class: "home-main" },
+    h("h1", {}, "Hoy ", h("small", {}, `${longDate(new Date())} · ${pending} pendiente${pending === 1 ? "" : "s"}`)),
+    lists.length ? lists.map(({ p, open, done }) => h("section", { class: "hlist" },
+      h("div", { class: "hhead" }, h("b", {}, projectName(p)), h("span", { class: "count" }, open.length), h("button", { class: "ghost", onclick: () => openProject(p) }, "Abrir proyecto →")),
+      ...open.map((r) => row(p, r)), ...done.map((r) => row(p, r)))) : h("p", { class: "home-empty" }, "Nada para hoy."));
+  body.replaceChildren(main, sel ? taskDetail(sel.p, sel.t, today) : upcomingBox(today));
+}
+
+function findSelected() {
+  const p = workspace.projects.find((x) => x.folder === workspace.selected.folder);
+  const t = p && p.board.tasks.find((x) => same(x.id, workspace.selected.id));
+  return t ? { p, t } : null;
+}
+
+function upcomingBox(today) {
+  const days = upcoming(today);
+  return h("div", { class: "home-side" }, h("h2", {}, "Próximos días"),
+    h("section", { class: "hlist" }, days.length ? days.map(([iso, rows]) => [
+      h("div", { class: "hday" }, `${DOW[dayDate(iso).getDay()].slice(0, 3)} ${dayDate(iso).getDate()}`),
+      ...rows.map((r) => h("div", { class: "hrow sm", onclick: () => { workspace.selected = { folder: r.p.folder, id: r.t.id }; renderHome(); } },
+        h("div", { class: "htext" }, h("div", { class: "ht" }, r.title), h("div", { class: "hs" }, r.sub))))]) : h("p", { class: "home-empty" }, "Nada programado.")));
+}
+
+function taskDetail(p, t, today) {
+  const o = ownerOf(t), mails = [], notes = [];
+  for (const n of t.notes) { const m = parseMailNote(n.text); if (m) mails.push(m); else notes.push(n); }
+  const fact = (label, value) => h("div", { class: "fact" }, h("span", {}, label), h("b", {}, value));
+  const set = (patch) => changeProject(p, ops.set(t.id, patch, Object.fromEntries(Object.keys(patch).map((k) => [k, t[k]]))));
+  const otherDay = h("input", { type: "date", class: "other-day", value: t.day || "", "aria-label": "Otro día" });
+  otherDay.addEventListener("change", () => otherDay.value && set({ day: otherDay.value }));
+  const tomorrow = isoDay(new Date(Date.now() + 864e5));
+  const note = h("textarea", { rows: 1, placeholder: "Añadir una nota", "aria-label": "Añadir una nota" });
+  note.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && note.value.trim()) { e.preventDefault(); changeProject(p, ops.note(t.id, note.value.trim())); } });
+  const thread = mails.find((m) => m.thread || m.subject);
+  return h("div", { class: "home-side detail" },
+    h("div", { class: "dhead" }, h("span", {}, `${projectName(p)} · ${t.id}`), h("button", { class: "ghost icon-btn", "aria-label": "Cerrar", onclick: () => { workspace.selected = null; renderHome(); } }, icon("x"))),
+    h("h2", {}, t.title),
+    h("div", { class: "facts" },
+      fact("Responsable", o.kind ? [o.kind === "me" ? whoMark("Tú") : ownerMark(t), o.kind === "me" ? "Tú" : o.label] : "Sin responsable"),
+      fact("Fecha límite", isDay(t.due) ? `${DOW[dayDate(t.due).getDay()]} ${pad2(dayDate(t.due).getDate())}/${pad2(dayDate(t.due).getMonth() + 1)} · ${dueWords(t.due, today)}` : "—"),
+      fact("Para el día", isDay(t.day) ? onDay(t.day, today) : "—")),
+    h("div", { class: "dacts" },
+      t.state === "done" ? h("button", { class: "primary", onclick: () => changeProject(p, ops.state(t.id, seenOf(t), "todo")) }, "Reabrir")
+        : h("button", { class: "primary", onclick: () => changeProject(p, ops.state(t.id, seenOf(t), "done")) }, "Marcar hecha"),
+      h("button", { onclick: () => set({ day: tomorrow }) }, "Pasar a mañana"),
+      h("button", { onclick: () => otherDay.showPicker() }, "Otro día…", otherDay),
+      h("button", { onclick: () => openProject(p, t.id) }, "Abrir en el proyecto")),
+    t.desc ? [h("div", { class: "dsec" }, "Descripción"), h("div", { class: "md", html: markdown(t.desc) })] : null,
+    mails.length ? [h("div", { class: "dsec" }, "Correos", h("button", { class: "ghost", onclick: () => { ui.mailThread = thread.thread || `asunto:${mailTopic(thread.subject).toLowerCase()}`; openProject(p, null, "mail"); } }, "Ver hilo completo →")),
+      ...mails.map((m) => h("div", { class: "dmsg" }, h("div", { class: "dm" }, h("b", {}, m.sent ? "Tú" : mailName(m.from)), m.sent ? ` → ${m.to.split(", ").map(mailName).join(", ")}` : "", h("span", { class: "spacer" }), m.date ? `${DOW[m.date.getDay()].slice(0, 3)} ${m.date.getDate()} · ${pad2(m.date.getHours())}:${pad2(m.date.getMinutes())}` : ""),
+        m.text ? h("div", { class: "dt" }, m.text.split("\n").filter(Boolean).slice(0, 3).join(" ")) : null))] : null,
+    h("div", { class: "dsec" }, "Notas"),
+    ...notes.map((n) => h("div", { class: "dmsg" }, h("div", { class: "dm" }, h("b", {}, n.by === "human" ? "Tú" : firstName(n.by)), h("span", { class: "spacer" }), onDay(isoDay(new Date(n.at)), today)), h("div", { class: "dt md", html: markdown(n.text || "") }))),
+    note);
+}
+
+function projectsGrid() {
+  const today = isoDay(new Date());
+  const card = (p) => {
+    const ix = indexOf(p.board), count = (s) => p.board.tasks.filter((t) => vstateIn(ix, t) === s).length;
+    const open = p.board.tasks.filter((t) => t.state !== "done").length;
+    const late = p.board.tasks.filter((t) => t.state !== "done" && isDay(t.due) && daysFrom(t.due, today) < 0).length;
+    return h("button", { class: "pcard", onclick: () => openProject(p) },
+      h("b", {}, projectName(p)),
+      h("span", { class: "pmeta" }, `${open} pendiente${open === 1 ? "" : "s"}${late ? ` · ${late} vencida${late === 1 ? "" : "s"}` : ""}${count("review") ? ` · ${count("review")} para revisar` : ""}`));
+  };
+  return h("div", { class: "pgrid" }, workspace.projects.map(card), h("button", { class: "pcard new", onclick: newProject }, "＋ Nuevo proyecto"));
+}
+
+async function newProject() {
+  const data = await modal("Nuevo proyecto", h("label", { class: "field" }, "Nombre", h("input", { name: "name", required: true, autocomplete: "off" })), { ok: "Crear", cancel: "Cancelar" });
+  const name = data && String(data.get("name") || "").replace(/[\\/:*?"<>|]/g, "").trim();
+  if (!name) return;
+  try {
+    const folder = await workspace.dir.getDirectoryHandle(name, { create: true });
+    if (await folder.getFileHandle(BOARD_NAME).then(() => true, () => false)) { toast(`Ya existe un proyecto en «${name}»`, "error"); return; }
+    const w = await (await folder.getFileHandle(BOARD_NAME, { create: true })).createWritable();
+    await w.write(serialize(normalize({ kanvas: 1, title: name, groups: [], tasks: [] })));
+    await w.close();
+    workspace.projects = await loadProjects(workspace.dir);
+    renderHome();
+  } catch (e) { toast(e.message, "error"); }
+}
+
+function setupHome() {
+  for (const b of document.querySelectorAll("#home .home-tabs button")) b.onclick = () => { workspace.tab = b.dataset.tab; workspace.selected = null; renderHome(); };
+  $("#home-back").onclick = backHome;
+  pollProjects();
+}
+
+// ---------------------------------------------------------------------------
 // Opening a board without the server
 // ---------------------------------------------------------------------------
 
@@ -5817,6 +6111,8 @@ function showWelcome() {
   w.replaceChildren(h("div", { class: "welcome-card" },
     h("h1", {}, $(".logo").cloneNode(true), "Kanvas"),
     h("p", {}, "A task board you share with your AI agents. Open your board file to plan, approve and review work."),
+    "showDirectoryPicker" in window ? h("div", { class: "row projects-row" },
+      h("button", { class: "primary", onclick: pickWorkspace }, icon("folder-open"), "Abrir carpeta de proyectos")) : null,
     h("div", { class: "row" },
       h("button", { class: "primary", onclick: () => (canPick ? pickFile() : fileInput.click()) }, icon("folder-open"), "Open kanvas.json"),
       h("button", { onclick: () => open(memoryStore("kanvas.json", { kanvas: 1, title: "New board", groups: [], tasks: [] })) }, icon("plus"), "Start an empty board")),
@@ -5827,6 +6123,13 @@ function showWelcome() {
     h("p", {}, "Live sync in any browser: ", serveHint("run ")),
     fileInput));
   w.hidden = false;
+  // The projects folder opened last time comes first; the browser asks again for leave to use it.
+  idb("places", "readonly", (os) => os.get("workspace")).then((dir) => {
+    const row = dir && $(".projects-row", w);
+    if (!row) return;
+    row.firstChild.classList.remove("primary");
+    row.prepend(h("button", { class: "primary", onclick: () => openWorkspace(dir) }, icon("folder-open"), `Abrir «${dir.name}»`));
+  }, () => {});
   w.addEventListener("dragover", (e) => { e.preventDefault(); w.classList.add("drag"); });
   w.addEventListener("dragleave", () => w.classList.remove("drag"));
   w.addEventListener("drop", async (e) => {
@@ -5932,7 +6235,6 @@ function setupChrome() {
   $("#view-graph").onclick = () => setView("graph");
   $("#view-board").onclick = () => setView("board");
   $("#view-mail").onclick = () => setView("mail");
-  $("#view-today").onclick = () => setView("today");
   phone.addEventListener("change", () => { if (board && !picking && ui.view !== prefs[viewPref()]) setView(prefs[viewPref()], false); });
   // Phone keyboards shrink only the visual viewport, so dialogs size themselves to it.
   const vv = window.visualViewport;
@@ -6162,6 +6464,7 @@ function unsaved() {
 async function boot() {
   setupChrome();
   setupMailDrop();
+  setupHome();
   // Browsers show their own message, and only to a page the human has interacted with.
   addEventListener("beforeunload", (e) => { if (unsaved()) { e.preventDefault(); e.returnValue = ""; } });
   const snap = document.getElementById("kanvas-snapshot");
