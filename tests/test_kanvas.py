@@ -317,37 +317,37 @@ class UndoTests(unittest.TestCase):
                 t["deps"] = [d for d in t["deps"] if d not in ids]
 
         cases = {
-            "approving A-01": lambda b, t: t["A-01"].update(state="todo"),
-            "pausing A-02": lambda b, t: t["A-02"].update(state="todo"),
-            "sending A-03 back": lambda b, t: t["A-03"].update(state="todo", notes=[self.NOTE]),
-            "reopening A-04": lambda b, t: t["A-04"].update(state="todo"),
-            "starting A-01": lambda b, t: t["A-01"].update(state="doing"),
-            "marking A-02 and A-03 done": lambda b, t: [t[i].update(state="done") for i in ("A-02", "A-03")],
-            "moving A-04 to Proposed": lambda b, t: t["A-04"].update(state="proposed"),
-            "rejecting A-01": lambda b, t: drop(b, {"A-01"}),
-            "deleting A-02": lambda b, t: drop(b, {"A-02"}),
-            "rejecting A-01 and A-05": lambda b, t: drop(b, {"A-01", "A-05"}),
-            "unlinking A-03 from A-02": lambda b, t: t["A-03"].update(deps=[]),
-            "making A-05 wait for A-01 and A-04": lambda b, t: t["A-05"].update(deps=["A-01", "A-04"]),
-            "adding A-06": lambda b, t: (b["tasks"].append(task("A-06", group="A")), t["A-05"].update(deps=["A-06"])),
-            "turning on YOLO up to A-03": lambda b, t: (t["A-03"].update(yolo=True), t["A-01"].update(state="todo")),
-            "deleting the Group A group": lambda b, t: (b["groups"].pop(0), [x.update(group=None) for x in b["tasks"]]),
-            "adding a note to A-02": lambda b, t: t["A-02"]["notes"].append(self.AGENT),
-            "deleting a note from A-02": lambda b, t: t["A-02"].update(notes=[]),
-            "editing a note on A-02": lambda b, t: t["A-02"].update(notes=[dict(self.NOTE, text="New")]),
-            "asking for changes to A-05": lambda b, t: t["A-05"].update(notes=[dict(self.NOTE, text="Changes requested: Split it")]),
-            "renaming A-02": lambda b, t: t["A-02"].update(title="New title"),
-            "moving A-02 to Group B": lambda b, t: t["A-02"].update(group="B"),
-            "reordering the cards": lambda b, t: b["tasks"].reverse(),
-            "renaming the Group B group": lambda b, t: b["groups"][1].update(name="Beta"),
-            "renaming the board": lambda b, t: b.update(title="Board"),
+            "aprobar A-01": lambda b, t: t["A-01"].update(state="todo"),
+            "pausar A-02": lambda b, t: t["A-02"].update(state="todo"),
+            "devolver A-03": lambda b, t: t["A-03"].update(state="todo", notes=[self.NOTE]),
+            "reabrir A-04": lambda b, t: t["A-04"].update(state="todo"),
+            "empezar A-01": lambda b, t: t["A-01"].update(state="doing"),
+            "marcar A-02 y A-03 como hecha": lambda b, t: [t[i].update(state="done") for i in ("A-02", "A-03")],
+            "mover A-04 a Propuesta": lambda b, t: t["A-04"].update(state="proposed"),
+            "rechazar A-01": lambda b, t: drop(b, {"A-01"}),
+            "borrar A-02": lambda b, t: drop(b, {"A-02"}),
+            "rechazar A-01 y A-05": lambda b, t: drop(b, {"A-01", "A-05"}),
+            "desvincular A-03 de A-02": lambda b, t: t["A-03"].update(deps=[]),
+            "hacer que A-05 espere a A-01 y A-04": lambda b, t: t["A-05"].update(deps=["A-01", "A-04"]),
+            "añadir A-06": lambda b, t: (b["tasks"].append(task("A-06", group="A")), t["A-05"].update(deps=["A-06"])),
+            "activar YOLO hasta A-03": lambda b, t: (t["A-03"].update(yolo=True), t["A-01"].update(state="todo")),
+            "borrar el grupo Group A": lambda b, t: (b["groups"].pop(0), [x.update(group=None) for x in b["tasks"]]),
+            "añadir una nota a A-02": lambda b, t: t["A-02"]["notes"].append(self.AGENT),
+            "borrar una nota de A-02": lambda b, t: t["A-02"].update(notes=[]),
+            "editar una nota de A-02": lambda b, t: t["A-02"].update(notes=[dict(self.NOTE, text="New")]),
+            "pedir cambios en A-05": lambda b, t: t["A-05"].update(notes=[dict(self.NOTE, text="Changes requested: Split it")]),
+            "renombrar A-02": lambda b, t: t["A-02"].update(title="New title"),
+            "mover A-02 a Group B": lambda b, t: t["A-02"].update(group="B"),
+            "reordenar las tarjetas": lambda b, t: b["tasks"].reverse(),
+            "renombrar el grupo Group B": lambda b, t: b["groups"][1].update(name="Beta"),
+            "renombrar el tablero": lambda b, t: b.update(title="Board"),
         }
         pairs = [change(fn) for fn in cases.values()]
         yolo_off = change(lambda b, t: t["A-03"].update(yolo=True))[::-1]
         many = [board(*(task(f"A-0{i}", "proposed") for i in range(1, 6))), board(*(task(f"A-0{i}") for i in range(1, 6)))]
         code = "process.stdout.write(JSON.stringify(input.map(([a, z]) => describeChange(normalize(a), normalize(z)))));"
         out = run_html_js(self, code, json.dumps(pairs + [yolo_off, many]), [("const MOVE_WORDS =", "\n// Undoes or redoes")])
-        self.assertEqual(json.loads(out), list(cases) + ["turning off YOLO on A-03", "approving 5 tasks"])
+        self.assertEqual(json.loads(out), list(cases) + ["desactivar YOLO en A-03", "aprobar 5 tareas"])
 
 
 class FailedSaveTests(unittest.TestCase):
@@ -378,8 +378,8 @@ class FailedSaveTests(unittest.TestCase):
             "  process.stdout.write(JSON.stringify({ refused, queued, shown, after: board.tasks[0].notes.length, failed, log }));\n"
             "})();", board)
         self.assertEqual((out["refused"], out["queued"], out["shown"], out["after"]), (False, True, 1, 0))
-        self.assertEqual(out["failed"], ["A-09 no longer exists", "server answered 500"])
-        self.assertEqual(out["log"], ["A-09 no longer exists", "Not saved: server answered 500"])
+        self.assertEqual(out["failed"], ["A-09 ya no existe", "server answered 500"])
+        self.assertEqual(out["log"], ["A-09 ya no existe", "No guardado: server answered 500"])
 
     def test_a_saved_change_does_not_call_on_fail(self):
         board = {"kanvas": 1, "title": "", "groups": [], "tasks": [task("A-01")]}
@@ -396,14 +396,14 @@ class FailedSaveTests(unittest.TestCase):
         board = {"kanvas": 1, "title": "", "groups": [], "tasks": [task("A-01")]}
         out = self.run_commits(
             "store = { save: async () => { throw new Error('tried to save'); } };\n"
-            "lost = 'Kanvas stopped running or cannot be reached';\n"
+            "lost = 'Kanvas se ha detenido o no responde';\n"
             "(async () => {\n"
             "  const ok = await commit(ops.note('A-01', 'Typed text'), { onFail });\n"
             "  await saveQueue;\n"
             "  process.stdout.write(JSON.stringify({ ok, pending, notes: board.tasks[0].notes.length, failed, log }));\n"
             "})();", board)
-        self.assertEqual(out, {"ok": False, "pending": 0, "notes": 0, "failed": ["Kanvas stopped running or cannot be reached"],
-                               "log": ["Not saved: Kanvas stopped running or cannot be reached"]})
+        self.assertEqual(out, {"ok": False, "pending": 0, "notes": 0, "failed": ["Kanvas se ha detenido o no responde"],
+                               "log": ["No guardado: Kanvas se ha detenido o no responde"]})
 
 
 class LostConnectionTests(unittest.TestCase):
@@ -432,14 +432,14 @@ class LostConnectionTests(unittest.TestCase):
             "})();"
         )
         out = json.loads(run_html_js(self, code, "{}", [("function serverStore()", "function fileStore(")]))
-        down = ["Kanvas stopped running or cannot be reached", True]
-        closed = ["this board is no longer open in Kanvas", True]
+        down = ["Kanvas se ha detenido o no responde", True]
+        closed = ["este tablero ya no está abierto en Kanvas", True]
         self.assertEqual(out, {
             "down load": down, "down poll": down, "down save": down,
             # Only reads give up on a request that hangs: a write may have landed, and waits for its answer.
             "hang load": down, "hang poll": down, "hang save": "no error",
             "404 load": closed, "404 poll": closed, "404 save": ["No board", False],
-            "500 load": ["server answered 500", False], "500 poll": ["server answered 500", False], "500 save": ["No board", False],
+            "500 load": ["el servidor respondió 500", False], "500 poll": ["el servidor respondió 500", False], "500 save": ["No board", False],
         })
 
 
@@ -504,7 +504,7 @@ class FileStoreTests(TempBoard):
         notes = [f"Agent note {i}" for i in range(6)]
         out = self.save_with_agent({"write": list(notes)})
         agent = [f"DV-02 agent: {n}" for n in notes]
-        self.assertEqual(out, {"error": "the board kept changing; try again", "aborted": 6, "saved": None, "file": agent,
+        self.assertEqual(out, {"error": "el tablero no paraba de cambiar; inténtalo otra vez", "aborted": 6, "saved": None, "file": agent,
                                "canonical": True, "polled": agent, "swap": False})
 
 
@@ -913,8 +913,8 @@ class BoardViewTests(unittest.TestCase):
         out = json.loads(run_html_js(self, code, json.dumps({"page": page, "latest": latest, "drops": drops}), sections))
         self.assertEqual(out, [
             "todo", None, "done", "todo", None,  # Blocked stands for To do, and a card dropped where it is stays
-            "T-01 is in Doing now, not To do",  # an agent started it meanwhile
-            "P-02 was revised since you opened it; read the new version first",
+            "T-01 está ahora en En curso, no en Por hacer",  # an agent started it meanwhile
+            "P-02 se ha revisado desde que la abriste; lee antes la versión nueva",
             None,
         ])
 
@@ -981,7 +981,7 @@ class ReviewFlowTests(unittest.TestCase):
     def test_moving_on_waits_for_the_save_and_reads_the_board_it_wrote(self):
         board = self.board(task("FE-01", "review", "FE"), task("BE-01", "done", "BE"), task("FE-02", "review", "FE"),
                            task("BE-03", "review", "BE"), task("FE-03", "doing", "FE"), task("BE-04", "review", "BE"), task("G-01"))
-        lost = "Kanvas stopped running or cannot be reached"
+        lost = "Kanvas se ha detenido o no responde"
         cases = [
             {"id": "BE-03", "undo": True},
             {"id": "BE-03", "undo": "FE-02"},  # Undo leaves the panel alone once the human opened another task
@@ -1037,23 +1037,23 @@ class ReviewFlowTests(unittest.TestCase):
         out = json.loads(run_html_js(self, code, json.dumps({"board": board, "cases": cases}), sections))
         done, kept = ["done", []], ["review", []]
         self.assertEqual(out, [
-            {"open": "BE-04", "toasts": ["Marked BE-03 done. Next to review: BE-04."], "saved": done, "afterUndo": "BE-03"},
-            {"open": "BE-04", "toasts": ["Marked BE-03 done. Next to review: BE-04."], "saved": done, "afterUndo": "FE-02"},
+            {"open": "BE-04", "toasts": ["BE-03 marcada como hecha. Siguiente para revisar: BE-04."], "saved": done, "afterUndo": "BE-03"},
+            {"open": "BE-04", "toasts": ["BE-03 marcada como hecha. Siguiente para revisar: BE-04."], "saved": done, "afterUndo": "FE-02"},
             # The next task comes from the board as saved, with the agents' changes
-            {"open": "FE-01", "toasts": ["Marked BE-03 done. Next to review: FE-01."], "saved": done},
+            {"open": "FE-01", "toasts": ["BE-03 marcada como hecha. Siguiente para revisar: FE-01."], "saved": done},
             # A failed save takes the toast away, and one refused at once never shows it
-            {"open": "BE-03", "toasts": ["Marked BE-03 done (taken away)", "Not saved: server answered 500"], "saved": kept},
-            {"open": "BE-03", "toasts": [f"Not saved: {lost}"], "saved": kept},
-            {"open": "BE-03", "toasts": ["Marked BE-03 done"], "saved": done},
-            {"open": "FE-01", "toasts": ["Marked BE-03 done"], "saved": done},
-            {"open": None, "toasts": ["Marked BE-03 done"], "saved": done},
-            {"open": "BE-04", "toasts": ["Sent BE-03 back. Next to review: BE-04."], "saved": ["todo", ["Sent back: Cap the retries"]]},
-            {"open": "BE-03", "toasts": ["Marked BE-03 done. No more tasks to review."], "saved": done},
-            {"open": "FE-02", "toasts": ["Marked FE-02 done. No more tasks to review in this view; 2 more are filtered out."], "saved": done},
-            {"open": "FE-02", "toasts": ["Marked FE-02 done. No more tasks to review in this view; 1 more is filtered out."], "saved": done},
+            {"open": "BE-03", "toasts": ["BE-03 marcada como hecha (taken away)", "No guardado: server answered 500"], "saved": kept},
+            {"open": "BE-03", "toasts": [f"No guardado: {lost}"], "saved": kept},
+            {"open": "BE-03", "toasts": ["BE-03 marcada como hecha"], "saved": done},
+            {"open": "FE-01", "toasts": ["BE-03 marcada como hecha"], "saved": done},
+            {"open": None, "toasts": ["BE-03 marcada como hecha"], "saved": done},
+            {"open": "BE-04", "toasts": ["Devuelta BE-03. Siguiente para revisar: BE-04."], "saved": ["todo", ["Sent back: Cap the retries"]]},
+            {"open": "BE-03", "toasts": ["BE-03 marcada como hecha. No quedan tareas para revisar."], "saved": done},
+            {"open": "FE-02", "toasts": ["FE-02 marcada como hecha. No quedan tareas para revisar en esta vista; 2 más están ocultas por un filtro."], "saved": done},
+            {"open": "FE-02", "toasts": ["FE-02 marcada como hecha. No quedan tareas para revisar en esta vista; 1 más está oculta por un filtro."], "saved": done},
             # The human went on meanwhile: to another task, or to editing this one
-            {"open": "FE-02", "toasts": ["Marked BE-03 done"], "saved": done},
-            {"open": "BE-03", "toasts": ["Marked BE-03 done"], "saved": done},
+            {"open": "FE-02", "toasts": ["BE-03 marcada como hecha"], "saved": done},
+            {"open": "BE-03", "toasts": ["BE-03 marcada como hecha"], "saved": done},
         ])
 
 
@@ -1130,7 +1130,7 @@ class ShortcutLabelTests(unittest.TestCase):
     def test_the_shortcuts_dialog_lists_every_shortcut_once_in_four_groups(self):
         code = "process.stdout.write(JSON.stringify(SHORTCUTS.map(([head, keys]) => [head, keys.map(([k]) => k)])));"
         groups = json.loads(run_html_js(self, code, "null", [("const SHORTCUTS =", "\nfunction helpDialog")]))
-        self.assertEqual([head for head, _ in groups], ["Moving around", "The selected task", "Views", "Editing"])
+        self.assertEqual([head for head, _ in groups], ["Moverse", "La tarea elegida", "Vistas", "Edición"])
         keys = [k for _, ks in groups for k in ks]
         self.assertEqual(len(keys), 24)
         self.assertEqual(len(set(keys)), len(keys))
@@ -1146,13 +1146,13 @@ class CardLabelTests(unittest.TestCase):
         code = ("const b = normalize(input), ix = indexOf(b);\n"
                 "process.stdout.write(JSON.stringify(Object.fromEntries(b.tasks.map((t) => [t.id, cardLabel(t, vstateIn(ix, t), unmetIn(ix, t))]))));")
         names = json.loads(run_html_js(self, code, json.dumps(b), [("function cardLabel(", "\nfunction cardFoot(")]))
-        self.assertEqual(names["BE-02"], "BE-02 Fetch and cache forecasts, Review, claude")
-        self.assertEqual(names["BE-03"], "BE-03 City search endpoint, Doing, codex")
-        self.assertEqual(names["FE-02"], "FE-02 Forecast cards, Waiting for you, codex")
-        self.assertEqual(names["FE-03"], "FE-03 City search box, Blocked, waiting on FE-02, BE-03")
-        self.assertEqual(names["FE-05"], "FE-05 Offline banner, Proposed, codex")
-        self.assertEqual(names["FE-04"], "FE-04 Dark mode, To do")
-        self.assertEqual(names["RS-01"], "RS-01 Compare weather APIs, Done")
+        self.assertEqual(names["BE-02"], "BE-02 Fetch and cache forecasts, En revisión, claude")
+        self.assertEqual(names["BE-03"], "BE-03 City search endpoint, En curso, codex")
+        self.assertEqual(names["FE-02"], "FE-02 Forecast cards, Te espera, codex")
+        self.assertEqual(names["FE-03"], "FE-03 City search box, Bloqueada, espera a FE-02, BE-03")
+        self.assertEqual(names["FE-05"], "FE-05 Offline banner, Propuesta, codex")
+        self.assertEqual(names["FE-04"], "FE-04 Dark mode, Por hacer")
+        self.assertEqual(names["RS-01"], "RS-01 Compare weather APIs, Hecha")
 
 
 class WorkflowTests(TempBoard):
@@ -2584,7 +2584,7 @@ class ServerTests(TempBoard):
     def test_a_browser_move_does_not_overwrite_an_agent_move(self):
         self.run_cli("start", "DV-02")
         out = self.browser_move_after_agent("todo", "finish", "DV-02", "-m", "Done; tests pass")
-        self.assertEqual(out, "refused: DV-02 is in Review now, not Doing")
+        self.assertEqual(out, "refused: DV-02 está ahora en En revisión, no en En curso")
         self.assertEqual(self.get("DV-02")["state"], "review")
 
     def test_a_browser_move_is_replayed_over_other_agent_changes(self):
@@ -2596,10 +2596,10 @@ class ServerTests(TempBoard):
     def test_approving_refuses_a_proposal_an_agent_revised(self):
         approve = "ops.state('DV-04', seenOf(seen('DV-04')), 'todo')"
         out = self.browser_after_agent(approve, "edit", "DV-04", "--desc", "Now it also rewrites the parser")
-        self.assertEqual(out, "refused: DV-04 was revised since you opened it; read the new version first")
+        self.assertEqual(out, "refused: DV-04 se ha revisado desde que la abriste; lee antes la versión nueva")
         self.assertEqual(self.get("DV-04")["state"], "proposed")
         self.run_cli("propose", "Development", "Base")
-        self.assertIn("refused: DV-04 was revised", self.browser_after_agent(approve, "depend", "DV-04", "DV-05"))
+        self.assertIn("refused: DV-04 se ha revisado", self.browser_after_agent(approve, "depend", "DV-04", "DV-05"))
         self.assertEqual(self.browser_after_agent(approve, "note", "DV-04", "Only a note"), "saved")
         self.assertEqual(self.get("DV-04")["state"], "todo")
 
@@ -2608,7 +2608,7 @@ class ServerTests(TempBoard):
         self.run_cli("propose", "Development", "Third")
         approve = "ops.approve(['DV-04', 'DV-05', 'DV-06'].map((id) => seenOf(seen(id))))"
         out = self.browser_after_agent(approve, "edit", "DV-05", "--title", "Second, reworded")
-        self.assertEqual(out, "refused: DV-05 was revised since you looked; read the new version first")
+        self.assertEqual(out, "refused: DV-05 se ha revisado desde que miraste; lee antes la versión nueva")
         self.assertEqual([self.get(i)["state"] for i in ("DV-04", "DV-05", "DV-06")], ["proposed"] * 3)
         self.assertEqual(self.browser_after_agent(approve, "withdraw", "DV-06"), "saved")
         self.assertEqual([self.get(i)["state"] for i in ("DV-04", "DV-05")], ["todo", "todo"])
@@ -2616,11 +2616,11 @@ class ServerTests(TempBoard):
     def test_a_browser_edit_does_not_overwrite_an_agent_edit(self):
         edit = "ops.set('DV-04', { title: 'Mine' }, { title: seen('DV-04').title })"
         out = self.browser_after_agent(edit, "edit", "DV-04", "--title", "Theirs")
-        self.assertEqual(out, "refused: the title of DV-04 changed meanwhile")
+        self.assertEqual(out, "refused: el título de DV-04 ha cambiado mientras tanto")
         self.assertEqual(self.get("DV-04")["title"], "Theirs")
         desc = "ops.set('DV-04', { desc: 'Mine' }, { desc: seen('DV-04').desc })"
         self.assertEqual(self.browser_after_agent(desc, "edit", "DV-04", "--desc", "Theirs"),
-                         "refused: the description of DV-04 changed meanwhile")
+                         "refused: la descripción de DV-04 ha cambiado mientras tanto")
         self.assertEqual(self.browser_after_agent(edit, "edit", "DV-04", "--desc", "Theirs, again"), "saved")
         self.assertEqual((self.get("DV-04")["title"], self.get("DV-04")["desc"]), ("Mine", "Theirs, again"))
 
@@ -2630,7 +2630,7 @@ class ServerTests(TempBoard):
         self.assertEqual(self.browser_after_agent(tick, "edit", "DV-04", "--desc", "Steps:\n\n- [ ] new\n- [ ] a\n- [ ] b"), "saved")
         self.assertEqual(self.get("DV-04")["desc"], "Steps:\n\n- [ ] new\n- [ ] a\n- [x] b")
         self.assertEqual(self.browser_after_agent(tick, "edit", "DV-04", "--desc", "- [ ] a\n- [ ] c"),
-                         "refused: That checklist item in DV-04 changed meanwhile")
+                         "refused: Ese punto de la lista de DV-04 ha cambiado mientras tanto")
         self.assertEqual(self.get("DV-04")["desc"], "- [ ] a\n- [ ] c")
 
     def test_browser_writes_are_canonical(self):

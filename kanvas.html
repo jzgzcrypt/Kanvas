@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
@@ -762,7 +762,7 @@ dialog.dlg[open]:has(> form > .help) { display: flex; flex-direction: column; }
 }
 @media (hover: none) {
   .dep button, .note-btn { opacity: 1; }
-  /* Without a mouse, new dependencies go through "Add dependency…" in the card menu. */
+  /* Without a mouse, new dependencies go through "Añadir dependencia…" in the card menu. */
   .handle { display: none; }
 }
 @media (pointer: coarse) {
@@ -847,35 +847,35 @@ dialog.dlg[open]:has(> form > .help) { display: flex; flex-direction: column; }
     <span id="title-slot"></span>
     <span id="sync" class="sync" role="status"><span class="dot"></span><span class="label"></span></span>
     <span class="meter" id="meter" role="img"><span class="progress" id="progress" aria-hidden="true"></span><b id="meter-pct"></b></span>
-    <button id="download" data-icon="download" data-tip="Download kanvas.json" aria-label="Save" hidden><span class="lbl">Save</span></button>
+    <button id="download" data-icon="download" data-tip="Descargar kanvas.json" aria-label="Guardar" hidden><span class="lbl">Guardar</span></button>
   </div>
-  <div class="chips track" id="chips" role="group" aria-label="Filter by state"></div>
+  <div class="chips track" id="chips" role="group" aria-label="Filtrar por estado"></div>
   <button id="group-filter" aria-haspopup="dialog" aria-expanded="false" hidden></button>
   <button id="hide-done" class="icon-btn" data-key="H" aria-pressed="false"></button>
-  <button id="filter" class="icon-btn" data-icon="filter" aria-haspopup="dialog" aria-expanded="false" aria-label="Filters"></button>
+  <button id="filter" class="icon-btn" data-icon="filter" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtros"></button>
   <button id="yolo-chip" class="yolo-chip" hidden></button>
   <div class="spacer"></div>
   <div class="tools">
-    <label class="search"><span class="sicon" data-icon="search"></span><input id="search" type="search" placeholder="Filter tasks" aria-label="Filter tasks" autocomplete="off"><kbd>/</kbd></label>
-    <div class="seg track" role="group" aria-label="View">
-      <button id="view-graph" data-icon="graph" data-tip="Dependency graph" data-key="G" aria-label="Graph"><span class="lbl">Graph</span></button>
-      <button id="view-board" data-icon="columns" data-tip="Board by state" data-key="B" aria-label="Board"><span class="lbl">Board</span></button>
+    <label class="search"><span class="sicon" data-icon="search"></span><input id="search" type="search" placeholder="Filtrar tareas" aria-label="Filtrar tareas" autocomplete="off"><kbd>/</kbd></label>
+    <div class="seg track" role="group" aria-label="Vista">
+      <button id="view-graph" data-icon="graph" data-tip="Grafo de dependencias" data-key="G" aria-label="Grafo"><span class="lbl">Grafo</span></button>
+      <button id="view-board" data-icon="columns" data-tip="Tablero por estado" data-key="B" aria-label="Tablero"><span class="lbl">Tablero</span></button>
       <button id="view-mail" data-icon="mail" data-tip="Correos de las tareas" aria-label="Correos"><span class="lbl">Correos</span></button>
     </div>
-    <button id="display" data-icon="sliders" data-tip="Direction, card order, finished tasks and theme" aria-haspopup="dialog" aria-expanded="false" aria-label="Display options"><span class="lbl">Display</span></button>
+    <button id="display" data-icon="sliders" data-tip="Dirección, orden de las tarjetas, tareas terminadas y tema" aria-haspopup="dialog" aria-expanded="false" aria-label="Opciones de vista"><span class="lbl">Vista</span></button>
     <button id="inbox" aria-haspopup="dialog" aria-expanded="false" hidden></button>
   </div>
   <div class="tools edit-only">
-    <button id="undo" class="ghost icon-btn" data-icon="undo" data-tip="Nothing to undo" data-key="Ctrl+Z" aria-label="Undo" disabled></button>
-    <button id="redo" class="ghost icon-btn" data-icon="redo" data-tip="Nothing to redo" data-key="Ctrl+Shift+Z" aria-label="Redo" disabled></button>
-    <button id="new-task" class="primary" data-icon="plus" data-tip="New task" data-key="N" aria-label="New task"><span class="lbl">New task</span></button>
+    <button id="undo" class="ghost icon-btn" data-icon="undo" data-tip="Nada que deshacer" data-key="Ctrl+Z" aria-label="Deshacer" disabled></button>
+    <button id="redo" class="ghost icon-btn" data-icon="redo" data-tip="Nada que rehacer" data-key="Ctrl+Shift+Z" aria-label="Rehacer" disabled></button>
+    <button id="new-task" class="primary" data-icon="plus" data-tip="Tarea nueva" data-key="N" aria-label="Tarea nueva"><span class="lbl">Tarea nueva</span></button>
   </div>
-  <button id="help" class="ghost icon-btn" data-icon="help" data-tip="Keyboard shortcuts" data-key="?" aria-label="Keyboard shortcuts"></button>
+  <button id="help" class="ghost icon-btn" data-icon="help" data-tip="Atajos de teclado" data-key="?" aria-label="Atajos de teclado"></button>
 </header>
 <div id="problems" class="banner" hidden></div>
 <div id="lost" class="banner error" role="alert" hidden></div>
 <main>
-  <aside id="panel" hidden aria-label="Task details" tabindex="-1"></aside>
+  <aside id="panel" hidden aria-label="Ficha de la tarea" tabindex="-1"></aside>
   <section class="view" id="graph-view">
     <div id="viewport">
       <div id="world">
@@ -891,23 +891,23 @@ dialog.dlg[open]:has(> form > .help) { display: flex; flex-direction: column; }
           <g id="edge-layer"></g>
           <g id="edge-hits"></g>
         </svg>
-        <div id="cards" role="listbox" aria-label="Tasks"></div>
+        <div id="cards" role="listbox" aria-label="Tareas"></div>
         <div id="drop-line" hidden></div>
       </div>
     </div>
     <div class="zoombar">
-      <label class="spread" data-tip="Spacing between dependency levels" data-key="[ ]"><input id="spread" type="range" min="30" max="500" step="10" aria-label="Spacing between dependency levels"></label>
-      <button id="zoom-fill" data-icon="fill" data-tip="Fill the screen: set the spacing and zoom so the whole graph is as large as fits" aria-label="Fill the screen"></button>
+      <label class="spread" data-tip="Espacio entre niveles de dependencia" data-key="[ ]"><input id="spread" type="range" min="30" max="500" step="10" aria-label="Espacio entre niveles de dependencia"></label>
+      <button id="zoom-fill" data-icon="fill" data-tip="Llenar la pantalla: ajusta el espacio y el zoom para que el grafo se vea lo más grande posible" aria-label="Llenar la pantalla"></button>
       <span class="zsep"></span>
-      <button id="zoom-out" data-icon="minus" data-tip="Zoom out" data-key="−" aria-label="Zoom out"></button>
-      <button id="zoom-pct" class="pct" data-tip="Zoom to 100%" aria-label="Zoom to 100%">100%</button>
-      <button id="zoom-in" data-icon="plus" data-tip="Zoom in" data-key="+" aria-label="Zoom in"></button>
+      <button id="zoom-out" data-icon="minus" data-tip="Alejar" data-key="−" aria-label="Alejar"></button>
+      <button id="zoom-pct" class="pct" data-tip="Zoom al 100%" aria-label="Zoom al 100%">100%</button>
+      <button id="zoom-in" data-icon="plus" data-tip="Acercar" data-key="+" aria-label="Acercar"></button>
       <span class="zsep"></span>
-      <button id="zoom-fit" data-icon="fit" data-tip="Fit to screen" data-key="F" aria-label="Fit to screen"></button>
+      <button id="zoom-fit" data-icon="fit" data-tip="Ajustar a la pantalla" data-key="F" aria-label="Ajustar a la pantalla"></button>
     </div>
     <div class="empty" id="graph-empty" hidden></div>
   </section>
-  <section class="view" id="board-view" hidden><nav id="col-tabs" class="track" aria-label="Columns"></nav><div id="kanban"></div></section>
+  <section class="view" id="board-view" hidden><nav id="col-tabs" class="track" aria-label="Columnas"></nav><div id="kanban"></div></section>
   <section class="view" id="mail-view" hidden></section>
 </main>
 <div id="welcome" hidden></div>
@@ -926,7 +926,7 @@ dialog.dlg[open]:has(> form > .help) { display: flex; flex-direction: column; }
 
 const STATES = ["proposed", "todo", "doing", "review", "done"];
 const VIEW_STATES = ["proposed", "blocked", "todo", "doing", "review", "done"];
-const LABEL = { proposed: "Proposed", blocked: "Blocked", todo: "To do", doing: "Doing", review: "Review", done: "Done", ask: "Question" };
+const LABEL = { proposed: "Propuesta", blocked: "Bloqueada", todo: "Por hacer", doing: "En curso", review: "En revisión", done: "Hecha", ask: "Pregunta" };
 const ID_RE = /^[A-Za-z][A-Za-z0-9]*-\d+$/;
 const PREFIX_RE = /^[A-Z][A-Z0-9]{0,5}$/;
 const UNGROUPED = "G";
@@ -1035,11 +1035,11 @@ function ago(iso) {
   const t = Date.parse(iso);
   if (!t) return iso || "";
   const s = (Date.now() - t) / 1000;
-  if (s < 45) return "just now";
-  if (s < 3600) return `${Math.round(s / 60)}m ago`;
-  if (s < 86400) return `${Math.round(s / 3600)}h ago`;
-  if (s < 7 * 86400) return `${Math.round(s / 86400)}d ago`;
-  return new Date(t).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+  if (s < 45) return "ahora";
+  if (s < 3600) return `hace ${Math.round(s / 60)} min`;
+  if (s < 86400) return `hace ${Math.round(s / 3600)} h`;
+  if (s < 7 * 86400) return `hace ${Math.round(s / 86400)} d`;
+  return new Date(t).toLocaleDateString("es-ES", { month: "short", day: "numeric", year: "numeric" });
 }
 
 function colorFor(name) {
@@ -1078,7 +1078,7 @@ function toast(message, kind = "", ms = kind === "error" ? 5000 : 2600, go = nul
 // ---------------------------------------------------------------------------
 
 function normalize(b) {
-  if (!isObj(b)) throw new Error("the board must be a JSON object");
+  if (!isObj(b)) throw new Error("el tablero debe ser un objeto JSON");
   b.title = String(b.title || "");
   b.groups = Array.isArray(b.groups) ? b.groups.filter(isObj) : [];
   b.tasks = Array.isArray(b.tasks) ? b.tasks.filter(isObj) : [];
@@ -1321,21 +1321,21 @@ function problemsOf(b) {
   const errors = [], warnings = [], ix = indexOf(b), seen = new Set();
   const groupIds = new Set(b.groups.map((g) => g.id));
   for (const t of b.tasks) {
-    if (!ID_RE.test(t.id)) errors.push(`Invalid task id "${t.id}"`);
-    else if (seen.has(key(t.id))) errors.push(`Duplicate task id ${t.id}`);
+    if (!ID_RE.test(t.id)) errors.push(`ID de tarea no válido "${t.id}"`);
+    else if (seen.has(key(t.id))) errors.push(`ID de tarea repetido ${t.id}`);
     seen.add(key(t.id));
-    if (!STATES.includes(t.state)) errors.push(`${t.id}: unknown state "${t.state}"`);
-    if (t.group && !groupIds.has(t.group)) warnings.push(`${t.id}: unknown group "${t.group}"`);
+    if (!STATES.includes(t.state)) errors.push(`${t.id}: estado desconocido "${t.state}"`);
+    if (t.group && !groupIds.has(t.group)) warnings.push(`${t.id}: grupo desconocido "${t.group}"`);
     for (const d of t.deps) {
-      if (same(d, t.id)) errors.push(`${t.id} depends on itself`);
-      else if (!ix.has(key(d))) errors.push(`${t.id} depends on missing task ${d}`);
+      if (same(d, t.id)) errors.push(`${t.id} depende de sí misma`);
+      else if (!ix.has(key(d))) errors.push(`${t.id} depende de una tarea que no existe: ${d}`);
     }
     if (["doing", "review", "done"].includes(t.state)) {
       const pending = unmetIn(ix, t).filter((d) => ix.has(key(d)));
-      if (pending.length) warnings.push(`${t.id} is ${t.state} but depends on unfinished ${pending.join(", ")}`);
+      if (pending.length) warnings.push(`${t.id} está en «${LABEL[t.state] || t.state}» pero depende de ${pending.join(", ")}, sin terminar`);
     }
   }
-  for (const c of findCycles(b)) errors.push(`Circular dependency: ${[...c, c[0]].join(" → ")}`);
+  for (const c of findCycles(b)) errors.push(`Dependencia circular: ${[...c, c[0]].join(" → ")}`);
   return { errors, warnings };
 }
 
@@ -1368,7 +1368,7 @@ const sameNote = (a, b) => a.at === b.at && a.by === b.by && a.text === b.text;
 const noteRank = (t, n) => t.notes.slice(0, Math.max(0, t.notes.indexOf(n))).filter((x) => sameNote(x, n)).length;
 function noteIndex(t, n, rank = 0) {
   const hits = t.notes.flatMap((x, i) => (sameNote(x, n) ? [i] : []));
-  if (!hits.length) throw new Error(`That note on ${t.id} was changed meanwhile`);
+  if (!hits.length) throw new Error(`Esa nota de ${t.id} ha cambiado mientras tanto`);
   return hits[Math.min(rank, hits.length - 1)];
 }
 
@@ -1478,7 +1478,7 @@ function replay(b, from, to) {
   }
   for (const t of b.tasks) {
     if (!created.has(key(t.id)) && !rewired.has(key(t.id))) continue;
-    for (const d of t.deps) if (reaches(b, d, t.id)) throw new Error(`that would make ${t.id} and ${d} depend on each other`);
+    for (const d of t.deps) if (reaches(b, d, t.id)) throw new Error(`${t.id} y ${d} dependerían la una de la otra`);
   }
   return { applied, skipped };
 }
@@ -1579,7 +1579,7 @@ function layoutIn(tasks, b, { vertical, levelGap, manual = false, emptyLanes = t
   const knownGroups = new Set(b.groups.map((g) => g.id));
   const lanes = b.groups.map((g, i) => ({ id: g.id, name: g.name, color: GROUP_COLORS[i % GROUP_COLORS.length], cells: new Map() }))
     .filter((l) => emptyLanes || tasks.some((t) => t.group === l.id) || stubs.some((s) => s.group === l.id));
-  if (tasks.some((t) => !knownGroups.has(t.group)) || stubs.some((s) => s.group === null)) lanes.push({ id: null, name: "Ungrouped", color: "var(--faint)", cells: new Map() });
+  if (tasks.some((t) => !knownGroups.has(t.group)) || stubs.some((s) => s.group === null)) lanes.push({ id: null, name: "Sin grupo", color: "var(--faint)", cells: new Map() });
   const laneOfTask = (t) => lanes.find((l) => l.id === (knownGroups.has(t.group) ? t.group : null));
 
   // Nodes are cards (task keys) and slots ("dep>task@depth"), linked along each arrow.
@@ -2403,10 +2403,10 @@ function serverStore() {
   const ask = async (opts, read = true) => {
     const stop = new AbortController(), timer = read && setTimeout(() => stop.abort(), 10000);
     try { return await fetch("api/board", Object.assign({ signal: stop.signal }, opts)); }
-    catch (e) { throw lostError("Kanvas stopped running or cannot be reached"); }
+    catch (e) { throw lostError("Kanvas se ha detenido o no responde"); }
     finally { clearTimeout(timer); }
   };
-  const answered = (r) => (r.status === 404 ? lostError("this board is no longer open in Kanvas") : new Error(`server answered ${r.status}`));
+  const answered = (r) => (r.status === 404 ? lostError("este tablero ya no está abierto en Kanvas") : new Error(`el servidor respondió ${r.status}`));
   return {
     kind: "server",
     async load() {
@@ -2443,7 +2443,7 @@ function serverStore() {
         try { msg = JSON.parse(text).error || msg; } catch (e) { /* not JSON */ }
         throw new Error(msg);
       }
-      throw new Error("the board kept changing; try again");
+      throw new Error("el tablero no paraba de cambiar; inténtalo otra vez");
     },
   };
 }
@@ -2488,7 +2488,7 @@ function fileStore(handle) {
         if (now === text) remember(f, text); else { lastText = text; lastMod = -1; }
         return { board: normalize(JSON.parse(text)), base };
       }
-      throw new Error("the board kept changing; try again");
+      throw new Error("el tablero no paraba de cambiar; inténtalo otra vez");
     },
   };
 }
@@ -2528,9 +2528,9 @@ async function open(s) {
 }
 
 async function commit(fn, { record = true, onFail = null } = {}) {
-  if (!store || store.readOnly) { toast("This snapshot is read-only"); return false; }
+  if (!store || store.readOnly) { toast("Esta copia es de solo lectura"); return false; }
   // Refused at once, so nothing looks saved and then vanishes; the banner says how to bring Kanvas back.
-  if (lost) { toast(`Not saved: ${lost}`, "error"); if (onFail) onFail(new Error(lost)); return false; }
+  if (lost) { toast(`No guardado: ${lost}`, "error"); if (onFail) onFail(new Error(lost)); return false; }
   let draft;
   const before = clone(board);
   try { draft = clone(board); fn(draft); } catch (e) { toast(e.message, "error"); if (onFail) onFail(e); return false; }
@@ -2547,7 +2547,7 @@ async function commit(fn, { record = true, onFail = null } = {}) {
       if (entry) { entry.before = saved.base; entry.after = saved.board; }
       setSync("ok");
     } catch (e) {
-      toast(`Not saved: ${e.message}`, "error");
+      toast(`No guardado: ${e.message}`, "error");
       if (entry) forget(entry);
       if (onFail) onFail(e);
       try { confirmed = await store.load(); } catch (err) { setSync("bad", err.message, err.lost); }
@@ -2581,7 +2581,7 @@ function applyRemote(fresh) {
   const changed = board.tasks.filter((t) => !sameJson(before.get(key(t.id)), t)).map((t) => t.id);
   const withdrawn = [...before.values()].filter((t) => t.state === "proposed" && !get(t.id));
   if (ui.selected && !get(ui.selected)) {
-    if (!withdrawn.some((t) => same(t.id, ui.selected))) toast(`${ui.selected} was removed`);
+    if (!withdrawn.some((t) => same(t.id, ui.selected))) toast(`${ui.selected} se ha eliminado`);
     ui.selected = null;
   }
   render();
@@ -2616,17 +2616,17 @@ function announce(moves, withdrawn, where = null, b = board) {
   // Each question has a toast of its own, shown last so the others do not push it out, and it stays longer: the agent
   // is stuck until the human replies.
   const asks = events.filter((e) => e.verb === "asks"), rest = events.filter((e) => e.verb !== "asks");
-  if (rest.length > 3) toast([there(), h("span", { class: "msg" }, `${rest.length} tasks changed`)], "activity", 4200, where ? () => goTask(where.name) : null);
+  if (rest.length > 3) toast([there(), h("span", { class: "msg" }, `${rest.length} tareas han cambiado`)], "activity", 4200, where ? () => goTask(where.name) : null);
   else for (const e of rest) toast([there(), ...activityLine(e)], "activity", 4200, e.state ? () => goTask(name, e.id) : null);
   for (const e of asks) toast([there(), ...activityLine(e)], "activity ask", 10000, () => goTask(name, e.id));
 }
 
 // "claude finished BE-02 Fetch forecasts [Review]", or "Finished BE-02 Fetch forecasts" when the author is unknown.
 // The verb comes before the title, which long titles cut short.
-const SAYS = { asks: "waits for your reply on" };
+const SAYS = { asks: "espera tu respuesta en" };
 function activityLine(e) {
   const task = [h("span", { class: "cid" }, e.id), " ", e.title];
-  const verb = e.verb === "withdrew" ? "Withdrawn" : e.verb === "asks" ? "Waiting for your reply:" : e.verb[0].toUpperCase() + e.verb.slice(1);
+  const verb = e.verb === "withdrew" ? "Retirada" : e.verb === "asks" ? "Espera tu respuesta:" : e.verb[0].toUpperCase() + e.verb.slice(1);
   const words = e.by && e.verb !== "withdrew" ? [h("b", {}, e.by), ` ${SAYS[e.verb] || e.verb} `, task] : [h("b", {}, verb), " ", task];
   return [e.by ? agentMark(e.by) : null, h("span", { class: "msg" }, words), e.state ? h("span", { class: `badge s-${e.state}` }, LABEL[e.state]) : null];
 }
@@ -2652,57 +2652,57 @@ function forget(entry) {
   renderUndo();
 }
 
-// How a move reads, as [done, doing] with % for the task: "Approved %", "approving %".
+// How a move reads, as [done, doing] with % for the task: "Aprobada %", "aprobar %".
 const MOVE_WORDS = {
-  "proposed>todo": ["Approved %", "approving %"],
-  "doing>todo": ["Paused %", "pausing %"],
-  "review>todo": ["Sent % back", "sending % back"],
-  "done>todo": ["Reopened %", "reopening %"],
-  ">doing": ["Started %", "starting %"],
-  ">review": ["Sent % to review", "sending % to review"],
-  ">done": ["Marked % done", "marking % done"],
+  "proposed>todo": ["Aprobada %", "aprobar %"],
+  "doing>todo": ["Pausada %", "pausar %"],
+  "review>todo": ["Devuelta %", "devolver %"],
+  "done>todo": ["Reabierta %", "reabrir %"],
+  ">doing": ["Empezada %", "empezar %"],
+  ">review": ["% enviada a revisión", "enviar % a revisión"],
+  ">done": ["% marcada como hecha", "marcar % como hecha"],
 };
-const moveWords = (from, to) => MOVE_WORDS[`${from}>${to}`] || MOVE_WORDS[`>${to}`] || [`Moved % to ${LABEL[to] || to}`, `moving % to ${LABEL[to] || to}`];
-const andList = (items) => (items.length > 1 ? `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}` : items.join(""));
+const moveWords = (from, to) => MOVE_WORDS[`${from}>${to}`] || MOVE_WORDS[`>${to}`] || [`% movida a ${LABEL[to] || to}`, `mover % a ${LABEL[to] || to}`];
+const andList = (items) => (items.length > 1 ? `${items.slice(0, -1).join(", ")} y ${items[items.length - 1]}` : items.join(""));
 
-// What a change did, worded to follow "Undo" and "Undid": "approving BE-05", "deleting BE-02 and BE-03".
+// What a change did, worded to follow "Deshacer:" and "Deshecho:": "aprobar BE-05", "borrar BE-02 y BE-03".
 function describeChange(a, z) {
   const A = new Map(a.tasks.map((t) => [key(t.id), t])), Z = new Map(z.tasks.map((t) => [key(t.id), t]));
   const GA = new Map(a.groups.map((g) => [g.id, g])), GZ = new Map(z.groups.map((g) => [g.id, g]));
   // Deleting a group and turning on YOLO change many tasks along the way.
   const gone = a.groups.find((g) => !GZ.has(g.id));
-  if (gone) return `deleting the ${gone.name} group`;
+  if (gone) return `borrar el grupo ${gone.name}`;
   const yolo = z.tasks.find((t) => t.yolo && A.has(key(t.id)) && !A.get(key(t.id)).yolo);
-  if (yolo) return `turning on YOLO up to ${yolo.id}`;
+  if (yolo) return `activar YOLO hasta ${yolo.id}`;
   const acts = new Map();
   const act = (words, id) => { if (!acts.has(words)) acts.set(words, []); if (id) acts.get(words).push(id); };
-  for (const [k, t] of Z) if (!A.has(k)) act("adding %", t.id);
+  for (const [k, t] of Z) if (!A.has(k)) act("añadir %", t.id);
   for (const [k, t] of A) {
     const n = Z.get(k);
-    if (!n) { act(t.state === "proposed" ? "rejecting %" : "deleting %", t.id); continue; }
+    if (!n) { act(t.state === "proposed" ? "rechazar %" : "borrar %", t.id); continue; }
     if (t.state !== n.state) { act(moveWords(t.state, n.state)[1], t.id); continue; }
-    if (t.yolo && !n.yolo) { act("turning off YOLO on %", t.id); continue; }
+    if (t.yolo && !n.yolo) { act("desactivar YOLO en %", t.id); continue; }
     // Dependencies on tasks added or deleted by the same change come and go with them.
     const was = new Set(t.deps.map(key)), now = new Set(n.deps.map(key));
     const added = n.deps.filter((d) => !was.has(key(d)) && A.has(key(d))), dropped = t.deps.filter((d) => !now.has(key(d)) && Z.has(key(d)));
-    if (added.length) act(`making % wait for ${andList(added)}`, t.id);
-    if (dropped.length) act(`unlinking % from ${andList(dropped)}`, t.id);
+    if (added.length) act(`hacer que % espere a ${andList(added)}`, t.id);
+    if (dropped.length) act(`desvincular % de ${andList(dropped)}`, t.id);
     if (added.length || dropped.length) continue;
     const g = GZ.get(n.group);
-    if (n.notes.length > t.notes.length && changeRequest(n) === n.notes[n.notes.length - 1]) act("asking for changes to %", t.id);
-    else if (!sameJson(t.notes, n.notes)) act(n.notes.length > t.notes.length ? "adding a note to %" : n.notes.length < t.notes.length ? "deleting a note from %" : "editing a note on %", t.id);
-    else if (t.title !== n.title) act("renaming %", t.id);
-    else if (t.desc !== n.desc) act("editing the description of %", t.id);
-    else if (t.group !== n.group) act(g ? `moving % to ${g.name}` : "taking % out of its group", t.id);
-    else if (!sameJson({ ...t, deps: null }, { ...n, deps: null })) act("changing %", t.id);
+    if (n.notes.length > t.notes.length && changeRequest(n) === n.notes[n.notes.length - 1]) act("pedir cambios en %", t.id);
+    else if (!sameJson(t.notes, n.notes)) act(n.notes.length > t.notes.length ? "añadir una nota a %" : n.notes.length < t.notes.length ? "borrar una nota de %" : "editar una nota de %", t.id);
+    else if (t.title !== n.title) act("renombrar %", t.id);
+    else if (t.desc !== n.desc) act("editar la descripción de %", t.id);
+    else if (t.group !== n.group) act(g ? `mover % a ${g.name}` : "sacar % de su grupo", t.id);
+    else if (!sameJson({ ...t, deps: null }, { ...n, deps: null })) act("cambiar %", t.id);
   }
-  for (const g of z.groups) if (!GA.has(g.id)) act(`adding the ${g.name} group`);
-  for (const g of a.groups) if (GZ.get(g.id).name !== g.name) act(`renaming the ${g.name} group`);
-  if (!acts.size && !sameJson(a.groups.map((g) => g.id), z.groups.map((g) => g.id))) act("reordering the groups");
-  if (!acts.size && !sameJson(a.tasks.map((t) => t.id), z.tasks.map((t) => t.id))) act("reordering the cards");
-  if (a.title !== z.title) act("renaming the board");
-  const all = [...acts].map(([words, ids]) => words.replace("%", ids.length > 3 ? `${ids.length} tasks` : andList(ids)));
-  return all.length > 2 ? `${all.slice(0, 2).join(", ")} and ${all.length - 2} more` : andList(all) || "a change";
+  for (const g of z.groups) if (!GA.has(g.id)) act(`añadir el grupo ${g.name}`);
+  for (const g of a.groups) if (GZ.get(g.id).name !== g.name) act(`renombrar el grupo ${g.name}`);
+  if (!acts.size && !sameJson(a.groups.map((g) => g.id), z.groups.map((g) => g.id))) act("reordenar los grupos");
+  if (!acts.size && !sameJson(a.tasks.map((t) => t.id), z.tasks.map((t) => t.id))) act("reordenar las tarjetas");
+  if (a.title !== z.title) act("renombrar el tablero");
+  const all = [...acts].map(([words, ids]) => words.replace("%", ids.length > 3 ? `${ids.length} tareas` : andList(ids)));
+  return all.length > 2 ? `${all.slice(0, 2).join(", ")} y ${all.length - 2} más` : andList(all) || "un cambio";
 }
 
 // Undoes or redoes the last change, or `entry`: an earlier change is taken back by itself, like the last one.
@@ -2710,23 +2710,23 @@ function step(dir, entry = null) {
   if (!board || !store || store.readOnly) return;
   const from = edits[dir], to = edits[dir === "undo" ? "redo" : "undo"];
   entry = entry || from[from.length - 1];
-  if (!entry) return toast(dir === "undo" ? "Nothing to undo" : "Nothing to redo");
+  if (!entry) return toast(dir === "undo" ? "Nada que deshacer" : "Nada que rehacer");
   const at = from.indexOf(entry);
-  if (at < 0) return toast(dir === "undo" ? "Already undone" : "Already redone");
+  if (at < 0) return toast(dir === "undo" ? "Ya está deshecho" : "Ya está rehecho");
   const [a, z] = dir === "undo" ? [entry.after, entry.before] : [entry.before, entry.after];
   let result;
-  try { result = replay(clone(board), a, z); } catch (e) { toast(`Can't ${dir}: ${e.message}`, "error"); return; }
+  try { result = replay(clone(board), a, z); } catch (e) { toast(`No se puede ${dir === "undo" ? "deshacer" : "rehacer"}: ${e.message}`, "error"); return; }
   from.splice(at, 1);
   if (!result.applied) {
     renderUndo();
-    return toast(`Can't ${dir} ${entry.label}: it was changed since`, "error");
+    return toast(`No se puede ${dir === "undo" ? "deshacer" : "rehacer"} «${entry.label}»: ha cambiado desde entonces`, "error");
   }
   commit((b) => { result = replay(b, a, z); }, { record: false }).then((ok) => {
     if (ok) to.push(entry); else from.splice(Math.min(at, from.length), 0, entry);
     renderUndo();
     if (!ok) return;
-    const kept = result.skipped ? ` (${result.skipped} later change${result.skipped > 1 ? "s" : ""} kept)` : "";
-    toast(`${dir === "undo" ? "Undid" : "Redid"} ${entry.label}${kept}`);
+    const kept = result.skipped ? ` (se mantienen ${result.skipped} cambio${result.skipped > 1 ? "s" : ""} posterior${result.skipped > 1 ? "es" : ""})` : "";
+    toast(`${dir === "undo" ? "Deshecho" : "Rehecho"}: ${entry.label}${kept}`);
     if (dir === "undo" && entry.onUndo) entry.onUndo();
   });
 }
@@ -2738,8 +2738,8 @@ function undoable(fn, message, { onFail = null } = {}) {
   return commit(fn, { onFail: (e) => { if (shown) shown.remove(); if (onFail) onFail(e); } }).then((ok) => {
     const entry = edits.undo[edits.undo.length - 1];
     if (ok) {
-      shown = toast([h("span", { class: "msg" }, message), entry !== before ? h("button", { class: "link", title: keyLabel("Undo (Ctrl+Z)"),
-        onclick: (e) => { e.target.closest(".toast").remove(); step("undo", entry); } }, "Undo") : null], "", 5000);
+      shown = toast([h("span", { class: "msg" }, message), entry !== before ? h("button", { class: "link", title: keyLabel("Deshacer (Ctrl+Z)"),
+        onclick: (e) => { e.target.closest(".toast").remove(); step("undo", entry); } }, "Deshacer") : null], "", 5000);
     }
     return ok;
   });
@@ -2749,7 +2749,7 @@ function renderUndo() {
   for (const dir of ["undo", "redo"]) {
     const btn = $(`#${dir}`), last = edits[dir][edits[dir].length - 1];
     btn.disabled = !last;
-    btn.dataset.tip = last ? `${dir === "undo" ? "Undo" : "Redo"} ${last.label}` : `Nothing to ${dir}`;
+    btn.dataset.tip = last ? `${dir === "undo" ? "Deshacer" : "Rehacer"}: ${last.label}` : `Nada que ${dir === "undo" ? "deshacer" : "rehacer"}`;
   }
 }
 
@@ -2759,20 +2759,20 @@ function setSync(status, detail, unreachable = false) {
   let label = "", cls = status;
   if (!store) return;
   setLost(store.kind === "server" && status === "bad" && unreachable ? detail : null);
-  if (store.kind === "server") label = status === "ok" ? "Live" : "Disconnected";
-  else if (store.kind === "file") label = status === "ok" ? store.name : "File unavailable";
-  else if (store.kind === "memory") { label = store.dirty ? "Unsaved" : "Not synced"; cls = "warn"; }
-  else if (store.kind === "snapshot") { label = "Read-only snapshot"; cls = ""; }
+  if (store.kind === "server") label = status === "ok" ? "En directo" : "Desconectado";
+  else if (store.kind === "file") label = status === "ok" ? store.name : "Archivo no disponible";
+  else if (store.kind === "memory") { label = store.dirty ? "Sin guardar" : "Sin sincronizar"; cls = "warn"; }
+  else if (store.kind === "snapshot") { label = "Copia de solo lectura"; cls = ""; }
   el.className = `sync ${cls}`;
   el.querySelector(".label").textContent = label;
   el.dataset.tip = detail || {
-    server: "Synced with kanvas.json through the Kanvas server. Agent changes appear within a second.",
-    file: "Reading and writing the file directly. Agent changes appear within a second.",
-    memory: "Changes live in this tab only. Use Save to download the board.",
-    snapshot: store.at ? `Exported ${new Date(store.at).toLocaleString()}` : "Exported board",
+    server: "Sincronizado con kanvas.json a través del servidor de Kanvas. Los cambios de los agentes aparecen en un segundo.",
+    file: "Lee y escribe el archivo directamente. Los cambios de los agentes aparecen en un segundo.",
+    memory: "Los cambios solo están en esta pestaña. Usa Guardar para descargar el tablero.",
+    snapshot: store.at ? `Exported ${new Date(store.at).toLocaleString()}` : "Tablero exportado",
   }[store.kind];
   el.setAttribute("aria-label", `${label}. ${el.dataset.tip}`);
-  // A Tab stop shows the tooltip to the keyboard, which only matters when the status is more than "Live".
+  // A Tab stop shows the tooltip to the keyboard, which only matters when the status is more than "En directo".
   el.tabIndex = cls === "ok" && store.kind === "server" ? -1 : 0;
   $("#download").hidden = store.kind !== "memory";
 }
@@ -2783,14 +2783,14 @@ function setLost(why) {
   lost = why;
   if (el.dataset.why === (why || "")) return;
   el.dataset.why = why || "";
-  if (why) el.replaceChildren(h("span", {}, h("strong", {}, `${why[0].toUpperCase()}${why.slice(1)}.`), " ", serveHint("Run "),
-    " Until then nothing can be saved, and this page reconnects by itself."));
+  if (why) el.replaceChildren(h("span", {}, h("strong", {}, `${why[0].toUpperCase()}${why.slice(1)}.`), " ", serveHint("Ejecuta "),
+    " Hasta entonces no se puede guardar nada, y esta página se vuelve a conectar sola."));
   el.hidden = !why;
 }
 
 // How to start Kanvas for a project, as the welcome screen and the lost connection banner put it.
-const serveHint = (lead) => [lead, h("code", {}, "kanvas serve"), " in the project folder, or ",
-  h("code", {}, "python .agents/skills/kanvas/kanvas.py serve"), " if the command is not installed."];
+const serveHint = (lead) => [lead, h("code", {}, "kanvas serve"), " en la carpeta del proyecto, o ",
+  h("code", {}, "python .agents/skills/kanvas/kanvas.py serve"), " si el comando no está instalado."];
 
 // ---------------------------------------------------------------------------
 // Changes a human can make (each is replayed on the latest board when saving)
@@ -2798,7 +2798,7 @@ const serveHint = (lead) => [lead, h("code", {}, "kanvas serve"), " in the proje
 
 function mustFind(b, id) {
   const t = b.tasks.find((x) => same(x.id, id));
-  if (!t) throw new Error(`${id} no longer exists`);
+  if (!t) throw new Error(`${id} ya no existe`);
   return t;
 }
 // Times are taken when the change is made, so a save that replays it writes what the page showed.
@@ -2808,7 +2808,7 @@ const addNote = (t, text, at) => t.notes.push({ at, by: "human", text });
 // approved, so approving checks that the proposal still reads the same.
 const seenOf = (t) => ({ id: t.id, state: t.state, title: t.title, desc: t.desc, group: t.group, deps: [...t.deps] });
 const revisedSince = (t, seen) => ["title", "desc", "group", "deps"].some((k) => !sameJson(t[k], seen[k]));
-const FIELD = { title: "the title", desc: "the description", group: "the group" };
+const FIELD = { title: "el título", desc: "la descripción", group: "el grupo" };
 
 const ops = {
   title: (text) => (b) => { b.title = text; },
@@ -2816,7 +2816,7 @@ const ops = {
   set: (id, patch, was) => (b) => {
     const t = mustFind(b, id);
     for (const k of Object.keys(patch)) {
-      if (was && k in was && !sameJson(t[k], was[k]) && !sameJson(t[k], patch[k])) throw new Error(`${FIELD[k] || k} of ${t.id} changed meanwhile`);
+      if (was && k in was && !sameJson(t[k], was[k]) && !sameJson(t[k], patch[k])) throw new Error(`${FIELD[k] || k} de ${t.id} ha cambiado mientras tanto`);
     }
     Object.assign(t, patch);
   },
@@ -2824,16 +2824,16 @@ const ops = {
   // replay still finds it after agents edit the rest of the description. An item already in the wanted state is left alone.
   checkItem: (id, text, rank, checked) => (b) => {
     const t = mustFind(b, id), desc = toggleTask(t.desc, text, rank, checked);
-    if (desc == null) throw new Error(`That checklist item in ${t.id} changed meanwhile`);
+    if (desc == null) throw new Error(`Ese punto de la lista de ${t.id} ha cambiado mientras tanto`);
     t.desc = desc;
   },
   // `seen` is the task as the human saw it, so a replay never undoes a move an agent made meanwhile,
   // nor approves a proposal an agent rewrote.
   state: (id, seen, state, text, at = nowIso()) => (b) => {
     const t = mustFind(b, id), from = seen.state;
-    if (t.state !== from && t.state !== state) throw new Error(`${t.id} is in ${LABEL[t.state] || t.state} now, not ${LABEL[from] || from}`);
+    if (t.state !== from && t.state !== state) throw new Error(`${t.id} está ahora en ${LABEL[t.state] || t.state}, no en ${LABEL[from] || from}`);
     if (from === "proposed" && t.state === "proposed" && state !== "proposed" && revisedSince(t, seen)) {
-      throw new Error(`${t.id} was revised since you opened it; read the new version first`);
+      throw new Error(`${t.id} se ha revisado desde que la abriste; lee antes la versión nueva`);
     }
     setState(t, state);
     if (text) addNote(t, text, at);
@@ -2849,7 +2849,7 @@ const ops = {
     b.tasks.push(t);
     for (const ref of f.blocks || []) {
       const x = mustFind(b, ref);
-      if (reaches(b, t.id, x.id)) throw new Error(`${x.id} cannot wait for the new task: that would create a cycle`);
+      if (reaches(b, t.id, x.id)) throw new Error(`${x.id} no puede esperar a la tarea nueva: se crearía un ciclo`);
       x.deps.push(t.id);
     }
     approveJoining(b, cover);
@@ -2871,9 +2871,9 @@ const ops = {
   order: (ids) => (b) => reorderTasks(b, ids),
   addDep: (id, dep) => (b) => {
     const t = mustFind(b, id), d = mustFind(b, dep);
-    if (t === d) throw new Error("A task cannot depend on itself");
+    if (t === d) throw new Error("Una tarea no puede depender de sí misma");
     if (t.deps.some((x) => same(x, d.id))) return;
-    if (reaches(b, d.id, t.id)) throw new Error(`${t.id} cannot depend on ${d.id}: that would create a cycle`);
+    if (reaches(b, d.id, t.id)) throw new Error(`${t.id} no puede depender de ${d.id}: se crearía un ciclo`);
     const cover = yoloCoverIn(b);
     t.deps.push(d.id);
     approveJoining(b, cover);
@@ -2883,20 +2883,20 @@ const ops = {
   approve: (seen) => (b) => {
     const now = seen.map((s) => [b.tasks.find((t) => same(t.id, s.id)), s]).filter(([t]) => t && t.state === "proposed");
     const revised = now.filter(([t, s]) => revisedSince(t, s)).map(([t]) => t.id);
-    if (revised.length) throw new Error(`${revised.join(", ")} ${revised.length > 1 ? "were" : "was"} revised since you looked; read the new version first`);
+    if (revised.length) throw new Error(`${revised.join(", ")} ${revised.length > 1 ? "se han" : "se ha"} revisado desde que miraste; lee antes la versión nueva`);
     for (const [t] of now) t.state = "todo";
   },
   yolo: (id, on) => (b) => {
     const t = mustFind(b, id);
     if (!on) { delete t.yolo; return; }
     const via = yoloCoverIn(b).get(key(t.id));
-    if (via && !same(via, t.id)) throw new Error(`${t.id} is already covered by YOLO on ${via}`);
+    if (via && !same(via, t.id)) throw new Error(`${t.id} ya está cubierta por el YOLO de ${via}`);
     yoloOn(b, t.id);
   },
   addGroup: (name, prefix) => (b) => {
-    if (b.groups.some((g) => g.name.toLowerCase() === name.toLowerCase())) throw new Error(`Group "${name}" already exists`);
-    if (!PREFIX_RE.test(prefix)) throw new Error("Prefix: 1-6 letters or digits, starting with a letter");
-    if (b.groups.some((g) => g.id === prefix)) throw new Error(`Prefix ${prefix} is already used`);
+    if (b.groups.some((g) => g.name.toLowerCase() === name.toLowerCase())) throw new Error(`El grupo "${name}" ya existe`);
+    if (!PREFIX_RE.test(prefix)) throw new Error("Prefijo: de 1 a 6 letras o cifras, empezando por una letra");
+    if (b.groups.some((g) => g.id === prefix)) throw new Error(`El prefijo ${prefix} ya está en uso`);
     b.groups.push({ id: prefix, name });
   },
   renameGroup: (gid, name) => (b) => { const g = b.groups.find((x) => x.id === gid); if (g) g.name = name; },
@@ -2907,13 +2907,13 @@ const ops = {
   // Puts a group just before another one, or last.
   placeGroup: (gid, before) => (b) => {
     const g = b.groups.find((x) => x.id === gid);
-    if (!g) throw new Error(`Group ${gid} no longer exists`);
+    if (!g) throw new Error(`El grupo ${gid} ya no existe`);
     b.groups.splice(b.groups.indexOf(g), 1);
     const j = before ? b.groups.findIndex((x) => x.id === before) : -1;
     b.groups.splice(j < 0 ? b.groups.length : j, 0, g);
   },
   deleteGroup: (gid, ids) => (b) => {
-    if (!b.groups.some((g) => g.id === gid)) throw new Error(`Group ${gid} no longer exists`);
+    if (!b.groups.some((g) => g.id === gid)) throw new Error(`El grupo ${gid} ya no existe`);
     removeGroup(b, gid, ids);
   },
 };
@@ -2958,7 +2958,7 @@ function renderHeader() {
     slot.replaceChildren(h("button", { class: "board-title", title: boardLabel(), "aria-haspopup": "menu", "aria-expanded": "false", onclick: (e) => dropdown(e.currentTarget, boardMenu()) },
       h("span", { class: "t" }, boardLabel()), icon("chevron")));
   } else if (!slot.querySelector("input")) {
-    const input = h("input", { class: "title-input", value: drafts.boardTitle ?? board.title, "aria-label": "Board title" });
+    const input = h("input", { class: "title-input", value: drafts.boardTitle ?? board.title, "aria-label": "Título del tablero" });
     const done = (save) => {
       if (!ui.editingTitle) return;
       ui.editingTitle = false;
@@ -2983,8 +2983,8 @@ function renderHeader() {
     const on = ui.states.has(s);
     return h("button", {
       class: `schip s-${s}${on ? " on" : ""}${counts[s] ? "" : " zero"}${hidden ? " off" : ""}`,
-      "data-tip": hidden ? `${counts[s]} finished task${counts[s] === 1 ? " is" : "s are"} hidden. Click to show them.`
-        : on ? `Showing only ${LABEL[s].toLowerCase()} tasks. Click to show all.` : `Show only ${LABEL[s].toLowerCase()} tasks. Shift+click to add to the filter.`,
+      "data-tip": hidden ? `${counts[s]} tarea${counts[s] === 1 ? " terminada oculta" : "s terminadas ocultas"}. Pulsa para verlas.`
+        : on ? `Solo tareas en «${LABEL[s].toLowerCase()}». Pulsa para ver todas.` : `Ver solo tareas en «${LABEL[s].toLowerCase()}». Mayús+clic para añadir al filtro.`,
       "data-key": hidden ? "H" : null,
       "aria-pressed": on ? "true" : "false",
       "aria-label": `${LABEL[s]}: ${counts[s]}`,
@@ -3001,30 +3001,30 @@ function renderHeader() {
   for (const id of ui.groups) if (id && !board.groups.some((g) => g.id === id)) ui.groups.delete(id);
   const gf = $("#group-filter"), only = ui.groups.size === 1 ? [...ui.groups][0] : null;
   const og = only ? board.groups.find((g) => g.id === only) : null;
-  const gname = !ui.groups.size ? "Groups" : only === null ? `${ui.groups.size} groups` : og ? og.name : "No group";
+  const gname = !ui.groups.size ? "Grupos" : only === null ? `${ui.groups.size} groups` : og ? og.name : "Sin grupo";
   gf.hidden = !board.groups.length && !ui.groups.size;
   gf.classList.toggle("on", ui.groups.size > 0);
   gf.style.setProperty("--g", og ? groupColor(og) : "var(--accent)");
   gf.replaceChildren(groupTag(og ? groupColor(og) : null), h("span", { class: "lbl" }, gname), icon("chevron"));
-  gf.dataset.tip = ui.groups.size ? `Showing only ${only === null ? `${ui.groups.size} groups` : gname}. Click to change.` : "Show only some groups";
-  gf.setAttribute("aria-label", ui.groups.size ? `Filter by group: ${gname}` : "Filter by group");
+  gf.dataset.tip = ui.groups.size ? `Solo ${only === null ? `${ui.groups.size} grupos` : gname}. Pulsa para cambiar.` : "Ver solo algunos grupos";
+  gf.setAttribute("aria-label", ui.groups.size ? `Filtrar por grupo: ${gname}` : "Filtrar por grupo");
 
   const fb = $("#filter"), filtering = ui.states.size + ui.groups.size + (ui.search ? 1 : 0);
   fb.classList.toggle("on", filtering > 0);
-  fb.setAttribute("aria-label", filtering ? "Filters: some tasks are filtered out" : "Filters");
+  fb.setAttribute("aria-label", filtering ? "Filtros: hay tareas ocultas por un filtro" : "Filtros");
 
   renderInboxButton();
   const hd = $("#hide-done");
   hd.classList.toggle("on", !!prefs.hideDone);
   hd.setAttribute("aria-pressed", String(!!prefs.hideDone));
-  hd.dataset.tip = prefs.hideDone ? `${counts.done} finished task${counts.done === 1 ? " is" : "s are"} hidden. Click to show them.` : "Hide finished tasks";
-  hd.setAttribute("aria-label", "Hide finished tasks");
+  hd.dataset.tip = prefs.hideDone ? `${counts.done} tarea${counts.done === 1 ? " terminada oculta" : "s terminadas ocultas"}. Pulsa para verlas.` : "Ocultar las tareas terminadas";
+  hd.setAttribute("aria-label", "Ocultar las tareas terminadas");
   hd.replaceChildren(icon(prefs.hideDone ? "eye-off" : "eye"));
 
   const total = board.tasks.length || 1;
   $("#progress").replaceChildren(...["done", "review", "doing", "todo", "blocked", "proposed"].map((s) =>
     h("span", { class: `s-${s}`, style: `flex-grow:${counts[s] / total}` })));
-  $("#meter").dataset.tip = `${counts.done} of ${board.tasks.length} tasks done`;
+  $("#meter").dataset.tip = `${counts.done} de ${board.tasks.length} tareas hechas`;
   $("#meter").setAttribute("aria-label", $("#meter").dataset.tip);
   $("#meter-pct").textContent = `${Math.round((100 * counts.done) / total)}%`;
   const targets = board.tasks.filter(isYoloTarget);
@@ -3033,8 +3033,8 @@ function renderHeader() {
   chip.hidden = !targets.length;
   if (targets.length) {
     chip.replaceChildren(icon("zap"), h("span", { class: "lbl" }, "YOLO"), h("b", {}, charged));
-    chip.dataset.tip = `YOLO on ${targets.map((t) => t.id).join(", ")}: agents take on ${charged} task${charged > 1 ? "s" : ""} without approval and send ${targets.length > 1 ? "these" : "it"} to you for review. Click to open ${targets.length > 1 ? "them one by one" : "it"}.`;
-    chip.setAttribute("aria-label", `YOLO on ${targets.map((t) => t.id).join(", ")}: ${charged} task${charged > 1 ? "s" : ""} without approval`);
+    chip.dataset.tip = `YOLO en ${targets.map((t) => t.id).join(", ")}: los agentes hacen ${charged} tarea${charged > 1 ? "s" : ""} sin aprobación y te ${targets.length > 1 ? "las" : "la"} mandan a revisión. Pulsa para ${targets.length > 1 ? "abrirlas una a una" : "abrirla"}.`;
+    chip.setAttribute("aria-label", `YOLO en ${targets.map((t) => t.id).join(", ")}: ${charged} tarea${charged > 1 ? "s" : ""} sin aprobación`);
     chip.onclick = () => { const i = targets.findIndex((t) => same(t.id, ui.selected)); select(targets[(i + 1) % targets.length].id); };
   }
   for (const v of ["graph", "board", "mail"]) {
@@ -3053,12 +3053,12 @@ function renderProblems() {
   el.className = `banner${errors.length ? " error" : ""}`;
   const expanded = el.dataset.expanded === "1";
   const shown = expanded ? all : all.slice(0, 1);
-  const plural = (n, word) => `${n} ${word}${n > 1 ? "s" : ""}`;
-  const summary = [errors.length ? plural(errors.length, "error") : "", warnings.length ? plural(warnings.length, "warning") : ""].filter(Boolean).join(", ");
+  const plural = (n, word) => `${n} ${word}${n > 1 ? (word.endsWith("r") ? "es" : "s") : ""}`;
+  const summary = [errors.length ? plural(errors.length, "error") : "", warnings.length ? plural(warnings.length, "aviso") : ""].filter(Boolean).join(", ");
   el.replaceChildren(...compact(
     h("strong", {}, summary),
     h("ul", {}, shown.map((p) => h("li", {}, p))),
-    all.length > 1 ? h("button", { onclick: () => { el.dataset.expanded = expanded ? "0" : "1"; renderProblems(); } }, expanded ? "Show less" : `Show all ${all.length}`) : null,
+    all.length > 1 ? h("button", { onclick: () => { el.dataset.expanded = expanded ? "0" : "1"; renderProblems(); } }, expanded ? "Ver menos" : `Ver los ${all.length}`) : null,
   ));
 }
 
@@ -3071,13 +3071,15 @@ let lastLayout = null;
 // For tuning the layout from the browser console.
 window.kanvasLayoutStats = () => lastLayout && layoutMetrics(lastLayout);
 
-const agentMark = (by) => h("span", { class: "agent", style: `--a:${by === "human" ? "#64748b" : colorFor(by)}` }, by.slice(0, 1));
+// "human" signs what the person at the board did; it reads as "tú" on screen.
+const byName = (by) => (by === "human" ? "tú" : by);
+const agentMark = (by) => h("span", { class: "agent", style: `--a:${by === "human" ? "#64748b" : colorFor(by)}` }, byName(by).slice(0, 1).toUpperCase());
 
 // What a screen reader says for a card: its ID and title, its state, and the agent or the tasks its foot names.
 function cardLabel(t, vs, waits) {
   const q = openQuestion(t), last = t.notes[t.notes.length - 1];
-  const who = q ? q.by : vs === "blocked" ? `waiting on ${waits.join(", ")}` : last && (vs === "doing" || vs === "review") ? last.by : vs === "proposed" ? t.by : null;
-  return compact(`${t.id} ${t.title}`, q ? "Waiting for you" : LABEL[vs], who || null).join(", ");
+  const who = q ? q.by : vs === "blocked" ? `espera a ${waits.join(", ")}` : last && (vs === "doing" || vs === "review") ? last.by : vs === "proposed" ? t.by : null;
+  return compact(`${t.id} ${t.title}`, q ? "Te espera" : LABEL[vs], who || null).join(", ");
 }
 
 function cardFoot(t) {
@@ -3085,15 +3087,15 @@ function cardFoot(t) {
   let left = null;
   if (q) {
     const by = q.by || "?", text = questionText(q);
-    left = h("span", { class: "grow who", title: `${by} waits for your reply in its chat:\n${text}` }, agentMark(by), h("span", { class: "q" }, text.split("\n")[0]));
+    left = h("span", { class: "grow who", title: `${by} espera tu respuesta en su chat:\n${text}` }, agentMark(by), h("span", { class: "q" }, text.split("\n")[0]));
   } else if (vs === "blocked") {
     const waits = unmet(t);
-    left = h("span", { class: "grow", title: `Waiting on ${waits.join(", ")}` }, icon("lock"), ` ${waits[0]}${waits.length > 1 ? ` +${waits.length - 1}` : ""}`);
+    left = h("span", { class: "grow", title: `Espera a ${waits.join(", ")}` }, icon("lock"), ` ${waits[0]}${waits.length > 1 ? ` +${waits.length - 1}` : ""}`);
   } else if (last && (vs === "doing" || vs === "review")) {
     const by = last.by || "?";
-    left = h("span", { class: "grow who", title: last.text }, vs === "doing" ? h("i", { class: "live" }) : null, agentMark(by), h("span", { class: "t" }, `${by} · ${ago(last.at)}`));
+    left = h("span", { class: "grow who", title: last.text }, vs === "doing" ? h("i", { class: "live" }) : null, agentMark(by), h("span", { class: "t" }, `${byName(by)} · ${ago(last.at)}`));
   } else if (vs === "proposed" && t.by) {
-    left = h("span", { class: "grow who", title: `Proposed by ${t.by}` }, agentMark(t.by), h("span", { class: "t" }, t.at ? `${t.by} · ${ago(t.at)}` : t.by));
+    left = h("span", { class: "grow who", title: `Propuesta por ${t.by}` }, agentMark(t.by), h("span", { class: "t" }, t.at ? `${t.by} · ${ago(t.at)}` : t.by));
   } else if (t.deps.length) {
     left = h("span", { class: "grow" }, icon("link"), ` ${t.deps.length - unmet(t).length}/${t.deps.length}`);
   } else {
@@ -3107,10 +3109,10 @@ const isYoloTarget = (t) => yoloActive(t) && same(yoloVia(t), t.id);
 
 function yoloTag(t) {
   if (t.yolo && t.state !== "done" && (!yoloActive(t) || isYoloTarget(t))) {
-    return h("span", { class: "yolo-tag", title: yoloActive(t) ? "YOLO: agents finish everything this task depends on without approval or review, then this task, which comes to you for review" : "YOLO chain complete: this task waits for your review" }, icon("zap"), "YOLO");
+    return h("span", { class: "yolo-tag", title: yoloActive(t) ? "YOLO: los agentes terminan todo lo que necesita esta tarea sin aprobación ni revisión, y luego esta, que te llega para revisar" : "Cadena YOLO completa: esta tarea espera tu revisión" }, icon("zap"), "YOLO");
   }
   const via = yoloVia(t);
-  return via ? h("span", { class: "yolo-mark", title: t.state === "proposed" ? `In the YOLO chain of ${via}: once you approve it, no review needed` : `Covered by YOLO on ${via}: no approval or review needed` }, icon("zap")) : null;
+  return via ? h("span", { class: "yolo-mark", title: t.state === "proposed" ? `En la cadena YOLO de ${via}: cuando la apruebes, no necesita revisión` : `Cubierta por el YOLO de ${via}: sin aprobación ni revisión` }, icon("zap")) : null;
 }
 
 function fillCard(el, t) {
@@ -3120,23 +3122,23 @@ function fillCard(el, t) {
   el.setAttribute("role", "option");
   el.setAttribute("aria-label", cardLabel(t, vs, unmet(t)));
   el.replaceChildren(...compact(
-    h("div", { class: "card-head" }, h("span", { class: "cid" }, t.id), h("span", { class: "head-end" }, yoloTag(t), h("span", { class: "badge" }, asking ? "Waiting for you" : LABEL[vs]))),
+    h("div", { class: "card-head" }, h("span", { class: "cid" }, t.id), h("span", { class: "head-end" }, yoloTag(t), h("span", { class: "badge" }, asking ? "Te espera" : LABEL[vs]))),
     h("div", { class: "card-title", title: t.title }, t.title),
     cardFoot(t),
-    store.readOnly ? null : h("div", { class: "handle in", title: "Drag onto another card: this card will depend on that one" }),
-    store.readOnly ? null : h("div", { class: "handle out", title: "Drag onto another card: that card will depend on this one" }),
+    store.readOnly ? null : h("div", { class: "handle in", title: "Arrastra a otra tarjeta: esta dependerá de aquella" }),
+    store.readOnly ? null : h("div", { class: "handle out", title: "Arrastra a otra tarjeta: aquella dependerá de esta" }),
   ));
 }
 
 // A lane's stub says how many finished tasks it folds away, or shows, and flashes when one more folds into it.
 function fillStub(el, s, lane) {
-  const n = s.open ? s.ids.length : s.folded.length, more = n < s.ids.length ? " more" : "";
+  const n = s.open ? s.ids.length : s.folded.length, more = n < s.ids.length ? " más" : "";
   if (!s.open && el.dataset.folded && +el.dataset.folded < n) { el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }
   el.dataset.folded = s.open ? "" : n;
   el.dataset.group = s.group || "";
   el.classList.toggle("open", s.open);
-  el.setAttribute("aria-label", `${n}${more} done task${n === 1 ? "" : "s"} in ${lane}, ${s.open ? "hide" : "show"} them`);
-  el.replaceChildren(h("span", { class: "dot s-done" }), h("span", { class: "stub-n" }, `${n}${more} done`), h("span", { class: "stub-do" }, s.open ? "Hide" : "Show"));
+  el.setAttribute("aria-label", `${n}${more} tarea${n === 1 ? " hecha" : "s hechas"} en ${lane}, ${s.open ? "ocultar" : "ver"}`);
+  el.replaceChildren(h("span", { class: "dot s-done" }), h("span", { class: "stub-n" }, `${n}${more} ${n === 1 ? "hecha" : "hechas"}`), h("span", { class: "stub-do" }, s.open ? "Ocultar" : "Ver"));
 }
 
 // Opens or folds a lane's finished tasks. The stub stays where it is on screen.
@@ -3179,9 +3181,9 @@ function renderGraph() {
     h("span", { class: "lane-name", title: l.name }, l.name),
     l.id ? h("span", { class: "lane-prefix" }, l.id) : null,
     h("span", { class: "lane-count", title: "done / total" }, `${l.done}/${l.total}`),
-    l.total ? h("span", { class: "lane-bar", title: `${l.done} of ${l.total} done` }, h("i", { style: `width:${(100 * l.done) / l.total}%` })) : null,
-    h("button", { class: "edit-only", title: `New task in ${l.name}`, "aria-label": `New task in ${l.name}`, onclick: () => newTaskDialog(l.id) }, icon("plus"))),
-  l.empty ? h("div", { class: "lane-empty" }, l.total ? "All done" : "No tasks yet") : null)));
+    l.total ? h("span", { class: "lane-bar", title: `${l.done} de ${l.total} hechas` }, h("i", { style: `width:${(100 * l.done) / l.total}%` })) : null,
+    h("button", { class: "edit-only", title: `Nueva tarea en ${l.name}`, "aria-label": `Nueva tarea en ${l.name}`, onclick: () => newTaskDialog(l.id) }, icon("plus"))),
+  l.empty ? h("div", { class: "lane-empty" }, l.total ? "Todo hecho" : "Aún no hay tareas") : null)));
 
   const svg = $("#edges");
   svg.setAttribute("width", L.width);
@@ -3236,11 +3238,11 @@ function renderGraph() {
   if (!shown) {
     const picked = board.tasks.some(inPickedGroups);
     empty.replaceChildren(h("div", {},
-      h("h2", {}, !board.tasks.length ? "An empty board" : picked ? "Everything here is done" : "Nothing in these groups"),
-      !board.tasks.length ? h("p", {}, "Add the first task, or ask your agent to interview you and plan the project.")
-        : picked ? h("p", {}, "Finished tasks are hidden. Press H to show them.")
-        : h("p", {}, "Pick other groups, or press Escape to show them all."),
-      board.tasks.length || store.readOnly ? null : h("button", { class: "primary", onclick: () => newTaskDialog() }, icon("plus"), "New task")));
+      h("h2", {}, !board.tasks.length ? "Un tablero vacío" : picked ? "Aquí está todo hecho" : "Nada en estos grupos"),
+      !board.tasks.length ? h("p", {}, "Añade la primera tarea, o pide a tu agente que te pregunte y planifique el proyecto.")
+        : picked ? h("p", {}, "Las tareas terminadas están ocultas. Pulsa H para verlas.")
+        : h("p", {}, "Elige otros grupos, o pulsa Esc para verlos todos."),
+      board.tasks.length || store.readOnly ? null : h("button", { class: "primary", onclick: () => newTaskDialog() }, icon("plus"), "Tarea nueva")));
   }
   applyDim();
   applyFocus();
@@ -3740,7 +3742,7 @@ function setupGraphInput() {
       if (sameJson(draft.tasks.map((x) => [x.id, x.group]), board.tasks.map((x) => [x.id, x.group]))) return renderGraph();
       const regrouped = t.group !== task.group;
       commit(ops.move(d.id, t.group, t.before, t.after)).then((ok) => {
-        if (ok && regrouped) toast(`${d.id} moved to ${t.group ? (board.groups.find((g) => g.id === t.group) || { name: t.group }).name : "Ungrouped"}`);
+        if (ok && regrouped) toast(`${d.id} movida a ${t.group ? (board.groups.find((g) => g.id === t.group) || { name: t.group }).name : "Sin grupo"}`);
         if (!ok) renderGraph();
       });
     } else if (d.mode === "connect") {
@@ -3749,7 +3751,7 @@ function setupGraphInput() {
       if (d.target) {
         d.target.classList.remove("drop-target");
         const [task, dep] = d.incoming ? [d.from, d.target.dataset.id] : [d.target.dataset.id, d.from];
-        if (e.type === "pointerup") undoable(ops.addDep(task, dep), `${task} now depends on ${dep}`);
+        if (e.type === "pointerup") undoable(ops.addDep(task, dep), `${task} ahora depende de ${dep}`);
       }
     } else if (!d.moved && e.type === "pointerup") {
       const stub = d.stub && lastLayout.stubs.find((s) => stubEls.get(s.key) === d.stub);
@@ -3810,10 +3812,10 @@ function renderKanban() {
     const items = tasks.filter((t) => vstate(t) === s);
     const head = h("div", { class: "col-head" }, h("span", { class: "dot" }), LABEL[s], h("span", { class: "count" }, items.length));
     if (s === "proposed" && items.length && !store.readOnly) {
-      head.append(h("button", { title: "Approve every proposal in this column", onclick: () => approveAll(items) }, icon("check"), "Approve all"));
+      head.append(h("button", { title: "Aprobar todas las propuestas de esta columna", onclick: () => approveAll(items) }, icon("check"), "Aprobar todas"));
     }
     const body = h("div", { class: "col-body", role: items.length ? "listbox" : null, "aria-label": items.length ? LABEL[s] : null },
-      items.length ? items.map(kanbanCard) : h("div", { class: "col-empty" }, s === "blocked" ? "Nothing is blocked" : "Empty"));
+      items.length ? items.map(kanbanCard) : h("div", { class: "col-empty" }, s === "blocked" ? "Nada bloqueado" : "Vacío"));
     return acceptDrops(h("div", { class: `col s-${s}`, "data-state": s }, head, body), s);
   }));
   renderColTabs(columns, tasks);
@@ -3862,7 +3864,7 @@ function renderColTabs(columns, tasks) {
   const tabs = columns.map((s) => acceptDrops(tab(s, count(s), h("span", { class: "dot" }), { "data-state": s, "aria-label": `${LABEL[s]}: ${count(s)}`, onclick: () => showColumn(s) }), s));
   if (prefs.hideDone && (!ui.states.size || ui.states.has("done"))) {
     const n = count("done");
-    tabs.push(tab("done", n, icon("eye-off"), { class: "s-done off", "aria-label": `Done: ${n} hidden. Show finished tasks`, onclick: () => { toggleDone(); showColumn("done"); } }));
+    tabs.push(tab("done", n, icon("eye-off"), { class: "s-done off", "aria-label": `Hechas: ${n} ocultas. Ver las tareas terminadas`, onclick: () => { toggleDone(); showColumn("done"); } }));
   }
   $("#col-tabs").replaceChildren(...tabs);
   markColumn();
@@ -3899,7 +3901,7 @@ function kanbanCard(t) {
     onclick: (e) => (picking ? pickToggle(t.id) : multiClick(e) ? toggleMulti(t.id) : select(t.id)),
   },
   h("div", { class: "card-head" }, h("span", { class: "cid" }, t.id), h("span", { class: "head-end" }, yoloTag(t),
-    asking ? h("span", { class: "badge" }, "Waiting for you") : null,
+    asking ? h("span", { class: "badge" }, "Te espera") : null,
     g ? h("span", { class: "gchip", title: g.name }, groupTag(groupColor(g)), h("span", {}, g.name)) : null)),
   h("div", { class: "card-title" }, t.title),
   cardFoot(t));
@@ -4073,41 +4075,41 @@ function noteBack(id, text) {
 
 function depRow(d, onRemove) {
   const t = get(d), vs = t ? vstate(t) : "blocked";
-  return h("div", { class: `dep s-${vs}`, onclick: () => t && select(t.id), title: t ? `${t.id} · ${LABEL[vs]}` : "Missing task" },
-    h("span", { class: "dot" }), h("span", { class: "cid" }, t ? t.id : d), h("span", { class: "t" }, t ? t.title : "missing task"),
-    h("span", { class: "st" }, t ? LABEL[vs] : "Missing"),
-    onRemove && !store.readOnly ? h("button", { title: "Remove dependency", "aria-label": "Remove dependency", onclick: (e) => { e.stopPropagation(); onRemove(); } }, icon("x")) : null);
+  return h("div", { class: `dep s-${vs}`, onclick: () => t && select(t.id), title: t ? `${t.id} · ${LABEL[vs]}` : "Tarea que no existe" },
+    h("span", { class: "dot" }), h("span", { class: "cid" }, t ? t.id : d), h("span", { class: "t" }, t ? t.title : "tarea que no existe"),
+    h("span", { class: "st" }, t ? LABEL[vs] : "No existe"),
+    onRemove && !store.readOnly ? h("button", { title: "Quitar la dependencia", "aria-label": "Quitar la dependencia", onclick: (e) => { e.stopPropagation(); onRemove(); } }, icon("x")) : null);
 }
 
 const moveTo = (t, state) => undoable(ops.state(t.id, seenOf(t), state), moveWords(t.state, state)[0].replace("%", t.id));
-const unlink = (id, dep) => undoable(ops.removeDep(id, dep), `${id} no longer waits for ${dep}`);
+const unlink = (id, dep) => undoable(ops.removeDep(id, dep), `${id} ya no espera a ${dep}`);
 
 // `asks` marks moves that open a dialog first.
 function stateMoves(t) {
   const to = (state) => () => moveTo(t, state);
   switch (vstate(t)) {
-    case "proposed": return [{ label: "Approve", icon: "check", run: to("todo"), to: "todo", primary: true },
-      ...(changeRequest(t) ? [] : [{ label: "Ask for changes", icon: "edit", run: () => askChanges(t), asks: true }]),
-      { label: "Reject", icon: "trash", run: () => removeTask(t), danger: true, asks: true }];
-    case "todo": return [{ label: "Start", icon: "play", run: to("doing"), to: "doing", primary: true }];
-    case "doing": return [{ label: "Send to review", icon: "check", run: to("review"), to: "review", primary: true }, { label: "Mark done", icon: "check", run: to("done"), to: "done" }, { label: "Pause", icon: "pause", run: to("todo"), to: "todo" }];
-    case "review": return [{ label: "Mark done", icon: "check", run: () => review(t, "done"), to: "done", primary: true }, { label: "Send back", icon: "back", run: () => sendBack(t), to: "todo", asks: true }];
-    case "done": return [{ label: "Reopen", icon: "back", run: to("todo"), to: "todo" }];
+    case "proposed": return [{ label: "Aprobar", icon: "check", run: to("todo"), to: "todo", primary: true },
+      ...(changeRequest(t) ? [] : [{ label: "Pedir cambios", icon: "edit", run: () => askChanges(t), asks: true }]),
+      { label: "Rechazar", icon: "trash", run: () => removeTask(t), danger: true, asks: true }];
+    case "todo": return [{ label: "Empezar", icon: "play", run: to("doing"), to: "doing", primary: true }];
+    case "doing": return [{ label: "Enviar a revisión", icon: "check", run: to("review"), to: "review", primary: true }, { label: "Marcar hecha", icon: "check", run: to("done"), to: "done" }, { label: "Pausar", icon: "pause", run: to("todo"), to: "todo" }];
+    case "review": return [{ label: "Marcar hecha", icon: "check", run: () => review(t, "done"), to: "done", primary: true }, { label: "Devolver", icon: "back", run: () => sendBack(t), to: "todo", asks: true }];
+    case "done": return [{ label: "Reabrir", icon: "back", run: to("todo"), to: "todo" }];
     default: return [];
   }
 }
 
 function yoloAction(t) {
-  if (t.yolo) return { label: "Turn off YOLO", icon: "zap", run: () => toggleYolo(t) };
+  if (t.yolo) return { label: "Desactivar YOLO", icon: "zap", run: () => toggleYolo(t) };
   if (t.state === "review" || t.state === "done") return null;
   const via = yoloVia(t);
-  if (via) return { head: `${t.state === "proposed" ? "In the YOLO chain of" : "Covered by YOLO on"} ${via}` };
-  return { label: "YOLO up to here…", icon: "zap", run: () => toggleYolo(t) };
+  if (via) return { head: `${t.state === "proposed" ? "En la cadena YOLO de" : "Cubierta por el YOLO de"} ${via}` };
+  return { label: "YOLO hasta aquí…", icon: "zap", run: () => toggleYolo(t) };
 }
 
 async function toggleYolo(t) {
   if (t.yolo) {
-    undoable(ops.yolo(t.id, false), `YOLO is off for ${t.id}`);
+    undoable(ops.yolo(t.id, false), `YOLO desactivado en ${t.id}`);
     return;
   }
   if (!prefs.skipYoloWarning) {
@@ -4115,17 +4117,17 @@ async function toggleYolo(t) {
     const before = chain.filter((x) => !same(x.id, t.id));
     const inner = before.filter((x) => x.yolo).map((x) => x.id);
     const count = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
-    const names = (ids) => (ids.length > 1 ? `${ids.slice(0, -1).join(", ")} and ${ids[ids.length - 1]}` : ids[0]);
+    const names = (ids) => (ids.length > 1 ? `${ids.slice(0, -1).join(", ")} y ${ids[ids.length - 1]}` : ids[0]);
     const proposals = chain.filter((x) => x.state === "proposed").length, reviews = before.filter((x) => x.state === "review").length;
-    const effects = [proposals ? `approves ${count(proposals, "proposal")}` : null, reviews ? `marks ${count(reviews, "review")} done` : null].filter(Boolean);
-    const data = await modal(`YOLO up to ${t.id}?`, [
-      h("p", {}, `${before.length ? `Agents finish the ${count(before.length, "unfinished task")} ${t.id} depends on without approval or review, then do ${t.id} and send it to you for review.` : `Agents may start ${t.id} without approval and send it to you for review.`}${inner.length ? ` This takes over the YOLO on ${names(inner)}, so only ${t.id} comes to you for review.` : ""}${effects.length ? ` This ${effects.join(" and ")} now.` : ""}`),
-      h("label", { class: "check" }, h("input", { type: "checkbox", name: "skip" }), "Don't ask again"),
+    const effects = [proposals ? `aprueba ${count(proposals, "propuesta")}` : null, reviews ? `da por ${reviews > 1 ? "hechas" : "hecha"} ${count(reviews, "revisión")}` : null].filter(Boolean);
+    const data = await modal(`¿YOLO hasta ${t.id}?`, [
+      h("p", {}, `${before.length ? `Los agentes terminan ${count(before.length, "tarea sin terminar")} de las que depende ${t.id}, sin aprobación ni revisión; luego hacen ${t.id} y te la mandan a revisión.` : `Los agentes pueden empezar ${t.id} sin aprobación y te la mandan a revisión.`}${inner.length ? ` Sustituye al YOLO de ${names(inner)}, así que solo ${t.id} te llega para revisar.` : ""}${effects.length ? ` Además, ahora ${effects.join(" y ")}.` : ""}`),
+      h("label", { class: "check" }, h("input", { type: "checkbox", name: "skip" }), "No volver a preguntar"),
     ], { ok: [icon("zap"), "YOLO"], okClass: "yolo-go" });
     if (!data) return;
     if (data.get("skip")) { prefs.skipYoloWarning = true; savePrefs(); }
   }
-  if (await undoable(ops.yolo(t.id, true), `YOLO is on up to ${t.id}`)) zap(t.id);
+  if (await undoable(ops.yolo(t.id, true), `YOLO activado hasta ${t.id}`)) zap(t.id);
 }
 
 function zap(id) {
@@ -4195,7 +4197,7 @@ function fillPanel(panel, t) {
   // The block under the title shows the latest note of work under way or finished, and a proposal's open request for changes.
   const top = (["doing", "review", "done"].includes(vs) ? last : vs === "proposed" ? changeRequest(t) : null) || null;
 
-  const title = h("textarea", { class: "p-title", rows: 1, value: drafts.title ?? t.title, "aria-label": "Title", readonly: ro, spellcheck: "false" });
+  const title = h("textarea", { class: "p-title", rows: 1, value: drafts.title ?? t.title, "aria-label": "Título", readonly: ro, spellcheck: "false" });
   title.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); focusPanel(); } if (e.key === "Escape") { title.value = t.title; focusPanel(); } });
   title.addEventListener("input", () => autosize(title));
   // Saved on blur: a title given back by a failed save fires no change event, and Enter must still save it.
@@ -4210,20 +4212,20 @@ function fillPanel(panel, t) {
   const gColor = g ? groupColor(g) : "var(--faint)";
   const below = (fn, right) => (e) => dropdown(e.currentTarget, fn(), { alignRight: right, gap: 4 });
   const head = h("div", { class: "p-head" },
-    h("button", { class: "ghost p-back", "aria-label": `Back to the ${ui.view}`, onclick: () => select(null) }, icon("left")),
-    h("button", { class: "cid", title: "Copy ID", onclick: () => copy(t.id) }, t.id),
+    h("button", { class: "ghost p-back", "aria-label": `Volver a la vista`, onclick: () => select(null) }, icon("left")),
+    h("button", { class: "cid", title: "Copiar ID", onclick: () => copy(t.id) }, t.id),
     ro ? h("span", { class: `badge s-${vs}` }, LABEL[vs])
-      : h("button", { class: `pick badge s-${vs}`, title: "Change the state", "aria-haspopup": "menu", "aria-expanded": "false", onclick: below(() => stateMenu(t)) }, LABEL[vs], icon("chevron")),
+      : h("button", { class: `pick badge s-${vs}`, title: "Cambiar el estado", "aria-haspopup": "menu", "aria-expanded": "false", onclick: below(() => stateMenu(t)) }, LABEL[vs], icon("chevron")),
     ro ? (g ? h("span", { class: "gpick pick", title: g.name }, groupTag(gColor), h("span", { class: "gname" }, g.name)) : null)
-      : h("button", { class: "gpick pick", title: g ? `${g.name}. Change the group` : "Change the group", "aria-haspopup": "menu", "aria-expanded": "false", onclick: below(() => groupMenu(t)) }, groupTag(gColor), h("span", { class: "gname" }, g ? g.name : "No group"), icon("chevron")),
+      : h("button", { class: "gpick pick", title: g ? `${g.name}. Cambiar el grupo` : "Cambiar el grupo", "aria-haspopup": "menu", "aria-expanded": "false", onclick: below(() => groupMenu(t)) }, groupTag(gColor), h("span", { class: "gname" }, g ? g.name : "Sin grupo"), icon("chevron")),
     h("span", { class: "spacer" }),
-    h("button", { class: "ghost icon-btn", title: "More", "aria-label": "More actions", "aria-haspopup": "menu", "aria-expanded": "false", onclick: below(() => panelMenu(t), true) }, icon("more")),
-    h("button", { class: "ghost icon-btn p-close", title: "Close (Esc)", "aria-label": "Close", onclick: () => select(null) }, icon("x")));
+    h("button", { class: "ghost icon-btn", title: "Más", "aria-label": "Más acciones", "aria-haspopup": "menu", "aria-expanded": "false", onclick: below(() => panelMenu(t), true) }, icon("more")),
+    h("button", { class: "ghost icon-btn p-close", title: "Cerrar (Esc)", "aria-label": "Cerrar", onclick: () => select(null) }, icon("x")));
 
   let desc;
   if (ui.editingDesc && !ro) {
     const base = drafts.descBase ?? t.desc, clash = base !== t.desc;
-    const ta = h("textarea", { value: drafts.desc ?? t.desc, placeholder: "Describe the task. Markdown works.", "aria-label": "Description" });
+    const ta = h("textarea", { value: drafts.desc ?? t.desc, placeholder: "Describe la tarea. Admite Markdown.", "aria-label": "Descripción" });
     const close = () => { ui.editingDesc = false; drafts.desc = drafts.descBase = null; ta.blur(); };
     const save = () => {
       const v = ta.value.trim(), now = get(t.id) || t;
@@ -4239,9 +4241,9 @@ function fillPanel(panel, t) {
     ta.addEventListener("input", () => { drafts.desc = ta.value; });
     ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { save(); focusPanel(ta); } if (e.key === "Escape") { e.stopPropagation(); cancel(); focusPanel(); } });
     desc = h("div", { class: "desc-edit" }, clash ? h("div", { class: "desc-clash", role: "alert" },
-      h("p", {}, "An agent changed this description while you were editing. Saving replaces their version with yours."),
-      h("details", {}, h("summary", {}, "Their version"), h("div", { class: "md", html: markdown(t.desc || "*Empty*") }))) : null,
-    ta, h("div", { class: "row-end" }, h("span", { class: "hint" }, keyLabel("Ctrl+Enter to save")), h("button", { onclick: cancel }, "Cancel"), h("button", { class: "primary", onclick: save }, "Save")));
+      h("p", {}, "Un agente ha cambiado esta descripción mientras la editabas. Al guardar, tu versión sustituye a la suya."),
+      h("details", {}, h("summary", {}, "Su versión"), h("div", { class: "md", html: markdown(t.desc || "*Vacía*") }))) : null,
+    ta, h("div", { class: "row-end" }, h("span", { class: "hint" }, keyLabel("Ctrl+Intro para guardar")), h("button", { onclick: cancel }, "Cancelar"), h("button", { class: "primary", onclick: save }, "Guardar")));
     if (ui.focusDesc) {
       ui.focusDesc = false;
       setTimeout(() => { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }, 0);
@@ -4250,14 +4252,14 @@ function fillPanel(panel, t) {
     desc = h("div", { class: "md", html: markdown(t.desc), ondblclick: ro ? null : (e) => { if (!e.target.closest(".tick")) editDesc(); } });
     if (!ro) tickable(desc, t);
   } else {
-    desc = ro ? null : h("button", { class: "ghost add-line", onclick: editDesc }, icon("plus"), "Add a description");
+    desc = ro ? null : h("button", { class: "ghost add-line", onclick: editDesc }, icon("plus"), "Añadir una descripción");
   }
   const checks = taskItems(t.desc).map((x) => x.checked);
   const done = checks.filter(Boolean).length;
 
-  const noteBox = h("textarea", { rows: 1, value: drafts.note.get(t.id) || "", placeholder: "Add a note for your agent or yourself", "aria-label": "New note" });
+  const noteBox = h("textarea", { rows: 1, value: drafts.note.get(t.id) || "", placeholder: "Añade una nota para tu agente o para ti", "aria-label": "Nota nueva" });
   const form = ro ? null : h("div", { class: `note-form${noteBox.value ? " filled" : ""}` }, noteBox,
-    h("div", { class: "row-end" }, h("span", { class: "hint" }, keyLabel("Markdown · Ctrl+Enter")), h("button", { class: "primary", onclick: () => addNoteNow() }, icon("note"), "Add note")));
+    h("div", { class: "row-end" }, h("span", { class: "hint" }, keyLabel("Markdown · Ctrl+Intro")), h("button", { class: "primary", onclick: () => addNoteNow() }, icon("note"), "Añadir nota")));
   noteBox.addEventListener("input", () => { drafts.note.set(t.id, noteBox.value); form.classList.toggle("filled", !!noteBox.value); autosize(noteBox); });
   const addNoteNow = () => { const v = noteBox.value.trim(); if (!v) return; noteBox.value = ""; drafts.note.delete(t.id); noteBox.blur(); commit(ops.note(t.id, v), { onFail: () => noteBack(t.id, v) }); };
   noteBox.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { addNoteNow(); focusPanel(noteBox); } if (e.key === "Escape") focusPanel(); });
@@ -4269,21 +4271,21 @@ function fillPanel(panel, t) {
       nowCard(t, vs, ro, top),
       ownerSection(t, ro),
       desc ? h("section", { class: "p-sec" },
-        t.desc || ui.editingDesc ? h("div", { class: "section-head" }, "Description",
-          checks.length ? [h("span", { class: "lane-bar", title: `${done} of ${checks.length} checked` }, h("i", { style: `width:${(100 * done) / checks.length}%` })), h("span", { class: "count" }, `${done}/${checks.length}`)] : null,
-          ro || ui.editingDesc ? null : h("button", { class: "ghost", title: "Edit the description (or double-click it)", onclick: editDesc }, icon("edit"), "Edit")) : null,
+        t.desc || ui.editingDesc ? h("div", { class: "section-head" }, "Descripción",
+          checks.length ? [h("span", { class: "lane-bar", title: `${done} de ${checks.length} marcados` }, h("i", { style: `width:${(100 * done) / checks.length}%` })), h("span", { class: "count" }, `${done}/${checks.length}`)] : null,
+          ro || ui.editingDesc ? null : h("button", { class: "ghost", title: "Editar la descripción (o haz doble clic)", onclick: editDesc }, icon("edit"), "Editar")) : null,
         desc) : null,
       ro && !t.deps.length && !kids.length ? null : h("section", { class: "p-sec" },
-        h("div", { class: "section-head" }, "Dependencies",
-          ro ? null : h("button", { class: "ghost", title: "Add tasks that block this one", onclick: () => addDepDialog(t) }, icon("plus"), "Add")),
+        h("div", { class: "section-head" }, "Dependencias",
+          ro ? null : h("button", { class: "ghost", title: "Añadir tareas que bloquean esta", onclick: () => addDepDialog(t) }, icon("plus"), "Añadir")),
         t.deps.length || kids.length ? h("div", { class: "rel" },
-          t.deps.length ? [h("div", { class: "rel-label" }, "Blocked by"), t.deps.map((d) => depRow(d, () => unlink(t.id, d)))] : null,
-          kids.length ? [h("div", { class: "rel-label" }, "Blocks"), kids.map((k) => depRow(k.id))] : null)
-          : h("div", { class: "empty-line" }, "None yet.")),
+          t.deps.length ? [h("div", { class: "rel-label" }, "Bloqueada por"), t.deps.map((d) => depRow(d, () => unlink(t.id, d)))] : null,
+          kids.length ? [h("div", { class: "rel-label" }, "Bloquea"), kids.map((k) => depRow(k.id))] : null)
+          : h("div", { class: "empty-line" }, "Ninguna todavía.")),
       h("section", { class: "p-sec" },
-        h("div", { class: "section-head" }, top && top === last && earlier.length ? "Earlier notes" : "Notes", earlier.length ? h("span", { class: "count" }, earlier.length) : null),
+        h("div", { class: "section-head" }, top && top === last && earlier.length ? "Notas anteriores" : "Notas", earlier.length ? h("span", { class: "count" }, earlier.length) : null),
         earlier.length ? h("div", { class: "notes" }, earlier.map((n) => noteEl(t, n, ro)))
-          : top ? null : h("div", { class: "empty-line" }, "No notes yet."),
+          : top ? null : h("div", { class: "empty-line" }, "Aún no hay notas."),
         form),
     ),
   );
@@ -4317,61 +4319,61 @@ function autosize(ta) {
 // The block under the title: where the task stands, what matters for that state, and what to do next.
 function nowCard(t, vs, ro, note) {
   const ref = (id) => h("a", { class: "tref", href: `#${id}`, "data-ref": id }, id);
-  const list = (ids) => ids.map((id, i) => [i ? (i === ids.length - 1 ? " and " : ", ") : "", ref(id)]);
+  const list = (ids) => ids.map((id, i) => [i ? (i === ids.length - 1 ? " y " : ", ") : "", ref(id)]);
   const who = note ? h("span", { class: "now-who", title: noteTimes(note) }, agentMark(note.by || "?"), `${note.by || "?"} · ${ago(note.at)}${note.edited ? ` · edited ${ago(note.edited)}` : ""}`)
     : vs === "proposed" && t.by ? h("span", { class: "now-who", title: t.at ? new Date(t.at).toLocaleString() : null }, agentMark(t.by), t.at ? `${t.by} · ${ago(t.at)}` : t.by)
     : null;
   const editing = note && !ro && isEditingNote(t, note);
-  const waits = unmet(t), q = note && note === openQuestion(t) ? note : null, by = q ? q.by || "the agent" : null;
-  const cr = note && note === changeRequest(t) ? note : null, author = t.by && t.by !== "human" ? t.by : "the agent";
-  const dismiss = () => undoable(ops.note(t.id, "Dismissed the question: no reply is coming in the chat."), "Question dismissed");
-  const [mark, headline, body] = q ? [icon("ask"), "Waiting for your reply", null] : cr ? [icon("edit"), "Changes requested", null] : {
-    proposed: [icon("spark"), "Proposed", h("p", {}, "Approve it to make it available for work, ask for changes, or reject it.")],
-    blocked: [icon("lock"), "Blocked", h("p", {}, "Starts when ", list(waits), waits.length > 1 ? " are done." : " is done.")],
-    todo: [icon("play"), "Ready to start", ro ? null : h("p", {}, "Start it yourself, or tell an agent ", h("button", { class: "say", title: "Copy", onclick: () => copy(`work on ${t.id}`) }, `work on ${t.id}`, icon("copy")))],
-    doing: [h("i", { class: "live" }), "In progress", null],
-    review: [icon("check"), "Ready for your review", null],
-    done: [icon("check"), "Done", null],
+  const waits = unmet(t), q = note && note === openQuestion(t) ? note : null, by = q ? q.by || "el agente" : null;
+  const cr = note && note === changeRequest(t) ? note : null, author = t.by && t.by !== "human" ? t.by : "el agente";
+  const dismiss = () => undoable(ops.note(t.id, "Pregunta descartada: no llegará respuesta en el chat."), "Pregunta descartada");
+  const [mark, headline, body] = q ? [icon("ask"), "Espera tu respuesta", null] : cr ? [icon("edit"), "Cambios pedidos", null] : {
+    proposed: [icon("spark"), "Propuesta", h("p", {}, "Apruébala para que se pueda trabajar en ella, pide cambios o recházala.")],
+    blocked: [icon("lock"), "Bloqueada", h("p", {}, "Empieza cuando ", list(waits), waits.length > 1 ? " estén hechas." : " esté hecha.")],
+    todo: [icon("play"), "Lista para empezar", ro ? null : h("p", {}, "Empiézala tú, o dile a un agente ", h("button", { class: "say", title: "Copiar", onclick: () => copy(`trabaja en ${t.id}`) }, `trabaja en ${t.id}`, icon("copy")))],
+    doing: [h("i", { class: "live" }), "En curso", null],
+    review: [icon("check"), "Lista para que la revises", null],
+    done: [icon("check"), "Hecha", null],
   }[vs];
   const via = yoloVia(t), complete = t.yolo && t.state === "review";
   const yolo = via || complete ? h("div", { class: "now-yolo" }, icon("zap"),
-    h("span", {}, complete ? ["YOLO chain complete.", via ? [" The YOLO chain of ", ref(via), " waits for your review."] : null]
-      : !same(via, t.id) && t.state === "proposed" ? ["In the YOLO chain of ", ref(via), ": once you approve it, agents finish it without review."]
-      : !same(via, t.id) ? ["Covered by YOLO on ", ref(via), ": no approval or review needed."]
-      : "YOLO: agents finish everything it needs, then send it to you for review."),
-    t.yolo && !ro ? h("button", { onclick: () => toggleYolo(t) }, "Turn off") : null) : null;
+    h("span", {}, complete ? ["Cadena YOLO completa.", via ? [" La cadena YOLO de ", ref(via), " espera tu revisión."] : null]
+      : !same(via, t.id) && t.state === "proposed" ? ["En la cadena YOLO de ", ref(via), ": cuando la apruebes, los agentes la terminan sin revisión."]
+      : !same(via, t.id) ? ["Cubierta por el YOLO de ", ref(via), ": sin aprobación ni revisión."]
+      : "YOLO: los agentes terminan todo lo que necesita y luego te la mandan a revisión."),
+    t.yolo && !ro ? h("button", { onclick: () => toggleYolo(t) }, "Desactivar") : null) : null;
   const ya = ro || editing || t.yolo || via || !["proposed", "todo", "blocked"].includes(vs) ? null : yoloAction(t);
   const moves = ro || editing ? [] : stateMoves(t);
-  const gone = q && !ro && !editing ? h("button", { class: "dismiss", title: "No reply is coming in the chat: clear the question with a note", onclick: dismiss }, icon("x"), "Dismiss") : null;
+  const gone = q && !ro && !editing ? h("button", { class: "dismiss", title: "No llegará respuesta en el chat: quita la pregunta con una nota", onclick: dismiss }, icon("x"), "Descartar") : null;
   return h("div", { class: `now s-${q ? "ask" : vs}` },
     h("div", { class: "now-head" }, mark, headline, who, note && !ro && !editing ? noteEditBtn(t, note) : null),
     editing ? noteEditor(t, note)
       : note ? h("div", { class: "now-body md", html: markdown(q ? questionText(q) : cr ? changesText(cr) : note.text || ""), ondblclick: ro ? null : () => editNote(t, note) })
       : body ? h("div", { class: "now-body md" }, body) : null,
-    q && !editing ? h("div", { class: "now-hint" }, h("span", {}, `Reply in ${by}'s chat. This clears when ${by} carries on.`), gone) : null,
-    cr && !editing ? h("div", { class: "now-hint" }, h("span", {}, `Waiting for ${author} to revise it. The next note from an agent clears the request.`)) : null,
+    q && !editing ? h("div", { class: "now-hint" }, h("span", {}, `Responde en el chat de ${by}. Esto desaparece cuando ${by} siga.`), gone) : null,
+    cr && !editing ? h("div", { class: "now-hint" }, h("span", {}, `Esperando a que ${author} la revise. La próxima nota de un agente cierra la petición.`)) : null,
     yolo,
     moves.length || ya ? h("div", { class: "now-actions" },
-      moves.map((m) => h("button", { class: m.primary ? `primary to s-${m.to}` : m.danger ? "danger" : "", title: m.to && !m.primary ? `Moves it to ${LABEL[m.to]}` : null, onclick: m.run }, icon(m.icon), m.label)),
+      moves.map((m) => h("button", { class: m.primary ? `primary to s-${m.to}` : m.danger ? "danger" : "", title: m.to && !m.primary ? `La pasa a ${LABEL[m.to]}` : null, onclick: m.run }, icon(m.icon), m.label)),
       ya ? h("button", { class: "yolo-btn", onclick: ya.run }, icon(ya.icon), ya.label) : null) : null);
 }
 
 function stateMenu(t) {
-  return [{ head: "Move to" }, ...STATES.map((s) => ({
+  return [{ head: "Mover a" }, ...STATES.map((s) => ({
     label: [h("span", { class: `dot s-${s}` }), LABEL[s]], icon: s === t.state ? "check" : null, checked: s === t.state,
     run: () => { if (s !== t.state) moveTo(t, s); },
   }))];
 }
 
 function groupMenu(t) {
-  return [{ head: "Group" }, ...board.groups.map((g, i) => ({
+  return [{ head: "Grupo" }, ...board.groups.map((g, i) => ({
     label: [groupTag(GROUP_COLORS[i % GROUP_COLORS.length]), g.name], icon: g.id === t.group ? "check" : null, checked: g.id === t.group,
     run: () => { if (g.id !== t.group) commit(ops.set(t.id, { group: g.id }, { group: t.group })); },
-  })), "sep", { label: "No group", icon: t.group ? null : "check", checked: !t.group, run: () => { if (t.group) commit(ops.set(t.id, { group: null }, { group: t.group })); } }];
+  })), "sep", { label: "Sin grupo", icon: t.group ? null : "check", checked: !t.group, run: () => { if (t.group) commit(ops.set(t.id, { group: null }, { group: t.group })); } }];
 }
 
 function panelMenu(t) {
-  const say = { label: `Copy "work on ${t.id}"`, icon: "copy", run: () => copy(`work on ${t.id}`) };
+  const say = { label: `Copiar "trabaja en ${t.id}"`, icon: "copy", run: () => copy(`trabaja en ${t.id}`) };
   return cardMenu(t).filter((it) => !(it && (it.icon === "open" || it.to))).flatMap((it) => (it && it.icon === "copy" ? [it, say] : [it]));
 }
 
@@ -4379,9 +4381,9 @@ function noteEl(t, n, ro) {
   const by = String(n.by || "?");
   const editing = !ro && isEditingNote(t, n);
   return h("div", { class: "note" },
-    h("div", { class: "avatar", style: `--a:${by === "human" ? "#64748b" : colorFor(by)}`, title: by }, by.slice(0, 1)),
+    h("div", { class: "avatar", style: `--a:${by === "human" ? "#64748b" : colorFor(by)}`, title: byName(by) }, byName(by).slice(0, 1).toUpperCase()),
     h("div", { class: "note-main" },
-      h("div", { class: "note-meta", title: noteTimes(n) }, h("b", {}, by), " · ", ago(n.at), n.edited ? ` · edited ${ago(n.edited)}` : null, ro || editing ? null : noteEditBtn(t, n)),
+      h("div", { class: "note-meta", title: noteTimes(n) }, h("b", {}, byName(by)), " · ", ago(n.at), n.edited ? ` · editada ${ago(n.edited)}` : null, ro || editing ? null : noteEditBtn(t, n)),
       editing ? noteEditor(t, n) : h("div", { class: "note-text md", html: markdown(n.text || ""), ondblclick: ro ? null : () => editNote(t, n) }),
       editing ? null : mailThreadLink(n)));
 }
@@ -4412,11 +4414,11 @@ function editNote(t, n) {
 }
 
 function noteEditBtn(t, n) {
-  return h("button", { class: "ghost icon-btn note-btn", title: "Edit or delete the note (or double-click it)", "aria-label": "Edit note", onclick: () => editNote(t, n) }, icon("edit"));
+  return h("button", { class: "ghost icon-btn note-btn", title: "Editar o borrar la nota (o haz doble clic)", "aria-label": "Editar la nota", onclick: () => editNote(t, n) }, icon("edit"));
 }
 
 function noteEditor(t, n) {
-  const ta = h("textarea", { rows: 2, value: drafts.noteEdit ?? n.text ?? "", "aria-label": "Edit note" });
+  const ta = h("textarea", { rows: 2, value: drafts.noteEdit ?? n.text ?? "", "aria-label": "Editar la nota" });
   const close = () => { ui.editingNote = null; drafts.noteEdit = null; ta.blur(); };
   const cancel = () => { close(); renderPanel(); };
   const save = () => {
@@ -4426,7 +4428,7 @@ function noteEditor(t, n) {
     const back = () => { if (ui.editingNote) return false; ui.editingNote = { id: t.id, at: n.at, by: n.by, text: n.text, rank }; drafts.noteEdit = v; };
     if (v !== n.text) commit(ops.editNote(t.id, n, rank, v), { onFail: () => giveBack(t.id, back) }); else renderPanel();
   };
-  const remove = () => { close(); undoable(ops.removeNote(t.id, n, noteRank(t, n)), "Note deleted"); };
+  const remove = () => { close(); undoable(ops.removeNote(t.id, n, noteRank(t, n)), "Nota borrada"); };
   ta.addEventListener("input", () => { drafts.noteEdit = ta.value; autosize(ta); });
   ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { save(); focusPanel(ta); } if (e.key === "Escape") { e.stopPropagation(); cancel(); focusPanel(); } });
   if (ui.focusNote) {
@@ -4435,10 +4437,10 @@ function noteEditor(t, n) {
   }
   return h("div", { class: "note-edit" }, ta,
     h("div", { class: "row-end" },
-      h("button", { class: "ghost danger", onclick: remove }, icon("trash"), "Delete"),
+      h("button", { class: "ghost danger", onclick: remove }, icon("trash"), "Borrar"),
       h("span", { class: "hint" }),
-      h("button", { onclick: cancel }, "Cancel"),
-      h("button", { class: "primary", title: keyLabel("Save (Ctrl+Enter)"), onclick: save }, "Save")));
+      h("button", { onclick: cancel }, "Cancelar"),
+      h("button", { class: "primary", title: keyLabel("Guardar (Ctrl+Intro)"), onclick: save }, "Guardar")));
 }
 
 async function copy(text) {
@@ -4448,19 +4450,19 @@ async function copy(text) {
 async function removeTask(t) {
   const kids = dependents(t);
   const data = await modal(`Delete ${t.id}?`, [
-    h("p", {}, keyLabel(`"${t.title}" will be removed${kids.length ? `, along with the dependency from ${kids.map((k) => k.id).join(", ")}` : ""}. Ctrl+Z brings it back.`)),
-    t.state === "proposed" ? h("p", {}, "The agent is not told why. To have it revise the proposal, ask for changes.") : null,
-  ], { ok: "Delete", danger: true });
+    h("p", {}, keyLabel(`Se eliminará "${t.title}"${kids.length ? `, junto con la dependencia de ${kids.map((k) => k.id).join(", ")}` : ""}. Ctrl+Z la recupera.`)),
+    t.state === "proposed" ? h("p", {}, "Al agente no se le dice por qué. Para que revise la propuesta, pide cambios.") : null,
+  ], { ok: "Borrar", danger: true });
   if (!data) return;
   if (same(ui.selected, t.id)) ui.selected = null;
-  undoable(ops.remove(t.id), `${t.state === "proposed" ? "Rejected" : "Deleted"} ${t.id}`);
+  undoable(ops.remove(t.id), `${t.state === "proposed" ? "Rechazada" : "Borrada"} ${t.id}`);
 }
 
 async function sendBack(t, text = "") {
   const data = await modal(`Send ${t.id} back`, [
-    h("p", {}, "The task returns to To do. Your feedback is added as a note, so the agent sees it when it starts again."),
-    h("label", { class: "field" }, "What needs to change?", h("textarea", { name: "text", rows: 4, required: true, value: text, placeholder: "e.g. The retry loop never gives up; cap it at 5 attempts." })),
-  ], { ok: "Send back" });
+    h("p", {}, "La tarea vuelve a Por hacer. Tu comentario se añade como nota, para que el agente lo vea al retomarla."),
+    h("label", { class: "field" }, "¿Qué hay que cambiar?", h("textarea", { name: "text", rows: 4, required: true, value: text, placeholder: "p. ej. Falta la garantía de la segunda oferta." })),
+  ], { ok: "Devolver" });
   if (!data) return;
   const feedback = data.get("text").trim();
   review(t, "todo", `Sent back: ${feedback}`, () => sendBack(t, feedback));
@@ -4480,7 +4482,7 @@ async function review(t, state, note = "", onFail = null) {
   if (failed || ui.view !== "board" || !same(ui.selected, t.id) || ui.editingDesc || ui.editingNote
     || ($("#panel").contains(field) && field.matches("input:not([type=checkbox]), textarea, select"))) return ok;
   const next = nextReview(board, t.id, matches), left = board.tasks.filter((x) => x.state === "review").length;
-  said.data += next ? `. Next to review: ${next.id}.` : left ? `. No more tasks to review in this view; ${left} more ${left === 1 ? "is" : "are"} filtered out.` : ". No more tasks to review.";
+  said.data += next ? `. Siguiente para revisar: ${next.id}.` : left ? `. No quedan tareas para revisar en esta vista; ${left} más ${left === 1 ? "está oculta" : "están ocultas"} por un filtro.` : ". No quedan tareas para revisar.";
   if (!next) return ok;
   showCard(next.id);
   if (entry !== before) entry.onUndo = () => { if (ui.view === "board" && same(ui.selected, next.id)) showCard(t.id); };
@@ -4501,13 +4503,13 @@ function showCard(id) {
 }
 
 async function askChanges(t, text = "") {
-  const data = await modal(`Ask for changes to ${t.id}`, [
-    h("p", {}, "It stays proposed. Your request is added as a note, and the agent revises the proposal and answers with a note."),
-    h("label", { class: "field" }, "What should change?", h("textarea", { name: "text", rows: 4, required: true, value: text, placeholder: "e.g. Split it in two: the endpoint first, then the caching." })),
-  ], { ok: "Ask for changes" });
+  const data = await modal(`Pedir cambios en ${t.id}`, [
+    h("p", {}, "Sigue como propuesta. Tu petición se añade como nota, y el agente revisa la propuesta y contesta con otra nota."),
+    h("label", { class: "field" }, "¿Qué debería cambiar?", h("textarea", { name: "text", rows: 4, required: true, value: text, placeholder: "p. ej. Divídela en dos: primero pedir presupuesto, luego comparar." })),
+  ], { ok: "Pedir cambios" });
   if (!data) return;
   const request = data.get("text").trim();
-  undoable(ops.note(t.id, `${CHANGES} ${request}`), `Asked for changes to ${t.id}`, { onFail: () => askChanges(t, request) });
+  undoable(ops.note(t.id, `${CHANGES} ${request}`), `Cambios pedidos en ${t.id}`, { onFail: () => askChanges(t, request) });
 }
 
 const plural = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
@@ -4519,21 +4521,21 @@ function approveMany(tasks) {
 // A whole column of proposals is approved only after a look at what it holds, beyond a handful.
 async function approveAll(tasks) {
   if (tasks.length > 5) {
-    const ids = tasks.map((t) => t.id), shown = ids.length > 8 ? `${ids.slice(0, 6).join(", ")} and ${ids.length - 6} more` : andList(ids);
-    const data = await modal(`Approve ${plural(tasks.length, "proposal")}?`, h("p", {}, `${shown} move to To do, where agents can start them.`), { ok: `Approve ${tasks.length}` });
+    const ids = tasks.map((t) => t.id), shown = ids.length > 8 ? `${ids.slice(0, 6).join(", ")} y ${ids.length - 6} más` : andList(ids);
+    const data = await modal(`Approve ${plural(tasks.length, "proposal")}?`, h("p", {}, `${shown} pasan a Por hacer, donde los agentes pueden empezarlas.`), { ok: `Approve ${tasks.length}` });
     if (!data) return false;
   }
   return approveMany(tasks);
 }
 
 function doneMany(tasks) {
-  return undoable((b) => { for (const t of tasks) ops.state(t.id, seenOf(t), "done")(b); }, `Marked ${plural(tasks.length, "task")} done`);
+  return undoable((b) => { for (const t of tasks) ops.state(t.id, seenOf(t), "done")(b); }, `${plural(tasks.length, "tarea")} marcadas como hechas`);
 }
 
 async function removeMany(tasks) {
   const ids = tasks.map((t) => t.id);
   const data = await modal(`Delete ${plural(tasks.length, "task")}?`,
-    h("p", {}, `${ids.join(", ")} will be removed, along with the dependencies on them. ${keyLabel("Ctrl+Z")} brings them back.`), { ok: "Delete", danger: true });
+    h("p", {}, `Se eliminarán ${ids.join(", ")}, junto con las dependencias hacia ellas. ${keyLabel("Ctrl+Z")} las recupera.`), { ok: "Borrar", danger: true });
   if (!data) return false;
   if (ids.some((id) => same(ui.selected, id))) ui.selected = null;
   return undoable((b) => { for (const id of ids) ops.remove(id)(b); }, `Deleted ${plural(tasks.length, "task")}`);
@@ -4541,7 +4543,7 @@ async function removeMany(tasks) {
 
 // Dialogs ---------------------------------------------------------------------
 
-function modal(title, content, { ok = "Save", danger = false, cancel = "Cancel", okClass = "" } = {}) {
+function modal(title, content, { ok = "Guardar", danger = false, cancel = "Cancelar", okClass = "" } = {}) {
   return new Promise((resolve) => {
     const okBtn = h("button", { value: "ok", class: okClass || (danger ? "danger primary" : "primary") }, ok);
     const form = h("form", { method: "dialog" }, h("h3", {}, title), content,
@@ -4574,30 +4576,30 @@ function phoneDialog() {
   const body = h("div", { class: "phone" });
   const port = location.port || "80";
   const fail = (e) => body.replaceChildren(h("p", { class: "phone-error" }, e.message));
-  const gone = "Kanvas stopped running or cannot be reached.";
+  const gone = "Kanvas se ha detenido o no responde.";
   const ask = (method) => fetch("api/phone", method === "GET" ? { cache: "no-store" } : { method, headers: { "Content-Type": "application/json" }, body: "{}" })
     .then(async (r) => { const info = await r.json().catch(() => ({})); if (!r.ok) throw new Error(info.error || gone); return info; }, () => { throw new Error(gone); });
   const show = (info) => {
     if (!info.urls.length) {
-      const open = h("button", { type: "button", class: "primary", onclick: () => { open.disabled = true; open.textContent = "Opening…"; ask("POST").then(show, fail); } }, icon("phone"), "Open to my phone");
+      const open = h("button", { type: "button", class: "primary", onclick: () => { open.disabled = true; open.textContent = "Abriendo…"; ask("POST").then(show, fail); } }, icon("phone"), "Abrir a mi móvil");
       body.replaceChildren(
-        h("p", {}, "Your phone can open this board through Tailscale, the private network between your own devices. Nobody outside it can reach Kanvas."),
-        info.manage ? open : h("p", { class: "phone-note" }, "Only the computer running Kanvas can open it to phones."));
+        h("p", {}, "Tu móvil puede abrir este tablero a través de Tailscale, la red privada entre tus dispositivos. Nadie de fuera puede llegar a Kanvas."),
+        info.manage ? open : h("p", { class: "phone-note" }, "Solo el ordenador donde corre Kanvas puede abrirlo a los móviles."));
       return;
     }
-    const qr = h("div", { class: "phone-qr", role: "img", "aria-label": `QR code of ${info.urls[0]}` });
+    const qr = h("div", { class: "phone-qr", role: "img", "aria-label": `Código QR de ${info.urls[0]}` });
     qr.innerHTML = info.qr;
     body.replaceChildren(qr,
-      h("p", {}, "Scan it with your phone's camera. The phone needs the Tailscale app, signed in to the same account."),
-      ...info.urls.map((u) => h("div", { class: "phone-url" }, h("code", {}, u), h("button", { type: "button", onclick: () => copy(u) }, icon("copy"), "Copy"))),
-      h("p", { class: "phone-note" }, `Anyone on your Tailscale network can open and edit your boards. If the phone cannot connect, allow port ${port} for Tailscale in this computer's firewall: `,
-        h("a", { href: "https://github.com/XMihura/Kanvas#if-the-phone-cannot-connect", target: "_blank", rel: "noopener" }, "how, for each system"), "."),
-      info.manage ? h("button", { type: "button", onclick: (e) => { e.currentTarget.disabled = true; ask("DELETE").then(show, fail); } }, "Stop opening to phones")
-        : h("p", { class: "phone-note" }, "Only the computer running Kanvas can close it to phones."));
+      h("p", {}, "Escanéalo con la cámara del móvil. El móvil necesita la app de Tailscale con la misma cuenta."),
+      ...info.urls.map((u) => h("div", { class: "phone-url" }, h("code", {}, u), h("button", { type: "button", onclick: () => copy(u) }, icon("copy"), "Copiar"))),
+      h("p", { class: "phone-note" }, `Cualquiera de tu red de Tailscale puede abrir y editar tus tableros. Si el móvil no conecta, permite el puerto ${port} para Tailscale en el cortafuegos de este ordenador: `,
+        h("a", { href: "https://github.com/XMihura/Kanvas#if-the-phone-cannot-connect", target: "_blank", rel: "noopener" }, "cómo, en cada sistema"), "."),
+      info.manage ? h("button", { type: "button", onclick: (e) => { e.currentTarget.disabled = true; ask("DELETE").then(show, fail); } }, "Dejar de abrir a los móviles")
+        : h("p", { class: "phone-note" }, "Solo el ordenador donde corre Kanvas puede cerrarlo a los móviles."));
   };
-  body.append(h("p", {}, "Loading…"));
+  body.append(h("p", {}, "Cargando…"));
   ask("GET").then(show, fail);
-  modal("Open on your phone", body, { ok: "Close", cancel: null });
+  modal("Abrir en el móvil", body, { ok: "Cerrar", cancel: null });
 }
 
 // Multi-select of tasks: chips for the chosen ones above a filtered list, or
@@ -4636,7 +4638,7 @@ function taskPicker({ chosen = [], placeholder, label, prompt, reason = () => nu
       return h("div", { class: `pick-opt s-${vstate(t)}${i === active ? " on" : ""}${why ? " off" : ""}`, id: `${uid}-${t.id}`, role: "option", "aria-selected": String(i === active), "aria-disabled": why ? "true" : null, title: why || `${t.id} · ${LABEL[vstate(t)]}`, onclick: () => add(i), onmousemove: () => { if (active !== i && !why) { active = i; drawList(); } } },
         h("span", { class: "dot" }), h("span", { class: "cid" }, t.id), h("span", { class: "t" }, t.title),
         h("span", { class: "note" }, why || (g ? g.name : "")));
-    }), shown.length ? null : h("div", { class: "pick-empty" }, q ? "No matching task" : "No other tasks")));
+    }), shown.length ? null : h("div", { class: "pick-empty" }, q ? "Ninguna tarea coincide" : "No hay otras tareas")));
     const on = list.querySelector(".on");
     if (on) on.scrollIntoView({ block: "nearest" });
     if (on && !list.hidden) input.setAttribute("aria-activedescendant", on.id); else input.removeAttribute("aria-activedescendant");
@@ -4682,7 +4684,7 @@ function taskPicker({ chosen = [], placeholder, label, prompt, reason = () => nu
     },
     reset: (ids) => { picked.splice(0, picked.length, ...ids); drawChips(); },
   };
-  const graphBtn = h("button", { type: "button", class: "ghost pick-graph", onclick: (e) => pickOnGraph(self, e.target.closest("dialog")) }, icon("graph"), "Pick on graph");
+  const graphBtn = h("button", { type: "button", class: "ghost pick-graph", onclick: (e) => pickOnGraph(self, e.target.closest("dialog")) }, icon("graph"), "Elegir en el grafo");
   self.el = h("div", { class: "picker" }, box, list, graphBtn);
   drawChips();
   return self;
@@ -4699,9 +4701,9 @@ function pickOnGraph(picker, dlg) {
   const count = h("b"), before = [...picker.ids];
   const bar = h("div", { class: "pick-bar", role: "status" },
     icon("graph"), h("span", {}, picker.prompt, " · ", count, " chosen"),
-    h("span", { class: "hint" }, "Click cards to add or remove"),
-    h("button", { onclick: () => picking.cancel() }, "Cancel"),
-    h("button", { class: "primary", onclick: () => picking.finish() }, icon("check"), "Done"));
+    h("span", { class: "hint" }, "Pulsa tarjetas para añadir o quitar"),
+    h("button", { onclick: () => picking.cancel() }, "Cancelar"),
+    h("button", { class: "primary", onclick: () => picking.finish() }, icon("check"), "Listo"));
   picking = {
     picker, bar,
     update: () => { count.textContent = picker.ids.length; },
@@ -4748,15 +4750,15 @@ function applyMulti() {
     applyFocus();
   }
   if (!multi.size) { multiBar?.remove(); multiBar = null; return; }
-  if (!multiBar) document.body.append(multiBar = h("div", { class: "multi-bar", role: "toolbar", "aria-label": "Selected tasks" }));
+  if (!multiBar) document.body.append(multiBar = h("div", { class: "multi-bar", role: "toolbar", "aria-label": "Tareas elegidas" }));
   const { tasks, approve, done, remove } = multiActions();
   multiBar.replaceChildren(...compact(
     h("span", { class: "count" }, h("b", {}, tasks.length), " selected"),
-    h("span", { class: "hint" }, coarse.matches ? "Tap cards to add or remove" : "Click cards to add or remove"),
+    h("span", { class: "hint" }, coarse.matches ? "Toca tarjetas para añadir o quitar" : "Pulsa tarjetas para añadir o quitar"),
     approve ? h("button", { class: "primary", onclick: approve.run }, icon(approve.icon), approve.label) : null,
     done ? h("button", { class: "primary to s-done", onclick: done.run }, icon(done.icon), done.label) : null,
     h("button", { class: "danger", onclick: remove.run }, icon(remove.icon), remove.label),
-    h("button", { class: "ghost icon-btn", title: "Clear the selection (Esc)", "aria-label": "Clear the selection", onclick: clearMulti }, icon("x")),
+    h("button", { class: "ghost icon-btn", title: "Quitar la selección (Esc)", "aria-label": "Quitar la selección", onclick: clearMulti }, icon("x")),
   ));
 }
 
@@ -4769,7 +4771,7 @@ function multiActions() {
   return {
     tasks,
     approve: proposals.length ? { label: `Approve ${proposals.length}`, icon: "check", run: run(approveMany, proposals) } : null,
-    done: reviews.length ? { label: `Mark ${reviews.length} done`, icon: "check", run: run(doneMany, reviews) } : null,
+    done: reviews.length ? { label: `Marcar ${reviews.length} como hechas`, icon: "check", run: run(doneMany, reviews) } : null,
     remove: { label: `Delete ${tasks.length}`, icon: "trash", danger: true, run: run(removeMany, tasks) },
   };
 }
@@ -4801,43 +4803,43 @@ async function newTaskDialog(group, { deps, blocks = [], title = "", desc = "" }
   const up = (id) => upstreamOf(board, id);
   let where = null;
   const depPick = taskPicker({
-    chosen: deps !== undefined ? deps : sel ? [sel.id] : [], label: "Blocked by", placeholder: "Search by ID, title or group", prompt: "Tasks that block the new task",
+    chosen: deps !== undefined ? deps : sel ? [sel.id] : [], label: "Bloqueada por", placeholder: "Busca por ID, título o grupo", prompt: "Tareas que bloquean la tarea nueva",
     reason: (t) => {
-      if (blockPick.ids.some((b) => same(b, t.id))) return "Already in Blocks";
+      if (blockPick.ids.some((b) => same(b, t.id))) return "Ya está en Bloquea";
       const b = blockPick.ids.find((x) => up(t.id).has(key(x)));
-      return b ? `Would loop: depends on ${b}` : null;
+      return b ? `Haría un ciclo: depende de ${b}` : null;
     },
     onChange: () => where && sayWhere(),
   });
   const blockPick = taskPicker({
-    chosen: blocks, label: "Blocks", placeholder: "Tasks that wait for this one", prompt: "Tasks that wait for the new task",
+    chosen: blocks, label: "Bloquea", placeholder: "Tareas que esperan a esta", prompt: "Tareas que esperan a la tarea nueva",
     reason: (t) => {
-      if (depPick.ids.some((d) => same(d, t.id))) return "Already in Blocked by";
-      const started = { doing: "Already in progress", review: "Waiting for review", done: "Already done" }[t.state];
+      if (depPick.ids.some((d) => same(d, t.id))) return "Ya está en Bloqueada por";
+      const started = { doing: "Ya está en curso", review: "Espera revisión", done: "Ya está hecha" }[t.state];
       if (started) return started;
       const d = depPick.ids.find((x) => up(x).has(key(t.id)));
-      return d ? `Would loop: ${d} depends on it` : null;
+      return d ? `Haría un ciclo: ${d} depende de ella` : null;
     },
     onChange: () => where && sayWhere(),
   });
-  const groupField = h("select", { name: "group", onchange: () => sayWhere() }, h("option", { value: "" }, "No group"),
+  const groupField = h("select", { name: "group", onchange: () => sayWhere() }, h("option", { value: "" }, "Sin grupo"),
     board.groups.map((g) => h("option", { value: g.id, selected: g.id === fallback }, `${g.name} (${g.id})`)));
   // Says where the task lands above the title, since a quick N, a title and Enter keeps these defaults.
   const sayWhere = () => {
     const g = board.groups.find((x) => x.id === groupField.value), after = depPick.ids, before = blockPick.ids;
-    where.replaceChildren(...compact(g ? `In ${g.name}` : "Ungrouped", after.length ? `, after ${andList(after)}` : "", before.length ? `, before ${andList(before)}` : "", ".",
-      after.length ? [" ", h("button", { type: "button", class: "link", onclick: () => depPick.reset([]) }, after.length > 1 ? "Don't wait for them" : `Don't wait for ${after[0]}`)] : null));
+    where.replaceChildren(...compact(g ? `En ${g.name}` : "Sin grupo", after.length ? `, después de ${andList(after)}` : "", before.length ? `, antes de ${andList(before)}` : "", ".",
+      after.length ? [" ", h("button", { type: "button", class: "link", onclick: () => depPick.reset([]) }, after.length > 1 ? "No esperar a ellas" : `No esperar a ${after[0]}`)] : null));
   };
   where = h("p", { class: "dlg-where" });
   sayWhere();
-  const data = await modal("New task", [
+  const data = await modal("Tarea nueva", [
     where,
-    h("label", { class: "field" }, "Title", h("input", { name: "title", required: true, autocomplete: "off", value: title, placeholder: "What needs to happen?" })),
-    h("label", { class: "field" }, "Group", groupField),
-    h("label", { class: "field" }, h("span", {}, "Description ", h("span", { class: "hint" }, "Markdown")), h("textarea", { name: "desc", rows: 4, value: desc })),
-    h("div", { class: "field" }, h("span", {}, "Blocked by ", h("span", { class: "hint" }, "must be done first")), depPick.el),
-    h("div", { class: "field" }, h("span", {}, "Blocks ", h("span", { class: "hint" }, "wait for this task")), blockPick.el),
-  ], { ok: "Create task" });
+    h("label", { class: "field" }, "Título", h("input", { name: "title", required: true, autocomplete: "off", value: title, placeholder: "¿Qué hay que hacer?" })),
+    h("label", { class: "field" }, "Grupo", groupField),
+    h("label", { class: "field" }, h("span", {}, "Descripción ", h("span", { class: "hint" }, "Markdown")), h("textarea", { name: "desc", rows: 4, value: desc })),
+    h("div", { class: "field" }, h("span", {}, "Bloqueada por ", h("span", { class: "hint" }, "deben hacerse antes")), depPick.el),
+    h("div", { class: "field" }, h("span", {}, "Bloquea ", h("span", { class: "hint" }, "esperan a esta tarea")), blockPick.el),
+  ], { ok: "Crear tarea" });
   if (!data) return;
   const out = {}, f = { title: data.get("title").replace(/\s+/g, " ").trim(), group: data.get("group"), desc: data.get("desc").trim(), deps: depPick.ids, blocks: blockPick.ids };
   const ok = await commit(ops.addTask(f, out), { onFail: () => newTaskDialog(f.group, f) });
@@ -4851,26 +4853,26 @@ async function newTaskDialog(group, { deps, blocks = [], title = "", desc = "" }
 
 async function addDepDialog(t) {
   const pick = taskPicker({
-    label: "Dependencies", placeholder: "Search by ID, title or group", prompt: `Tasks that block ${t.id}`,
-    reason: (x) => same(x.id, t.id) ? "This task" : t.deps.some((d) => same(d, x.id)) ? "Already blocks it" : reaches(board, x.id, t.id) ? `Would loop: depends on ${t.id}` : null,
+    label: "Dependencias", placeholder: "Busca por ID, título o grupo", prompt: `Tareas que bloquean ${t.id}`,
+    reason: (x) => same(x.id, t.id) ? "Esta tarea" : t.deps.some((d) => same(d, x.id)) ? "Ya la bloquea" : reaches(board, x.id, t.id) ? `Haría un ciclo: depende de ${t.id}` : null,
   });
-  const data = await modal(`${t.id} is blocked by`, [h("div", { class: "field" }, "Tasks that must be done first", pick.el)], { ok: "Add" });
+  const data = await modal(`${t.id} está bloqueada por`, [h("div", { class: "field" }, "Tareas que deben hacerse antes", pick.el)], { ok: "Añadir" });
   if (!data || !pick.ids.length) return;
   const ids = [...pick.ids];
-  undoable((b) => { for (const d of ids) ops.addDep(t.id, d)(b); }, `${t.id} now depends on ${ids.join(", ")}`);
+  undoable((b) => { for (const d of ids) ops.addDep(t.id, d)(b); }, `${t.id} ahora depende de ${ids.join(", ")}`);
 }
 
 async function newGroupDialog(kept = {}) {
   const taken = board.groups.map((g) => g.id);
-  const name = h("input", { name: "name", required: true, autocomplete: "off", value: kept.name, placeholder: "e.g. Backend" });
+  const name = h("input", { name: "name", required: true, autocomplete: "off", value: kept.name, placeholder: "p. ej. Compra" });
   const prefix = h("input", { name: "prefix", maxlength: 6, autocomplete: "off", value: kept.prefix });
   let touched = !!kept.prefix;
   name.addEventListener("input", () => { if (!touched) prefix.value = name.value.trim() ? suggestPrefix(name.value, taken) : ""; });
   prefix.addEventListener("input", () => { touched = true; prefix.value = prefix.value.toUpperCase(); });
-  const data = await modal("New group", [
-    h("label", { class: "field" }, "Name", name),
-    h("label", { class: "field" }, h("span", {}, "ID prefix ", h("span", { class: "hint" }, "starts every task ID in the group")), prefix),
-  ], { ok: "Create group" });
+  const data = await modal("Grupo nuevo", [
+    h("label", { class: "field" }, "Nombre", name),
+    h("label", { class: "field" }, h("span", {}, "ID prefix ", h("span", { class: "hint" }, "empieza el ID de cada tarea del grupo")), prefix),
+  ], { ok: "Crear grupo" });
   if (!data) return;
   const n = String(data.get("name")).replace(/\s+/g, " ").trim();
   if (!n) return;
@@ -4881,22 +4883,22 @@ async function newGroupDialog(kept = {}) {
 async function deleteGroupDialog(gid) {
   const g = board.groups.find((x) => x.id === gid);
   if (!g) return false;
-  const members = board.tasks.filter((t) => t.group === g.id), tasks = `${members.length} task${members.length === 1 ? "" : "s"}`;
+  const members = board.tasks.filter((t) => t.group === g.id), tasks = `${members.length} tarea${members.length === 1 ? "" : "s"}`;
   const outside = board.tasks.filter((t) => t.group !== g.id && t.deps.some((d) => members.some((m) => same(m.id, d)))).map((t) => t.id);
-  const data = await modal(`Delete the ${g.name} group?`, [
-    h("p", {}, members.length ? `Its ${tasks} stay on the board without a group and keep their IDs.` : "It has no tasks."),
+  const data = await modal(`¿Borrar el grupo ${g.name}?`, [
+    h("p", {}, members.length ? `Sus ${tasks} se quedan en el tablero sin grupo y conservan su ID.` : "No tiene tareas."),
     members.length ? h("label", { class: "check" }, h("input", { type: "checkbox", name: "tasks" }),
-      `Delete its ${tasks} too${outside.length ? `, along with the dependencies ${outside.join(", ")} ${outside.length === 1 ? "has" : "have"} on them` : ""}`) : null,
-  ], { ok: "Delete group", danger: true });
+      `Borrar también sus ${tasks}${outside.length ? `, junto con las dependencias que ${outside.join(", ")} ${outside.length === 1 ? "tiene" : "tienen"} hacia ellas` : ""}`) : null,
+  ], { ok: "Borrar el grupo", danger: true });
   if (!data) return false;
   const ids = data.get("tasks") ? members.map((t) => t.id) : [];
   if (ids.some((id) => same(id, ui.selected))) ui.selected = null;
-  return undoable(ops.deleteGroup(g.id, ids), `Deleted the ${g.name} group${ids.length ? ` and its ${tasks}` : ""}`);
+  return undoable(ops.deleteGroup(g.id, ids), `Grupo ${g.name} borrado${ids.length ? ` y sus ${tasks}` : ""}`);
 }
 
 function groupsDialog(kept = {}) {
   const rows = h("div", { class: "group-rows" });
-  const name = h("input", { name: "name", placeholder: "New group name", "aria-label": "New group name", autocomplete: "off", value: kept.name });
+  const name = h("input", { name: "name", placeholder: "Nombre del grupo nuevo", "aria-label": "Nombre del grupo nuevo", autocomplete: "off", value: kept.name });
   const prefix = h("input", { placeholder: "ID", "aria-label": "ID prefix", maxlength: 6, autocomplete: "off", value: kept.prefix });
   let prefixTouched = !!kept.prefix;
   name.addEventListener("input", () => { if (!prefixTouched) prefix.value = name.value.trim() ? suggestPrefix(name.value, board.groups.map((g) => g.id)) : ""; });
@@ -4910,50 +4912,50 @@ function groupsDialog(kept = {}) {
       if (!name.value) { name.value = n; prefix.value = p; prefixTouched = true; }
     };
     commit(ops.addGroup(n, p), { onFail: back }).then((ok) => { if (ok) { name.value = ""; prefix.value = ""; prefixTouched = false; fill(); name.focus(); } });
-  } }, icon("plus"), "Add");
+  } }, icon("plus"), "Añadir");
   name.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); add.click(); } });
   prefix.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); add.click(); } });
   const fill = () => {
     rows.replaceChildren(...(board.groups.length ? board.groups.map((g, i) => {
       const count = board.tasks.filter((t) => t.group === g.id).length;
-      const input = h("input", { value: g.name, "aria-label": `Name of group ${g.id}` });
+      const input = h("input", { value: g.name, "aria-label": `Nombre del grupo ${g.id}` });
       input.addEventListener("change", () => { const v = input.value.replace(/\s+/g, " ").trim(); if (v && v !== g.name) commit(ops.renameGroup(g.id, v)); });
       input.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); input.blur(); } });
       return h("div", { class: "group-row" },
         groupTag(GROUP_COLORS[i % GROUP_COLORS.length]), input,
-        h("span", { class: "cid", title: `${count} task${count === 1 ? "" : "s"}` }, g.id),
+        h("span", { class: "cid", title: `${count} tarea${count === 1 ? "" : "s"}` }, g.id),
         h("span", { class: "btns" },
-          h("button", { type: "button", class: "ghost", title: "Move up", "aria-label": "Move up", disabled: i === 0, onclick: () => { commit(ops.moveGroup(g.id, -1)); fill(); } }, icon("up")),
-          h("button", { type: "button", class: "ghost", title: "Move down", "aria-label": "Move down", disabled: i === board.groups.length - 1, onclick: () => { commit(ops.moveGroup(g.id, 1)); fill(); } }, icon("down")),
-          h("button", { type: "button", class: "ghost danger", title: "Delete…", "aria-label": `Delete group ${g.name}`, onclick: () => deleteGroupDialog(g.id).then(fill) }, icon("trash"))));
-    }) : [h("div", { class: "empty-line" }, "No groups yet. Groups are areas of work, like Research or Backend.")]));
+          h("button", { type: "button", class: "ghost", title: "Subir", "aria-label": "Subir", disabled: i === 0, onclick: () => { commit(ops.moveGroup(g.id, -1)); fill(); } }, icon("up")),
+          h("button", { type: "button", class: "ghost", title: "Bajar", "aria-label": "Bajar", disabled: i === board.groups.length - 1, onclick: () => { commit(ops.moveGroup(g.id, 1)); fill(); } }, icon("down")),
+          h("button", { type: "button", class: "ghost danger", title: "Borrar…", "aria-label": `Borrar el grupo ${g.name}`, onclick: () => deleteGroupDialog(g.id).then(fill) }, icon("trash"))));
+    }) : [h("div", { class: "empty-line" }, "Aún no hay grupos. Los grupos son partes del trabajo, como Análisis o Compra.")]));
   };
   fill();
-  modal("Groups", [
-    h("p", {}, "Groups become swimlanes in the graph. The ID prefix starts every task ID in the group."),
+  modal("Grupos", [
+    h("p", {}, "Cada grupo es una franja en el grafo. El prefijo empieza el ID de cada tarea del grupo."),
     rows,
     h("div", { class: "group-new" }, name, prefix, add),
-  ], { ok: "Close", cancel: null });
+  ], { ok: "Cerrar", cancel: null });
 }
 
 const SHORTCUTS = [
-  ["Moving around", [["← / ↑ / ↓ / →", "Select the next card in that direction"], ["Enter", "Move into the selected task's panel, where Tab goes round its controls"], ["Esc", "Leave the panel, close it, or clear the filter"], ["/", "Filter tasks"], ["Shift+← / Shift+→", "Previous or next open board"]]],
-  ["The selected task", [["A", "Approve the selected proposal"], ["S", "Start the selected task"], ["D", "Mark the selected task done"], ["P", "Pause the selected task"], ["E", "Rename the selected task"], ["Del / Backspace", "Delete the selected task, or reject it if it is a proposal"], ["Ctrl+click", "Select several cards, then approve, finish or delete them together with the bar, A, D or Del"], ["Right-click", "Actions for a card, a dependency or empty space"]]],
-  ["Views", [["G / B", "Graph or board view"], ["L", "Graph left to right or top to bottom"], ["M", "Automatic layout, or order cards and groups yourself by dragging them"], ["H", "Hide or show finished tasks"], ["F", "Fit the graph to the screen"], ["+ / -", "Zoom"], ["[ / ]", "Compress or extend the graph"]]],
-  ["Editing", [["N", "New task"], ["Ctrl+Enter", "Save the text you are editing"], ["Ctrl+Z", "Undo your last change"], ["Ctrl+Shift+Z / Ctrl+Y", "Redo"]]],
+  ["Moverse", [["← / ↑ / ↓ / →", "Elegir la tarjeta siguiente en esa dirección"], ["Enter", "Entrar en la ficha de la tarea elegida, donde Tab recorre sus controles"], ["Esc", "Salir de la ficha, cerrarla o quitar el filtro"], ["/", "Filtrar tareas"], ["Shift+← / Shift+→", "Tablero abierto anterior o siguiente"]]],
+  ["La tarea elegida", [["A", "Aprobar la propuesta elegida"], ["S", "Empezar la tarea elegida"], ["D", "Marcar hecha la tarea elegida"], ["P", "Pausar la tarea elegida"], ["E", "Renombrar la tarea elegida"], ["Supr / Retroceso", "Borrar la tarea elegida, o rechazarla si es una propuesta"], ["Ctrl+clic", "Elegir varias tarjetas y luego aprobarlas, terminarlas o borrarlas a la vez con la barra, A, D o Supr"], ["Clic derecho", "Acciones para una tarjeta, una dependencia o un espacio vacío"]]],
+  ["Vistas", [["G / B", "Vista de grafo o de tablero"], ["L", "Grafo de izquierda a derecha o de arriba abajo"], ["M", "Orden automático, u ordena tú tarjetas y grupos arrastrándolos"], ["H", "Ocultar o ver las tareas terminadas"], ["F", "Ajustar el grafo a la pantalla"], ["+ / -", "Zoom"], ["[ / ]", "Comprimir o estirar el grafo"]]],
+  ["Edición", [["N", "Tarea nueva"], ["Ctrl+Intro", "Guardar el texto que editas"], ["Ctrl+Z", "Deshacer tu último cambio"], ["Ctrl+Shift+Z / Ctrl+Y", "Rehacer"]]],
 ];
 
 function helpDialog() {
   // The list scrolls on its own: were the whole dialog to scroll, Close taking the focus would hide the heading.
-  modal("Keyboard shortcuts", h("div", { class: "help", tabindex: "0", "aria-label": "Shortcuts" },
+  modal("Atajos de teclado", h("div", { class: "help", tabindex: "0", "aria-label": "Atajos" },
     h("div", { class: "help-groups" }, [SHORTCUTS.slice(0, 2), SHORTCUTS.slice(2)].map((groups) => h("div", { class: "keys" },
       groups.map(([head, keys]) => [h("h4", { class: "section-head" }, head),
         keys.map(([k, v]) => [h("span", {}, keyLabel(k).split(" / ").map((x, i) => [i ? " / " : "", h("kbd", {}, x)])), h("span", {}, v)])])))),
-    h("p", {}, keyLabel("In the graph, drag a dot on a card's edge onto another card to add a dependency, and click an arrow to remove it. Scroll to pan, Ctrl+scroll to zoom.")),
-    h("p", {}, "Agents work through the Kanvas command line; their changes appear here within a second."),
-    prefs.skipYoloWarning ? h("p", {}, "The YOLO confirmation is hidden. ",
-      h("button", { type: "button", class: "link", onclick: (e) => { delete prefs.skipYoloWarning; savePrefs(); e.target.closest("p").remove(); toast("The YOLO confirmation will show again"); } }, "Show it again")) : null,
-  ), { ok: "Close", cancel: null });
+    h("p", {}, keyLabel("En el grafo, arrastra el punto del borde de una tarjeta a otra para añadir una dependencia, y pulsa una flecha para quitarla. Rueda para moverte, Ctrl+rueda para el zoom.")),
+    h("p", {}, "Los agentes trabajan con la línea de comandos de Kanvas; sus cambios aparecen aquí en un segundo."),
+    prefs.skipYoloWarning ? h("p", {}, "La confirmación de YOLO está oculta. ",
+      h("button", { type: "button", class: "link", onclick: (e) => { delete prefs.skipYoloWarning; savePrefs(); e.target.closest("p").remove(); toast("La confirmación de YOLO volverá a salir"); } }, "Volver a mostrarla")) : null,
+  ), { ok: "Cerrar", cancel: null });
 }
 
 // Context menus ---------------------------------------------------------------
@@ -5052,7 +5054,7 @@ async function goToBoard(b) {
 async function goTask(name, id = null) {
   if (!name || name === boardHere()) {
     if (id && get(id)) { select(get(id).id); reveal(get(id).id); }
-    else if (id) toast(`${id} is no longer on this board`);
+    else if (id) toast(`${id} ya no está en este tablero`);
     return;
   }
   for (let i = 0; pending && i < 100; i++) await new Promise((r) => setTimeout(r, 50));
@@ -5118,8 +5120,8 @@ function renderInboxButton() {
   if (!btn) return;
   btn.hidden = !!store?.readOnly;
   btn.replaceChildren(...compact(icon("bell"), n ? h("b", {}, n) : null));
-  btn.dataset.tip = compact(asks ? `${asks} agent${asks === 1 ? " waits" : "s wait"} for your reply` : null,
-    reviews ? `${reviews} task${reviews === 1 ? "" : "s"} to review` : null).join(", ") || "Nothing waits for you";
+  btn.dataset.tip = compact(asks ? `${asks} agente${asks === 1 ? " espera" : "s esperan"} tu respuesta` : null,
+    reviews ? `${reviews} tarea${reviews === 1 ? "" : "s"} para revisar` : null).join(", ") || "Nada te espera";
   btn.setAttribute("aria-label", `Inbox: ${btn.dataset.tip}`);
   if (inboxBody?.isConnected) fillInbox(inboxBody);
 }
@@ -5145,20 +5147,20 @@ function fillInbox(node) {
       h("span", { class: `badge s-${state}` }, LABEL[state]),
       h("span", { class: "ib-main" }, h("span", { class: "ib-title" }, h("span", { class: "cid" }, t.id), " ", t.title),
         state === "ask" ? h("span", { class: "ib-q" }, questionText(last)) : null,
-        last ? h("span", { class: "ib-sub" }, agentMark(by), state === "ask" ? `${by} · ${ago(last.at)} · reply in its chat` : `${by} · ${ago(last.at)}`) : null));
+        last ? h("span", { class: "ib-sub" }, agentMark(by), state === "ask" ? `${byName(by)} · ${ago(last.at)} · responde en su chat` : `${byName(by)} · ${ago(last.at)}`) : null));
   };
   const asks = sections.some((s) => s.items.some((x) => x.state === "ask"));
   node.replaceChildren(...compact(
-    h("div", { class: "ib-head" }, asks ? "Waiting for you" : "To review"),
-    sections.length ? sections.map((s) => [several ? h("div", { class: "ib-board" }, s.b.title, s.b.here ? h("small", {}, "this board") : null) : null, s.items.map((x) => row(s.b, x))])
-      : h("div", { class: "ib-empty" }, "Nothing waits for you. Questions from agents and finished work from every open board show here."),
+    h("div", { class: "ib-head" }, asks ? "Te espera" : "Para revisar"),
+    sections.length ? sections.map((s) => [several ? h("div", { class: "ib-board" }, s.b.title, s.b.here ? h("small", {}, "este tablero") : null) : null, s.items.map((x) => row(s.b, x))])
+      : h("div", { class: "ib-empty" }, "Nada te espera. Aquí salen las preguntas de los agentes y el trabajo terminado de todos los tableros abiertos."),
   ));
 }
 
 async function switchBoard(step) {
   await refreshBoards();
   const n = openBoards.length, i = openBoards.findIndex((b) => b.name === boardHere());
-  if (n < 2 || i < 0) return toast("No other board is open. Run kanvas serve in another project to open its board here too.");
+  if (n < 2 || i < 0) return toast("No hay otro tablero abierto. Ejecuta kanvas serve en otro proyecto para abrir aquí también su tablero.");
   goToBoard(openBoards[(i + step + n) % n]);
 }
 
@@ -5168,14 +5170,14 @@ function boardMenu() {
   const label = (b) => [b.title || b.name, b.title && b.title !== b.name ? h("small", {}, b.name) : null];
   return [
     // A phone's header shortens the board's name, so its menu starts with the whole of it.
-    boards.length ? { head: "Open boards" } : phone.matches ? { head: boardLabel() } : null,
+    boards.length ? { head: "Tableros abiertos" } : phone.matches ? { head: boardLabel() } : null,
     ...boards.map((b) => b.name === boardHere() ? { label: label(b), icon: "check", checked: true, run: () => {} } : { label: label(b), icon: null, checked: false, href: boardUrl(b), run: () => goToBoard(b) }),
     boards.length ? "sep" : null,
-    store.readOnly ? null : { label: "Rename board", icon: "edit", run: () => { ui.editingTitle = true; renderHeader(); } },
-    store.readOnly ? null : { label: "Groups…", icon: "lanes", run: groupsDialog },
-    store.kind === "server" ? { label: "Open on your phone…", icon: "phone", run: phoneDialog } : null,
+    store.readOnly ? null : { label: "Renombrar el tablero", icon: "edit", run: () => { ui.editingTitle = true; renderHeader(); } },
+    store.readOnly ? null : { label: "Grupos…", icon: "lanes", run: groupsDialog },
+    store.kind === "server" ? { label: "Abrir en el móvil…", icon: "phone", run: phoneDialog } : null,
     phone.matches ? null : "sep",
-    phone.matches ? null : { label: ["Keyboard shortcuts", keys("?")], icon: "keyboard", run: helpDialog },
+    phone.matches ? null : { label: ["Atajos de teclado", keys("?")], icon: "keyboard", run: helpDialog },
   ];
 }
 
@@ -5192,17 +5194,17 @@ function displayMenu() {
     const graph = ui.view === "graph", manual = prefs.arrange === "manual";
     node.replaceChildren(...compact(
       // Phones have no room for the view switch in the header.
-      phone.matches && row("View", ["G", "B"], seg("View", [["graph", "Graph", "graph"], ["board", "Board", "columns"]], ui.view, (v) => { setView(v); fill(); })),
-      graph && h("div", { class: "d-head" }, "Graph"),
-      graph && row("Direction", ["L"], seg("Direction", [["horizontal", "Left to right", "right"], ["vertical", "Top to bottom", "down"]], prefs.orient === "vertical" ? "vertical" : "horizontal", toggleOrient)),
+      phone.matches && row("Vista", ["G", "B"], seg("Vista", [["graph", "Grafo", "graph"], ["board", "Tablero", "columns"]], ui.view, (v) => { setView(v); fill(); })),
+      graph && h("div", { class: "d-head" }, "Grafo"),
+      graph && row("Dirección", ["L"], seg("Dirección", [["horizontal", "De izquierda a derecha", "right"], ["vertical", "De arriba abajo", "down"]], prefs.orient === "vertical" ? "vertical" : "horizontal", toggleOrient)),
       // Phones have no room for the spacing slider in the zoom bar.
-      graph && phone.matches && row("Spacing between levels", [], h("input", { type: "range", class: "d-range", min: LEVEL_GAP.min, max: LEVEL_GAP.max, step: 10, value: prefs.levelGap, "aria-label": "Spacing between dependency levels", oninput: (e) => setLevelGap(+e.target.value) })),
-      graph && row("Card order", ["M"], seg("Card order", [["auto", "Automatic"], ["manual", "Manual"]], manual ? "manual" : "auto", toggleArrange),
-        manual ? "Cards keep the order you give them. Drag a card up or down or into another lane, or a lane by its name." : "Cards are arranged for fewer crossings and straighter arrows."),
-      h("div", { class: "d-head" }, "Tasks"),
-      row("Finished tasks", ["H"], seg("Finished tasks", [[false, "Show"], [true, "Hide"]], !!prefs.hideDone, toggleDone)),
-      h("div", { class: "d-head" }, "Appearance"),
-      row("Theme", [], seg("Theme", [["light", "Light", "sun"], ["dark", "Dark", "moon"], [null, "Auto", "contrast"]], prefs.theme || null, setThemePref)),
+      graph && phone.matches && row("Espacio entre niveles", [], h("input", { type: "range", class: "d-range", min: LEVEL_GAP.min, max: LEVEL_GAP.max, step: 10, value: prefs.levelGap, "aria-label": "Espacio entre niveles de dependencia", oninput: (e) => setLevelGap(+e.target.value) })),
+      graph && row("Orden de las tarjetas", ["M"], seg("Orden de las tarjetas", [["auto", "Automático"], ["manual", "Manual"]], manual ? "manual" : "auto", toggleArrange),
+        manual ? "Las tarjetas mantienen el orden que les des. Arrastra una tarjeta arriba, abajo o a otra franja, o una franja por su nombre." : "Las tarjetas se colocan para que las flechas se crucen menos y vayan más rectas."),
+      h("div", { class: "d-head" }, "Tareas"),
+      row("Tareas terminadas", ["H"], seg("Tareas terminadas", [[false, "Ver"], [true, "Ocultar"]], !!prefs.hideDone, toggleDone)),
+      h("div", { class: "d-head" }, "Aspecto"),
+      row("Tema", [], seg("Tema", [["light", "Claro", "sun"], ["dark", "Oscuro", "moon"], [null, "Automático", "contrast"]], prefs.theme || null, setThemePref)),
     ));
     if (focused >= 0) (controls()[focused] || node.closest(".ctx-menu") || node).focus({ preventScroll: true });
   };
@@ -5223,10 +5225,10 @@ function groupFilterMenu() {
         icon(on ? "check" : null), groupTag(color), h("span", { class: "lbl" }, name), h("span", { class: "count" }, n));
     };
     node.replaceChildren(...compact(
-      h("button", { type: "button", "aria-pressed": String(!ui.groups.size), onclick: pick(() => ui.groups.clear()) }, icon(ui.groups.size ? null : "check"), h("span", { class: "lbl" }, "All groups")),
+      h("button", { type: "button", "aria-pressed": String(!ui.groups.size), onclick: pick(() => ui.groups.clear()) }, icon(ui.groups.size ? null : "check"), h("span", { class: "lbl" }, "Todos los grupos")),
       h("div", { class: "sep", role: "separator" }),
       board.groups.map((g, i) => row(g.id, GROUP_COLORS[i % GROUP_COLORS.length], g.name)),
-      board.tasks.some((t) => !laneId(t)) && row("", null, "No group"),
+      board.tasks.some((t) => !laneId(t)) && row("", null, "Sin grupo"),
     ));
     if (focused >= 0) (buttons()[focused] || node.closest(".ctx-menu") || node).focus({ preventScroll: true });
   };
@@ -5236,7 +5238,7 @@ function groupFilterMenu() {
 
 // Phones fold search, the state counts, finished tasks and the groups into one menu.
 function filterMenu() {
-  const search = h("input", { type: "search", class: "fm-search", placeholder: "Filter tasks", "aria-label": "Filter tasks", autocomplete: "off", value: ui.search });
+  const search = h("input", { type: "search", class: "fm-search", placeholder: "Filtrar tareas", "aria-label": "Filtrar tareas", autocomplete: "off", value: ui.search });
   const node = h("div", { class: "gf-body fm-body" });
   const fill = () => {
     const buttons = () => [...node.querySelectorAll("button")];
@@ -5251,11 +5253,11 @@ function filterMenu() {
         icon(on ? "check" : hidden ? "eye-off" : null), h("span", { class: `dot s-${s}` }), h("span", { class: "lbl" }, LABEL[s]), h("span", { class: "count" }, hidden ? "hidden" : counts[s]));
     };
     node.replaceChildren(...compact(
-      h("div", { class: "ctx-head" }, "States"),
+      h("div", { class: "ctx-head" }, "Estados"),
       VIEW_STATES.map(row),
-      h("button", { type: "button", "aria-pressed": String(!!prefs.hideDone), onclick: pick(toggleDone) }, icon(prefs.hideDone ? "check" : null), h("span", { class: "lbl" }, "Hide finished tasks")),
+      h("button", { type: "button", "aria-pressed": String(!!prefs.hideDone), onclick: pick(toggleDone) }, icon(prefs.hideDone ? "check" : null), h("span", { class: "lbl" }, "Ocultar las tareas terminadas")),
       ui.states.size + ui.groups.size || ui.search
-        ? h("button", { type: "button", onclick: () => { ui.states.clear(); ui.groups.clear(); ui.search = search.value = $("#search").value = ""; fitted = false; closeMenu(true); render(); } }, icon("x"), h("span", { class: "lbl" }, "Clear filters"))
+        ? h("button", { type: "button", onclick: () => { ui.states.clear(); ui.groups.clear(); ui.search = search.value = $("#search").value = ""; fitted = false; closeMenu(true); render(); } }, icon("x"), h("span", { class: "lbl" }, "Quitar los filtros"))
         : null,
     ));
     if (focused >= 0) (buttons()[focused] || node.closest(".ctx-menu") || node).focus({ preventScroll: true });
@@ -5263,31 +5265,31 @@ function filterMenu() {
   search.addEventListener("input", () => { ui.search = $("#search").value = search.value; render(); fill(); });
   search.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); search.blur(); } });
   fill();
-  return [{ node: search }, { node }, ...(board.groups.length ? ["sep", { head: "Groups" }, ...groupFilterMenu()] : [])];
+  return [{ node: search }, { node }, ...(board.groups.length ? ["sep", { head: "Grupos" }, ...groupFilterMenu()] : [])];
 }
 
 function cardMenu(t) {
   const open = { label: `Open ${t.id}`, icon: "open", run: () => select(t.id) };
-  const copyId = { label: "Copy ID", icon: "copy", run: () => copy(t.id) };
+  const copyId = { label: "Copiar ID", icon: "copy", run: () => copy(t.id) };
   if (store.readOnly) return [open, copyId];
   const picked = multi.has(key(t.id));
   return [
     open,
-    { label: picked ? "Unselect" : multi.size ? "Add to the selection" : "Select", icon: "check", run: () => toggleMulti(t.id) },
+    { label: picked ? "Quitar de la selección" : multi.size ? "Añadir a la selección" : "Elegir", icon: "check", run: () => toggleMulti(t.id) },
     "sep",
     ...stateMoves(t).filter((m) => !m.danger).map((m) => ({ ...m, label: m.asks ? `${m.label}…` : m.label })),
     yoloAction(t),
     "sep",
-    { label: "New task blocked by this…", icon: "plus", run: () => newTaskDialog(t.group, { deps: [t.id] }) },
-    t.state === "proposed" || t.state === "todo" ? { label: "New task that blocks this…", icon: "plus", run: () => newTaskDialog(t.group, { deps: [], blocks: [t.id] }) } : null,
-    { label: "Add dependency…", icon: "link", run: () => addDepDialog(t) },    t.deps.length ? { head: "Remove dependency on" } : null,
+    { label: "Tarea nueva bloqueada por esta…", icon: "plus", run: () => newTaskDialog(t.group, { deps: [t.id] }) },
+    t.state === "proposed" || t.state === "todo" ? { label: "Tarea nueva que bloquea esta…", icon: "plus", run: () => newTaskDialog(t.group, { deps: [], blocks: [t.id] }) } : null,
+    { label: "Añadir dependencia…", icon: "link", run: () => addDepDialog(t) },    t.deps.length ? { head: "Quitar la dependencia de" } : null,
     ...t.deps.map((d) => {
       const dep = get(d);
-      return { label: [h("span", { class: "cid" }, d), dep ? dep.title : "missing task"], icon: "x", run: () => unlink(t.id, d) };
+      return { label: [h("span", { class: "cid" }, d), dep ? dep.title : "tarea que no existe"], icon: "x", run: () => unlink(t.id, d) };
     }),
     "sep",
     copyId,
-    { label: t.state === "proposed" ? "Reject…" : "Delete…", icon: "trash", danger: true, run: () => removeTask(t) },
+    { label: t.state === "proposed" ? "Rechazar…" : "Borrar…", icon: "trash", danger: true, run: () => removeTask(t) },
   ];
 }
 
@@ -5299,10 +5301,10 @@ function selectionMenu(t) {
     approve,
     done,
     "sep",
-    { label: `Remove ${t.id} from the selection`, icon: "x", run: () => toggleMulti(t.id) },
-    { label: "Clear the selection", icon: "x", run: clearMulti },
+    { label: `Quitar ${t.id} de la selección`, icon: "x", run: () => toggleMulti(t.id) },
+    { label: "Quitar la selección", icon: "x", run: clearMulti },
     "sep",
-    { label: "Copy IDs", icon: "copy", run: () => copy(tasks.map((x) => x.id).join(" ")) },
+    { label: "Copiar los ID", icon: "copy", run: () => copy(tasks.map((x) => x.id).join(" ")) },
     "sep",
     { ...remove, label: `${remove.label}…` },
   ];
@@ -5314,14 +5316,14 @@ function edgeMenu(from, to) {
   const via = to.deps.filter((o) => !same(o, from.id) && upstreamOf(board, o).has(key(from.id)));
   return [
     { node: h("div", { class: "ctx-link" },
-      h("div", { class: "ctx-head" }, "Connection between two tasks"),
+      h("div", { class: "ctx-head" }, "Conexión entre dos tareas"),
       task(from),
-      h("div", { class: "ctx-link-arrow" }, icon("down"), "must be done before"),
+      h("div", { class: "ctx-link-arrow" }, icon("down"), "debe hacerse antes que"),
       task(to),
-      via.length ? h("div", { class: "ctx-head" }, `Also implied through ${via.join(", ")}`) : null) },
+      via.length ? h("div", { class: "ctx-head" }, `También se deduce por ${via.join(", ")}`) : null) },
     store.readOnly ? null : "sep",
     store.readOnly ? null : {
-      label: "Remove connection", icon: "unlink", danger: true,
+      label: "Quitar la conexión", icon: "unlink", danger: true,
       run: () => unlink(to.id, from.id),
     },
   ];
@@ -5337,15 +5339,15 @@ function showEdgeMenu(hit, x, y) {
 
 function spaceMenu(group) {
   const g = group ? board.groups.find((x) => x.id === group) : null;
-  const label = group === undefined ? "New task…" : g ? `New task in ${g.name}…` : "New ungrouped task…";
+  const label = group === undefined ? "Tarea nueva…" : g ? `Tarea nueva en ${g.name}…` : "Tarea nueva sin grupo…";
   return [
     { label, icon: "plus", run: () => newTaskDialog(group, { deps: [] }) },
-    { label: "New group…", icon: "lanes", run: newGroupDialog },
+    { label: "Grupo nuevo…", icon: "lanes", run: newGroupDialog },
     ui.view === "graph" ? "sep" : null,
-    ui.view === "graph" ? { label: "Fit to screen", icon: "fit", run: () => fit(true) } : null,
-    ui.view === "graph" && prefs.arrange === "manual" ? { label: "Use the automatic order", icon: "sort", run: useAutomaticOrder } : null,
+    ui.view === "graph" ? { label: "Ajustar a la pantalla", icon: "fit", run: () => fit(true) } : null,
+    ui.view === "graph" && prefs.arrange === "manual" ? { label: "Usar el orden automático", icon: "sort", run: useAutomaticOrder } : null,
     g ? "sep" : null,
-    g ? { label: `Delete the ${g.name} group…`, icon: "trash", danger: true, run: () => deleteGroupDialog(g.id) } : null,
+    g ? { label: `Borrar el grupo ${g.name}…`, icon: "trash", danger: true, run: () => deleteGroupDialog(g.id) } : null,
   ];
 }
 
@@ -5356,7 +5358,7 @@ function contextMenuAt(el, x, y) {
   const hit = el.closest("#edge-hits path");
   if (card && get(card.dataset.id)) {
     const t = get(card.dataset.id);
-    items = multi.has(key(t.id)) ? selectionMenu(t) : [multi.size ? { head: `${t.id}, outside the selection` } : null, ...cardMenu(t)];
+    items = multi.has(key(t.id)) ? selectionMenu(t) : [multi.size ? { head: `${t.id}, fuera de la selección` } : null, ...cardMenu(t)];
     target = card;
   } else if (hit) {
     showEdgeMenu(hit, x, y);
@@ -6110,17 +6112,17 @@ function showWelcome() {
   fileInput.addEventListener("change", () => fileInput.files[0] && openFromFile(fileInput.files[0]));
   w.replaceChildren(h("div", { class: "welcome-card" },
     h("h1", {}, $(".logo").cloneNode(true), "Kanvas"),
-    h("p", {}, "A task board you share with your AI agents. Open your board file to plan, approve and review work."),
+    h("p", {}, "Un tablero de tareas que compartes con tus agentes de IA. Abre tu archivo de tablero para planificar, aprobar y revisar el trabajo."),
     "showDirectoryPicker" in window ? h("div", { class: "row projects-row" },
       h("button", { class: "primary", onclick: pickWorkspace }, icon("folder-open"), "Abrir carpeta de proyectos")) : null,
     h("div", { class: "row" },
-      h("button", { class: "primary", onclick: () => (canPick ? pickFile() : fileInput.click()) }, icon("folder-open"), "Open kanvas.json"),
-      h("button", { onclick: () => open(memoryStore("kanvas.json", { kanvas: 1, title: "New board", groups: [], tasks: [] })) }, icon("plus"), "Start an empty board")),
-    h("div", { class: "drop" }, "or drop the file here"),
+      h("button", { class: "primary", onclick: () => (canPick ? pickFile() : fileInput.click()) }, icon("folder-open"), "Abrir kanvas.json"),
+      h("button", { onclick: () => open(memoryStore("kanvas.json", { kanvas: 1, title: "Tablero nuevo", groups: [], tasks: [] })) }, icon("plus"), "Empezar un tablero vacío")),
+    h("div", { class: "drop" }, "o suelta el archivo aquí"),
     h("p", {}, canPick
-      ? "Changes are written straight back to the file, and agent changes show up live."
-      : "This browser cannot write files directly: changes stay in the tab until you save them."),
-    h("p", {}, "Live sync in any browser: ", serveHint("run ")),
+      ? "Los cambios se guardan directamente en el archivo, y los de los agentes aparecen al momento."
+      : "Este navegador no puede escribir archivos directamente: los cambios se quedan en la pestaña hasta que los guardes."),
+    h("p", {}, "Sincronización en directo en cualquier navegador: ", serveHint("run ")),
     fileInput));
   w.hidden = false;
   // The projects folder opened last time comes first; the browser asks again for leave to use it.
@@ -6154,7 +6156,7 @@ async function grant(handle) {
 
 async function pickFile() {
   try {
-    const [handle] = await window.showOpenFilePicker({ types: [{ description: "Kanvas board", accept: { "application/json": [".json"] } }] });
+    const [handle] = await window.showOpenFilePicker({ types: [{ description: "Tablero de Kanvas", accept: { "application/json": [".json"] } }] });
     if (await grant(handle)) openHandle(handle);
     else openFromFile(await handle.getFile());
   } catch (e) {
@@ -6163,11 +6165,11 @@ async function pickFile() {
 }
 
 async function openHandle(handle) {
-  try { await open(fileStore(handle)); } catch (e) { toast(`Cannot open ${handle.name}: ${e.message}`, "error"); }
+  try { await open(fileStore(handle)); } catch (e) { toast(`No se puede abrir ${handle.name}: ${e.message}`, "error"); }
 }
 
 async function openFromFile(file) {
-  try { await open(memoryStore(file.name, JSON.parse(await file.text()))); } catch (e) { toast(`Cannot open ${file.name}: ${e.message}`, "error"); }
+  try { await open(memoryStore(file.name, JSON.parse(await file.text()))); } catch (e) { toast(`No se puede abrir ${file.name}: ${e.message}`, "error"); }
 }
 
 function download() {
@@ -6247,11 +6249,11 @@ function setupChrome() {
     vv.addEventListener("scroll", fitViewport);
     fitViewport();
   }
-  $("#display").onclick = (e) => dropdown(e.currentTarget, displayMenu(), { alignRight: true, cls: "dpop", role: "dialog", label: "Display options" });
+  $("#display").onclick = (e) => dropdown(e.currentTarget, displayMenu(), { alignRight: true, cls: "dpop", role: "dialog", label: "Opciones de vista" });
   $("#hide-done").onclick = toggleDone;
-  $("#inbox").onclick = (e) => dropdown(e.currentTarget, inboxMenu(), { alignRight: true, cls: "inbox-pop", role: "dialog", label: "Inbox" });
-  $("#group-filter").onclick = (e) => dropdown(e.currentTarget, groupFilterMenu(), { role: "dialog", label: "Filter by group" });
-  $("#filter").onclick = (e) => dropdown(e.currentTarget, filterMenu(), { role: "dialog", label: "Filters" });
+  $("#inbox").onclick = (e) => dropdown(e.currentTarget, inboxMenu(), { alignRight: true, cls: "inbox-pop", role: "dialog", label: "Bandeja" });
+  $("#group-filter").onclick = (e) => dropdown(e.currentTarget, groupFilterMenu(), { role: "dialog", label: "Filtrar por grupo" });
+  $("#filter").onclick = (e) => dropdown(e.currentTarget, filterMenu(), { role: "dialog", label: "Filtros" });
   prefs.levelGap = clamp(Math.round(+prefs.levelGap || 70), LEVEL_GAP.min, LEVEL_GAP.max);
   Object.assign($("#spread"), { min: LEVEL_GAP.min, max: LEVEL_GAP.max, value: prefs.levelGap });
   $("#spread").addEventListener("input", (e) => setLevelGap(+e.target.value));
@@ -6348,16 +6350,16 @@ function setupChrome() {
 // Keys that act on the selected task, through the same moves as its menu.
 function taskKey(key) {
   if (multi.size && !store.readOnly) {
-    const k = key === "Delete" || key === "Backspace" ? "Delete" : key.toLowerCase();
-    const label = { a: "Approve", d: "Mark", Delete: "Delete" }[k];
+    const k = key === "Borrar" || key === "Backspace" ? "Borrar" : key.toLowerCase();
+    const label = { a: "Aprobar", d: "Marcar hecha", Delete: "Borrar" }[k];
     const btn = label && multiBar && [...multiBar.querySelectorAll("button")].find((b) => b.textContent.startsWith(label));
     if (btn) btn.click();
-    else if (label) toast(`${label === "Mark" ? "Mark done" : label} doesn't apply to the selected tasks`);
+    else if (label) toast(`«${label}» no se aplica a las tareas elegidas`);
     return !!label;
   }
   const t = ui.selected && get(ui.selected);
   if (!t || store.readOnly) return false;
-  if (key === "Delete" || key === "Backspace") { removeTask(t); return true; }
+  if (key === "Borrar" || key === "Backspace") { removeTask(t); return true; }
   const k = key.toLowerCase();
   if (k === "e") {
     const title = $("#panel .p-title");
@@ -6366,11 +6368,11 @@ function taskKey(key) {
     title.select();
     return true;
   }
-  const want = { a: "Approve", s: "Start", d: "Mark done", p: "Pause" }[k];
+  const want = { a: "Aprobar", s: "Empezar", d: "Marcar hecha", p: "Pausar" }[k];
   if (!want) return false;
   const move = stateMoves(t).find((m) => m.label === want);
   if (move) move.run();
-  else toast(`${want} doesn't apply to ${t.id}, which is ${LABEL[vstate(t)].toLowerCase()}`);
+  else toast(`«${want}» no se aplica a ${t.id}, que está en «${LABEL[vstate(t)].toLowerCase()}»`);
   return true;
 }
 
@@ -6406,19 +6408,19 @@ function automaticOrder() {
 
 function useAutomaticOrder() {
   const ids = automaticOrder();
-  if (sameJson(ids, board.tasks.filter((t) => ids.includes(t.id)).map((t) => t.id))) return toast("The cards already follow the automatic order");
-  undoable(ops.order(ids), "Cards now follow the automatic order");
+  if (sameJson(ids, board.tasks.filter((t) => ids.includes(t.id)).map((t) => t.id))) return toast("Las tarjetas ya siguen el orden automático");
+  undoable(ops.order(ids), "Las tarjetas siguen ahora el orden automático");
 }
 
 function toggleArrange() {
   prefs.arrange = prefs.arrange === "manual" ? "auto" : "manual";
   savePrefs();
   render();
-  if (prefs.arrange === "auto") return toast("Automatic layout: cards are ordered for fewer crossings and straighter arrows");
+  if (prefs.arrange === "auto") return toast("Orden automático: las tarjetas se ordenan para que las flechas se crucen menos y vayan más rectas");
   const ids = automaticOrder();
   const differs = !store.readOnly && !sameJson(ids, board.tasks.filter((t) => ids.includes(t.id)).map((t) => t.id));
-  toast(compact("Manual layout: drag a card up or down to move it, or into another group.",
-    differs ? h("button", { class: "link", onclick: (e) => { e.target.closest(".toast").remove(); useAutomaticOrder(); } }, "Start from the automatic order") : null), "", differs ? 9000 : 4000);
+  toast(compact("Orden manual: arrastra una tarjeta arriba o abajo para moverla, o a otro grupo.",
+    differs ? h("button", { class: "link", onclick: (e) => { e.target.closest(".toast").remove(); useAutomaticOrder(); } }, "Partir del orden automático") : null), "", differs ? 9000 : 4000);
 }
 
 // Keeps the point at the middle of the viewport in place while the graph stretches along the flow.

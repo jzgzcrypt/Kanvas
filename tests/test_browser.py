@@ -195,7 +195,7 @@ class Page(DevTools):
 
 
 NOTE_BOX = "document.querySelector('#panel .note-form textarea')"
-ADD_NOTE = "[...document.querySelectorAll('#panel .note-form button')].find((b) => b.textContent.includes('Add note')).click()"
+ADD_NOTE = "[...document.querySelectorAll('#panel .note-form button')].find((b) => b.textContent.includes('Añadir nota')).click()"
 
 
 class BrowserSmokeTests(unittest.TestCase):
@@ -343,7 +343,7 @@ class BrowserSmokeTests(unittest.TestCase):
         note = "A note typed while saving fails."
         self.type_note(note)
         self.until("the note back in its box", f"{NOTE_BOX}.value === {json.dumps(note)}")
-        self.assertIn("Not saved: the disk is full", self.page.js("document.querySelector('#toasts').innerText"))
+        self.assertIn("No guardado: the disk is full", self.page.js("document.querySelector('#toasts').innerText"))
         self.assertEqual(self.notes("BE-03"), before)
         self.page.send("Fetch.disable")
         self.page.js(ADD_NOTE)
@@ -356,7 +356,7 @@ class BrowserSmokeTests(unittest.TestCase):
         lost = "A note typed while Kanvas is stopped."
         self.type_note(lost)
         self.until("the note back in its box", f"{NOTE_BOX}.value === {json.dumps(lost)}")
-        self.assertIn("Not saved", self.page.js("document.querySelector('#toasts').innerText"))
+        self.assertIn("No guardado", self.page.js("document.querySelector('#toasts').innerText"))
         self.assertEqual(self.notes("BE-03"), before + [note])
         self.assertEqual([e for e in self.page.logged() if not e.startswith("network: ")], [])
 
