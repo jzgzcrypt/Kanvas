@@ -324,6 +324,19 @@ class BrowserSmokeTests(unittest.TestCase):
                    timeout=5)
         self.assertEqual(self.page.logged(), [])
 
+    def test_shortcuts_work_while_the_spacing_slider_has_focus(self):
+        self.load()
+        press = """(key) => {
+            const slider = document.querySelector('#spread'), e = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+            slider.focus();
+            slider.dispatchEvent(e);
+            return e.defaultPrevented;
+        }"""
+        self.assertEqual(self.page.js("document.querySelector('#view-graph').getAttribute('aria-pressed')"), "true")
+        self.assertFalse(self.page.js(f"({press})('ArrowRight')"), "the arrow keys move the slider")
+        self.page.js(f"({press})('b')")
+        self.until("the board view", "document.querySelector('#view-board').getAttribute('aria-pressed') === 'true'")
+
     def test_a_failed_save_gives_the_typed_note_back(self):
         self.load("#BE-03")
         self.until("the panel of BE-03", "document.querySelector('#panel .cid')?.textContent === 'BE-03'")
