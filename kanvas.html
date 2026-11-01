@@ -664,6 +664,10 @@ dialog.dlg[open]:has(> form > .help) { display: flex; flex-direction: column; }
   @keyframes enter { }
   @keyframes tip-in { }
 }
+/* With Correos, the view switch names take the board's title room below 2000px; their icons and tips stay. */
+@media (max-width: 2000px) {
+  .seg .lbl { display: none; }
+}
 @media (max-width: 1820px) {
   .meter .progress { display: none; }
 }
@@ -677,12 +681,11 @@ dialog.dlg[open]:has(> form > .help) { display: flex; flex-direction: column; }
 @media (max-width: 1590px) and (min-width: 1536px) {
   #display .lbl { display: none; }
 }
-@media (max-width: 1535px) {
+@media (max-width: 1640px) {
   .schip .lbl { display: none; }
 }
-/* Down to 1430px the state names fit once the view, Display and New task buttons drop theirs, unless the YOLO chip takes that room. */
+/* Down to 1430px the view, Display and New task buttons drop their names, unless the YOLO chip takes that room. The state names, longer in Spanish, go from 1640px. */
 @media (max-width: 1535px) and (min-width: 1430px) {
-  header.top:not(:has(> #yolo-chip:not([hidden]))) .schip .lbl { display: inline; }
   header.top:not(:has(> #yolo-chip:not([hidden]))) :is(.seg, #display, #new-task) .lbl { display: none; }
   header.top:not(:has(> #yolo-chip:not([hidden]))) #new-task { padding: 0 7px; }
 }
@@ -843,7 +846,7 @@ dialog.dlg[open]:has(> form > .help) { display: flex; flex-direction: column; }
 <header class="top">
   <div class="brand">
     <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><path d="M19 14V50M46 14L28 32L46 50" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M37.5 13H47V22.5ZM37.5 51H47V41.5Z" fill="currentColor" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>
-    <button id="home-back" class="ghost" hidden>‹ Proyectos</button>
+    <button id="home-back" class="ghost icon-btn" data-icon="left" data-tip="Volver a los proyectos" aria-label="Proyectos" hidden></button>
     <span id="title-slot"></span>
     <span id="sync" class="sync" role="status"><span class="dot"></span><span class="label"></span></span>
     <span class="meter" id="meter" role="img"><span class="progress" id="progress" aria-hidden="true"></span><b id="meter-pct"></b></span>
