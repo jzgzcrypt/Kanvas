@@ -19,11 +19,10 @@ Te preguntará dónde crear la carpeta y qué proyectos quieres, y la dejará li
 3. **Repartir**, según el responsable:
    - **Yo**: la haces y la marcas hecha.
    - **Persona**: le escribes desde Outlook, arrastras el correo enviado encima de su tarjeta y, cuando conteste, arrastras la respuesta. Quedan guardados en la tarea y en la pestaña **Correos** del proyecto.
-   - **Agente** (Cualquiera, Claude o Copilot): abres la carpeta del proyecto en VS Code y le dices «trabaja en CO-02». Sigue `AGENTS.md` y te la deja para revisar.
+   - **Agente** (Cualquiera, Claude o Copilot): abres la carpeta del proyecto en VS Code y le dices «trabaja en CO-02». Trabaja con los comandos de Kanvas, que solo le dejan coger las tareas que son suyas, y te la deja para revisar.
 4. **Hoy** (cada mañana): por cada proyecto, lo que te toca. Revisa lo que te espera, reclama lo vencido (punto rojo), haz lo tuyo y pasa a mañana u otro día lo que no dé tiempo. A la derecha, **Próximos días**.
 5. **Cerrar**: con todas las tareas hechas, el proyecto queda en **Proyectos** con su historial: tareas, notas y correos en su carpeta.
 
 ## Limitaciones conocidas
 
-- Sin Python, las reglas de los agentes son instrucciones escritas (`AGENTS.md`), no una barrera del programa.
 - Arrastrar un correo desde Outlook clásico a Edge está por probar en el PC. Si no llega, arrástralo antes al escritorio y desde ahí a la tarea.

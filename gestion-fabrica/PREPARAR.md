@@ -4,75 +4,49 @@ Instrucciones para el agente (Claude, Copilot u otro en VS Code) que deja lista 
 
 > Sigue `gestion-fabrica/PREPARAR.md` y déjalo todo preparado.
 
-El PC no tiene Python ni permite ejecutar programas: todo se hace creando y copiando archivos.
+El PC tiene Python. En Windows el comando puede ser `python` o `py`; prueba cuál responde con `python --version`.
 
 ## 1. Preguntar antes de crear nada
 
 Pregunta a la persona, en una sola vez:
 
 1. Dónde crear la carpeta. Propón `Documentos\Gestión fábrica`.
-2. Qué proyectos quiere, con su nombre. Siempre se añade además uno llamado `Temas generales`.
+2. Qué proyectos quiere. Siempre se añade además uno llamado `Temas generales`.
 3. Para cada proyecto, si quiere dividirlo en fases y cuáles (por ejemplo `Análisis`, `Compra`, `Instalación`). Si no dice nada, sin fases.
 
 No crees nada hasta tener las respuestas.
 
 ## 2. Crear la carpeta
 
+1. Crea la carpeta `Gestión fábrica`.
+2. Copia dentro, desde este repositorio, `kanvas.html`, `kanvas.py` y la carpeta `skill` (con su `SKILL.md`). `kanvas.py` los necesita al lado para preparar cada proyecto.
+3. Copia `gestion-fabrica/AGENTS.md` a la carpeta, y crea `CLAUDE.md` con una sola línea: `Lee AGENTS.md antes de tocar ningún proyecto.`
+
+Si algo ya existe, no lo sobrescribas: díselo a la persona.
+
+## 3. Crear cada proyecto
+
+Desde la carpeta `Gestión fábrica`, por cada proyecto, crea su subcarpeta y prepárala:
+
 ```
-Gestión fábrica\
-├── kanvas.html                       ← copia de kanvas.html de este repositorio
-├── AGENTS.md                         ← copia de gestion-fabrica/AGENTS.md
-├── CLAUDE.md                         ← una línea: Lee AGENTS.md antes de tocar ningún proyecto.
-├── .github\copilot-instructions.md   ← la misma línea
-├── <Proyecto 1>\
-│   └── kanvas.json
-├── <Proyecto 2>\
-│   └── kanvas.json
-└── Temas generales\
-    └── kanvas.json
-```
-
-- La subcarpeta de cada proyecto lleva el nombre del proyecto. Quita de él los caracteres que Windows no admite: `\ / : * ? " < > |`.
-- Si una carpeta o archivo ya existe, no lo sobrescribas: díselo a la persona.
-
-## 3. El `kanvas.json` de cada proyecto
-
-Sin fases, exactamente así (UTF-8, dos espacios de sangría, salto de línea al final):
-
-```json
-{
-  "kanvas": 1,
-  "title": "Mejora línea 3",
-  "groups": [],
-  "tasks": []
-}
+mkdir "Mejora línea 3"
+python kanvas.py init "Mejora línea 3"
 ```
 
-Con fases, cada una es un grupo con un prefijo de 1 a 6 letras mayúsculas que empezará el código de sus tareas:
+Crea la subcarpeta con su `kanvas.json` (el título es el nombre de la carpeta) y las instrucciones para agentes del proyecto (`AGENTS.md` y `.agents\skills\kanvas\`). No sobrescribe nada.
 
-```json
-{
-  "kanvas": 1,
-  "title": "Mejora línea 3",
-  "groups": [
-    {
-      "id": "AN",
-      "name": "Análisis"
-    },
-    {
-      "id": "CO",
-      "name": "Compra"
-    }
-  ],
-  "tasks": []
-}
+Quita del nombre los caracteres que Windows no admite: `\ / : * ? " < > |`.
+
+Si el proyecto lleva fases, crea un grupo por fase. El prefijo, de 1 a 6 letras, empieza el código de sus tareas (`AN-01`):
+
+```
+python kanvas.py add-group "Análisis" --prefix AN -b "Mejora línea 3\kanvas.json" --as claude-code
 ```
 
-Los prefijos no se repiten dentro de un proyecto. `title` es el nombre que se ve en la pestaña Proyectos.
+Firma con el nombre de tu herramienta en `--as`.
 
 ## 4. Comprobar y avisar
 
-1. Abre cada `kanvas.json` y comprueba que es JSON válido.
+1. Comprueba cada proyecto con `python kanvas.py check -b "<proyecto>\kanvas.json"`.
 2. Di a la persona qué has creado y dónde.
 3. Explícale el primer paso: abrir `kanvas.html` con Edge (doble clic) y pulsar **Abrir carpeta de proyectos**, eligiendo `Gestión fábrica`.
-4. Recuérdale que las tareas se crean desde el navegador, o pidiéndotelo a ti siguiendo `AGENTS.md`.
