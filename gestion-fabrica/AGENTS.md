@@ -55,6 +55,8 @@ VS Code está abierto en la carpeta `Gestión fábrica`. La persona te dice el p
 5. **Proponer tareas nuevas**: añade tareas con `state` `proposed`, `by` con tu nombre y `at` con la hora. El `id` es el prefijo del grupo y el número siguiente libre de ese grupo, con dos cifras (`CO-03`). Sin grupo, el prefijo es `G`.
 6. **Añadir notas** a cualquier tarea en la que trabajes.
 
+Para proyectos de contratas, sigue además [CONTRATAS.md](CONTRATAS.md): ahí la persona te autoriza a crear ciertas tareas ya aprobadas.
+
 ## Qué no puedes hacer
 
 - Pasar nada a `done`, aprobar propuestas (`proposed` → `todo`) ni cambiar el título, la descripción, el grupo, el responsable o las fechas de una tarea aprobada. Eso lo hace la persona en el navegador.

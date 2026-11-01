@@ -23,6 +23,10 @@ Te preguntará dónde crear la carpeta y qué proyectos quieres, y la dejará li
 4. **Hoy** (cada mañana): por cada proyecto, lo que te toca. Revisa lo que te espera, reclama lo vencido (punto rojo), haz lo tuyo y pasa a mañana u otro día lo que no dé tiempo. A la derecha, **Próximos días**.
 5. **Cerrar**: con todas las tareas hechas, el proyecto queda en **Proyectos** con su historial: tareas, notas y correos en su carpeta.
 
+## Seguimiento de una contrata
+
+Preventivos del contrato, avisos de avería con su plazo de atención e informe mensual: ver [CONTRATAS.md](CONTRATAS.md).
+
 ## Limitaciones conocidas
 
 - El agente no puede ejecutar comandos en este PC, así que edita `kanvas.json` directamente. Las reglas de `AGENTS.md` (solo sus tareas, nunca dar nada por hecho) son instrucciones escritas, no una barrera del programa. Lo que termina siempre te llega para revisar, y si deja un archivo mal, Kanvas lo avisa al abrirlo.
