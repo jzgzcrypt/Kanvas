@@ -528,11 +528,11 @@ class LeaveTests(unittest.TestCase):
 
     def test_unsaved_work(self):
         code = (
-            "let fields = [], pending = 0, store, board = normalize(input), IX = indexOf(board);\n"
+            "let fields = [], pending = 0, uploads = 0, store, board = normalize(input), IX = indexOf(board);\n"
             "globalThis.document = { querySelector: () => null, querySelectorAll: () => fields };\n"
             "const get = (id) => IX.get(key(id)), ui = {}, drafts = { note: new Map(), back: new Map() };\n"
             "const reset = () => {\n"
-            "  fields = []; pending = 0; store = { kind: 'server' };\n"
+            "  fields = []; pending = 0; uploads = 0; store = { kind: 'server' };\n"
             "  Object.assign(ui, { selected: 'A-01', editingDesc: false, editingNote: null });\n"
             "  Object.assign(drafts, { desc: null, noteEdit: null, title: null, boardTitle: null });\n"
             "  drafts.note.clear(); drafts.back.clear();\n"
@@ -540,6 +540,7 @@ class LeaveTests(unittest.TestCase):
             "const cases = {\n"
             "  clean: () => {},\n"
             "  pendingSave: () => { pending = 1; },\n"
+            "  imageUploading: () => { uploads = 1; },\n"
             "  memoryBoard: () => { store = { kind: 'memory', dirty: false }; },\n"
             "  memoryBoardChanged: () => { store = { kind: 'memory', dirty: true }; },\n"
             "  snapshot: () => { store = { kind: 'snapshot', readOnly: true }; drafts.note.set('A-01', 'typed'); },\n"
@@ -561,7 +562,7 @@ class LeaveTests(unittest.TestCase):
         board = {"kanvas": 1, "title": "", "groups": [], "tasks": [task("A-01", desc="Old")]}
         out = json.loads(run_html_js(self, code, json.dumps(board), [("function unsaved(", "async function boot(")]))
         asks = {name for name, value in out.items() if value}
-        self.assertEqual(asks, {"pendingSave", "memoryBoardChanged", "note", "descEditorChanged", "noteEditorChanged", "givenBack", "dialogFilled"})
+        self.assertEqual(asks, {"pendingSave", "imageUploading", "memoryBoardChanged", "note", "descEditorChanged", "noteEditorChanged", "givenBack", "dialogFilled"})
 
 
 class ChecklistTests(unittest.TestCase):
@@ -760,6 +761,30 @@ class MarkdownTests(unittest.TestCase):
             (">" * 10000 + " deep", six("<p>" + "&gt;" * 9994 + " deep</p>")),
             ("> " * 10000 + "deep", six("<p>" + "&gt; " * 9994 + "deep</p>")),
         ])
+
+    def render_images(self, srcs, store):
+        """markdown() of each source, with `store` as the page's store."""
+        code = ("const get = () => null;\n"
+                f"var store = {store};\n"
+                "process.stdout.write(JSON.stringify(input.map((src) => markdown(src))));")
+        return json.loads(run_html_js(self, code, json.dumps(srcs), [("function inlineMd(", "\n// ----")]))
+
+    def test_the_boards_own_images_show_where_the_store_knows_its_folder(self):
+        img = "kanvas-files/0123456789abcdef.png"
+        srcs = [f"![Login \"form\"]({img})", f"See ![]({img}) here", "![x](https://example.com/a.png)",
+                "![x](kanvas-files/../kanvas.json)", "![x](kanvas-files/0123456789abcdef.svg)", f"[link]({img})"]
+        shown = self.render_images(srcs, "{ imageUrl: (ref) => 'blob:' + ref }")
+        self.assertEqual(shown, [
+            f'<p><img src="blob:{img}" data-file="{img}" alt="Login &quot;form&quot;"></p>',
+            f'<p>See <img src="blob:{img}" data-file="{img}" alt=""> here</p>',
+            # Other images stay links, and nothing else counts as one of the board's images.
+            f"<p>{link('https://example.com/a.png', 'x')}</p>", "<p>x</p>", "<p>x</p>", "<p>link</p>",
+        ])
+        # While its file is read the image has no address yet; a missing file, or no folder, leaves text.
+        self.assertEqual(self.render_images(srcs[1:2], "{ imageUrl: () => '' }"), [f'<p>See <img data-file="{img}" alt=""> here</p>'])
+        for store in ("{ imageUrl: () => null }", "null", "{}"):
+            with self.subTest(store=store):
+                self.assertEqual(self.render_images(srcs[:2], store), ["<p>Login &quot;form&quot;</p>", f"<p>See {img} here</p>"])
 
     def test_images_are_plain_links(self):
         self.check([

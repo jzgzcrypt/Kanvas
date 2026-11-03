@@ -19,9 +19,10 @@ Te preguntará dónde crear la carpeta y qué proyectos quieres, y la dejará li
 3. **Repartir**, según el responsable:
    - **Yo**: la haces y la marcas hecha.
    - **Persona**: le escribes desde Outlook, arrastras el correo enviado encima de su tarjeta y, cuando conteste, arrastras la respuesta. Quedan guardados en la tarea y en la pestaña **Correos** del proyecto.
+   - **Fotos y capturas**: pégalas o suéltalas en una nota o en la descripción de la tarea. Se guardan en la carpeta del proyecto, en `kanvas-files`, y se amplían al pincharlas.
    - **Agente** (Cualquiera, Claude o Copilot): abres la carpeta `Gestión fábrica` en VS Code y le dices «En Mejora línea 3, trabaja en CO-02». Sigue `AGENTS.md`, edita el `kanvas.json` del proyecto y te la deja para revisar.
 4. **Hoy** (cada mañana): por cada proyecto, lo que te toca. Revisa lo que te espera, reclama lo vencido (punto rojo), haz lo tuyo y pasa a mañana u otro día lo que no dé tiempo. A la derecha, **Próximos días**.
-5. **Cerrar**: con todas las tareas hechas, el proyecto queda en **Proyectos** con su historial: tareas, notas y correos en su carpeta.
+5. **Cerrar**: con todas las tareas hechas, el proyecto queda en **Proyectos** con su historial: tareas, notas, correos e imágenes en su carpeta.
 
 ## Seguimiento de una contrata
 

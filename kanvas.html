@@ -407,6 +407,12 @@ button.add-line:hover { color: var(--text); }
 .md pre code { border: 0; padding: 0; background: none; }
 .md blockquote { border-left: 3px solid var(--border-strong); padding-left: 10px; color: var(--muted); }
 .md a { color: var(--accent); }
+.md img { display: block; max-width: 100%; max-height: 360px; margin: 4px 0; border: 1px solid var(--border); border-radius: 6px; cursor: zoom-in; }
+.now-body.md img { max-height: 160px; }
+dialog.lightbox { padding: 0; border: 0; background: none; max-width: 96vw; max-height: 96vh; overflow: visible; }
+dialog.lightbox::backdrop { background: rgb(10 12 18 / .78); }
+dialog.lightbox img { display: block; max-width: 96vw; max-height: 94vh; border-radius: 6px; cursor: zoom-out; }
+textarea.uploading { cursor: progress; }
 a.tref { font: 600 12px var(--mono); text-decoration: none; padding: 0 4px; border-radius: 4px; background: color-mix(in srgb, var(--accent) 12%, transparent); cursor: pointer; }
 .md hr { border: 0; border-top: 1px solid var(--border); }
 .md li ul, .md li ol { margin: 0; }
@@ -2514,8 +2520,12 @@ function snapshotStore(el) {
 
 async function open(s) {
   const b = await s.load();
+  // A board opened on its own shows its images while the browser keeps leave to read the folder chosen for it.
+  if ((s.kind === "file" || s.kind === "server") && !s.dir) {
+    const dir = await rememberedBoardDir(s).catch(() => null);
+    if (dir && (await dir.queryPermission({ mode: "readwrite" })) === "granted") setBoardDir(s, dir);
+  }
   store = s;
-  mailDir = null;
   confirmed = b;
   setBoard(clone(b));
   edits.undo = [];
@@ -5399,7 +5409,7 @@ function setupMenus() {
 
 function inlineMd(src) {
   // URLs may hold parentheses in balanced pairs, nested two deep, as in https://en.wikipedia.org/wiki/Foo_(bar).
-  // Images are links like the others, so nothing loads.
+  // Images kept next to the board show; any other image is a link like the others, so nothing loads from the web.
   const re = /`([^`]+)`|(!?\[)|(https?:\/\/(?:[^\s<>()]|\((?:[^\s<>()]|\([^\s<>()]*\))*\))+(?:[^\s<>().,;:!?'"]|\((?:[^\s<>()]|\([^\s<>()]*\))*\)))/g;
   const dest = /\]\(((?:[^()\s]|\((?:[^()\s]|\([^()\s]*\))*\))+)\)/y;
   let out = "", last = 0, m;
@@ -5434,7 +5444,12 @@ function inlineMd(src) {
     if (m[2] && !target) { re.lastIndex = m.index + 1; continue; }
     out += fmt(src.slice(last, m.index));
     if (m[1] != null) out += `<code>${escHtml(m[1])}</code>`;
-    else if (m[2]) { out += link(target[1], src.slice(open + 1, close)); re.lastIndex = close + target[0].length; }
+    else if (m[2]) {
+      const text = src.slice(open + 1, close), img = m[2] === "![" ? imageSrc(target[1]) : null;
+      out += img == null ? link(target[1], text)
+        : `<img${img ? ` src="${escHtml(img)}"` : ""} data-file="${escHtml(target[1])}" alt="${escHtml(text)}">`;
+      re.lastIndex = close + target[0].length;
+    }
     else out += anchor(m[3], escHtml(m[3]));
     last = re.lastIndex;
   }
@@ -5574,6 +5589,15 @@ function taskItems(src) {
   return items;
 }
 
+// The board's images are kept in its folder, in kanvas-files/ with names made from a hash of their bytes. A store
+// that knows that folder says where the page finds one: an address, "" while the file is being read, or null when
+// it is missing. Without the folder they stay text.
+const FILE_REF = /^kanvas-files\/[0-9a-f]{16}\.(png|jpg|gif|webp)$/;
+function imageSrc(ref) {
+  const s = typeof store === "undefined" ? null : store;
+  return FILE_REF.test(ref) && s && s.imageUrl ? s.imageUrl(ref) : null;
+}
+
 // Checks or unchecks the `rank`-th item that reads `text` and keeps the rest of `src` as it is.
 // Returns null when there is no such item any more.
 function toggleTask(src, text, rank, checked) {
@@ -5701,9 +5725,6 @@ function renderMail() {
 // Outlook mail dropped on a task
 // ---------------------------------------------------------------------------
 
-// The open board's "correos" folder, once known in this visit: a page cannot reach the folder of a file it opened.
-let mailDir = null;
-
 // The task under a drag: a card in either view, or the open task panel.
 function mailTarget(e) {
   const card = e.target.closest && e.target.closest("[data-id]");
@@ -5720,8 +5741,10 @@ function setupMailDrop() {
     lit = el;
     if (el) el.classList.add("mail-drop");
   };
-  // Only files: cards dragged within the board, and text dragged into a field, are left to their own handlers.
-  const outside = (e) => board && store && !store.readOnly && e.dataTransfer.types.includes("Files");
+  // Only files: cards dragged within the board, text dragged into a field and images dropped into a description or
+  // note are left to their own handlers.
+  const outside = (e) => board && store && !store.readOnly && e.dataTransfer.types.includes("Files")
+    && !(takesImages(e.target) && [...e.dataTransfer.items].some((it) => it.kind === "file" && it.type.startsWith("image/")));
   document.addEventListener("dragover", (e) => {
     if (!outside(e)) return;
     const el = mailTarget(e);
@@ -5771,13 +5794,13 @@ async function sentByMe(m) {
   return sent;
 }
 
-// Folders kept in the browser between visits ("places": the projects folder; "mailDirs": the "correos" folder of each board, a board opened as a file is known by its
-// a board opened as a file known by its file handle, a board served by Kanvas by its address).
+// Folders kept in the browser between visits ("places": the projects folder; "boardDirs": the folder of a board
+// opened on its own, known by its file handle, or by its address when Kanvas serves it).
 function idb(name, mode, fn) {
   return new Promise((resolve, reject) => {
-    const req = indexedDB.open("kanvas", 2);
+    const req = indexedDB.open("kanvas", 3);
     req.onupgradeneeded = () => {
-      for (const [n, opts] of [["mailDirs", { autoIncrement: true }], ["places", {}]]) if (!req.result.objectStoreNames.contains(n)) req.result.createObjectStore(n, opts);
+      for (const [n, opts] of [["boardDirs", { autoIncrement: true }], ["places", {}]]) if (!req.result.objectStoreNames.contains(n)) req.result.createObjectStore(n, opts);
     };
     req.onerror = () => reject(req.error);
     req.onsuccess = () => {
@@ -5788,32 +5811,51 @@ function idb(name, mode, fn) {
   });
 }
 
-async function rememberedMailDir() {
-  const all = await idb("mailDirs", "readonly", (os) => os.getAll());
+async function rememberedBoardDir(s) {
+  const all = await idb("boardDirs", "readonly", (os) => os.getAll());
   for (const r of all || []) {
-    if (store.handle ? r.board instanceof FileSystemHandle && (await r.board.isSameEntry(store.handle)) : r.board === location.pathname) return r.dir;
+    if (s.handle ? r.board instanceof FileSystemHandle && (await r.board.isSameEntry(s.handle)) : r.board === location.pathname) return r.dir;
   }
   return null;
 }
 
-// The board's "correos" folder, asking for it the first time and for leave to write in it when the browser has
-// forgotten that leave. Null when the human declines.
-async function boardMailDir() {
-  if (mailDir) return mailDir;
-  let dir = await rememberedMailDir().catch(() => null);
+// Gives store `s` the folder that holds its board. Mails go into its "correos" and images into its "kanvas-files",
+// which the page then shows; each image file is read once and shown through an object URL.
+function setBoardDir(s, dir) {
+  const urls = new Map(); // reference -> address, "" while reading, null when missing
+  s.dir = dir;
+  s.imageUrl = (ref) => {
+    if (!urls.has(ref)) {
+      urls.set(ref, "");
+      const shown = () => document.querySelectorAll(`img[data-file="${ref}"]`);
+      dir.getDirectoryHandle(FILES_DIR)
+        .then((d) => d.getFileHandle(ref.slice(FILES_DIR.length + 1)))
+        .then((f) => f.getFile())
+        .then((file) => { const url = URL.createObjectURL(file); urls.set(ref, url); for (const img of shown()) img.src = url; })
+        .catch(() => { urls.set(ref, null); for (const img of shown()) img.replaceWith(img.alt || ref); });
+    }
+    return urls.get(ref);
+  };
+}
+
+// The folder of the open board, asking for it the first time and for leave to write in it when the browser has
+// forgotten that leave. A project of the projects folder knows its own. Null when the human declines.
+async function boardDir() {
+  if (store.dir) return store.dir;
+  let dir = await rememberedBoardDir(store).catch(() => null);
   if (dir && (await dir.queryPermission({ mode: "readwrite" })) !== "granted") {
     // The browser asks for leave only right after a click.
-    if (!(await modal("Carpeta de correos", h("p", {}, `Los correos de este tablero se guardan en «${dir.name}».`), { ok: "Permitir", cancel: "Cancelar" }))) return null;
+    if (!(await modal("Carpeta del tablero", h("p", {}, `Los correos y las imágenes de este tablero se guardan en «${dir.name}».`), { ok: "Permitir", cancel: "Cancelar" }))) return null;
     if ((await dir.requestPermission({ mode: "readwrite" })) !== "granted") return null;
   }
   if (!dir) {
-    if (!(await modal("Carpeta del tablero", h("p", {}, "Elige la carpeta donde está el tablero. Los correos se guardan dentro, en «correos»."), { ok: "Elegir carpeta", cancel: "Cancelar" }))) return null;
-    const folder = await window.showDirectoryPicker({ id: "kanvas-correos", mode: "readwrite", startIn: store.handle || "documents" });
-    dir = await folder.getDirectoryHandle("correos", { create: true });
+    if (!(await modal("Carpeta del tablero", h("p", {}, "Elige la carpeta donde está el tablero. Los correos y las imágenes se guardan dentro."), { ok: "Elegir carpeta", cancel: "Cancelar" }))) return null;
+    dir = await window.showDirectoryPicker({ id: "kanvas-tablero", mode: "readwrite", startIn: store.handle || "documents" });
     const board = store.handle || location.pathname;
-    await idb("mailDirs", "readwrite", (os) => os.add({ board, dir })).catch(() => {});
+    await idb("boardDirs", "readwrite", (os) => os.add({ board, dir })).catch(() => {});
   }
-  mailDir = dir;
+  setBoardDir(store, dir);
+  render();
   return dir;
 }
 
@@ -5821,8 +5863,9 @@ async function boardMailDir() {
 async function keepMail(id, f, m, sent) {
   if (!("showDirectoryPicker" in window)) return null;
   try {
-    const dir = await boardMailDir();
-    if (!dir) return null;
+    const folder = await boardDir();
+    if (!folder) return null;
+    const dir = await folder.getDirectoryHandle("correos", { create: true });
     const base = mailFileName(id, m, sent).slice(0, -4);
     let name = `${base}.msg`;
     for (let n = 2; await dir.getFileHandle(name).then(() => true, () => false); n++) name = `${base} (${n}).msg`;
@@ -5834,6 +5877,123 @@ async function keepMail(id, f, m, sent) {
     if (e.name !== "AbortError") toast(`No se guardó el .msg: ${e.message}`, "error");
     return null;
   }
+}
+
+// ---------------------------------------------------------------------------
+// Images pasted or dropped into a description or note
+// ---------------------------------------------------------------------------
+
+// Images are kept in the board's folder, in kanvas-files/, named by a hash of their bytes so the same image is kept
+// once, and their Markdown goes in at the cursor. Clicking an image shows it at full size.
+const FILES_DIR = "kanvas-files";
+const IMAGE_TYPES = { "image/png": "png", "image/jpeg": "jpg", "image/gif": "gif", "image/webp": "webp" };
+const MAX_IMAGE = 10 * 1024 * 1024;
+const imageFiles = (dt) => [...(dt && dt.files) || []].filter((f) => f.type.startsWith("image/"));
+let uploads = 0;
+const takesImages = (el) => el instanceof HTMLTextAreaElement && !el.readOnly && !el.disabled && !el.matches(".p-title");
+
+// Writes the image into the board's kanvas-files/ and returns its path there, or null when the human declines to
+// choose the board's folder.
+async function keepImage(f) {
+  if (!IMAGE_TYPES[f.type]) throw new Error("solo se adjuntan imágenes PNG, JPEG, GIF y WebP");
+  if (f.size > MAX_IMAGE) throw new Error("ocupa más de 10 MB");
+  if (!store.dir && !("showDirectoryPicker" in window)) throw new Error("las imágenes se guardan desde Edge o Chrome");
+  const folder = await boardDir();
+  if (!folder) return null;
+  const bytes = await f.arrayBuffer();
+  const hash = [...new Uint8Array(await crypto.subtle.digest("SHA-256", bytes))].slice(0, 8).map((b) => b.toString(16).padStart(2, "0")).join("");
+  const name = `${hash}.${IMAGE_TYPES[f.type]}`, dir = await folder.getDirectoryHandle(FILES_DIR, { create: true });
+  if (!(await dir.getFileHandle(name).then(() => true, () => false))) {
+    const w = await (await dir.getFileHandle(name, { create: true })).createWritable();
+    await w.write(bytes);
+    await w.close();
+  }
+  return `${FILES_DIR}/${name}`;
+}
+
+async function insertImages(ta, files) {
+  if (!store || store.readOnly) return;
+  // The Markdown goes only into the editor or note draft of the task the image started in, and for a note being
+  // edited, into the editor of that note.
+  const panel = $("#panel"), task = panel.contains(ta) ? ui.selected : null, note = ui.editingNote;
+  const label = ta.getAttribute("aria-label"), noteBox = !!ta.closest(".note-form");
+  const before = ta.value, start = ta.selectionStart, end = ta.selectionEnd, marks = [];
+  ta.classList.add("uploading");
+  // Until the Markdown is in, leaving the page would lose the images.
+  uploads++;
+  for (const f of files) {
+    try {
+      const ref = await keepImage(f);
+      if (!ref) break;
+      const alt = (f.name || "").replace(/\.[^.]*$/, "").replace(/[[\]]/g, "");
+      marks.push(`![${alt}](${ref})`);
+    } catch (e) {
+      if (e.name !== "AbortError") toast(`No se adjuntó ${f.name || "la imagen"}: ${e.message}`, "error");
+    }
+  }
+  uploads--;
+  ta.classList.remove("uploading");
+  if (!marks.length) return;
+  const md = marks.join("\n");
+  // The panel may have drawn the editor again meanwhile; its text then went to the new one.
+  if (!ta.isConnected) ta = sameEditor(task, label, note) || ta;
+  if (ta.isConnected) {
+    const [from, to] = ta.value === before ? [start, end] : [ta.selectionStart, ta.selectionEnd];
+    ta.focus();
+    ta.setRangeText(onOwnLines(ta.value, from, to, md), from, to, "end");
+    ta.dispatchEvent(new Event("input", { bubbles: true }));
+  } else if (noteBox && task && get(task)) {
+    // Another task is open now. Each task keeps its note draft, so the image waits in that task's draft.
+    const draft = drafts.note.get(task) || "", [from, to] = draft === before ? [start, end] : [draft.length, draft.length];
+    drafts.note.set(task, draft.slice(0, from) + onOwnLines(draft, from, to, md) + draft.slice(to));
+    toast(`La imagen está en tu nota de ${task}`, "", undefined, () => select(task));
+  } else toast("El editor se cerró antes de tener la imagen", "error");
+}
+
+// The panel's editor called `label` while `task` is open, or null. Every note editor has the same label, so that
+// one counts only while it still edits `note`.
+function sameEditor(task, label, note) {
+  if (task == null || !same(ui.selected, task)) return null;
+  if (label === "Editar la nota") {
+    const e = ui.editingNote;
+    if (!e || !note || !same(e.id, note.id) || !sameNote(e, note) || e.rank !== note.rank) return null;
+  }
+  return [...$("#panel").querySelectorAll("textarea")].find((el) => el.getAttribute("aria-label") === label) || null;
+}
+
+// `text` to put in place of value[from..to], on lines of its own.
+function onOwnLines(value, from, to, text) {
+  return (from > 0 && value[from - 1] !== "\n" ? "\n" : "") + text + (to < value.length && value[to] !== "\n" ? "\n" : "");
+}
+
+function showImage(img) {
+  const dlg = h("dialog", { class: "lightbox", "aria-label": img.alt || "Imagen" }, h("img", { src: img.src, alt: img.alt }));
+  dlg.addEventListener("click", () => dlg.close());
+  dlg.addEventListener("close", () => dlg.remove());
+  document.body.append(dlg);
+  dlg.showModal();
+}
+
+function setupImages() {
+  document.addEventListener("paste", (e) => {
+    const files = imageFiles(e.clipboardData);
+    if (!takesImages(e.target) || !files.length) return;
+    e.preventDefault();
+    insertImages(e.target, files);
+  });
+  document.addEventListener("dragover", (e) => {
+    if (takesImages(e.target) && e.dataTransfer.types.includes("Files")) { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; }
+  });
+  document.addEventListener("drop", (e) => {
+    const files = imageFiles(e.dataTransfer);
+    if (!takesImages(e.target) || !files.length) return;
+    e.preventDefault();
+    insertImages(e.target, files);
+  });
+  document.addEventListener("click", (e) => {
+    const img = e.target.closest && e.target.closest(".md img");
+    if (img && img.src) { e.preventDefault(); showImage(img); }
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -5851,6 +6011,7 @@ async function loadProjects(dir) {
     const handle = await entry.getFileHandle(BOARD_NAME).catch(() => null);
     if (!handle) continue;
     const store = fileStore(handle);
+    setBoardDir(store, entry);
     try { projects.push({ folder: name, handle, store, board: await store.load() }); } catch (e) { toast(`${name}: ${e.message}`, "error"); }
   }
   return projects.sort((a, b) => projectName(a).localeCompare(projectName(b)));
@@ -6459,7 +6620,7 @@ function toggleDone() {
 // (drafts in the panel, text a failed save gave back, a title being edited, a dialog being filled in).
 function unsaved() {
   if (!store || store.readOnly) return false;
-  if (pending || (store.kind === "memory" && store.dirty)) return true;
+  if (pending || uploads || (store.kind === "memory" && store.dirty)) return true;
   const t = ui.selected && get(ui.selected), filled = (el) => !!el.value.trim();
   if ([...drafts.note].some(([id, text]) => text.trim() && get(id))) return true;
   if ([...drafts.back.keys()].some((k) => IX.has(k)) || drafts.title != null || drafts.boardTitle != null) return true;
@@ -6475,6 +6636,7 @@ function unsaved() {
 async function boot() {
   setupChrome();
   setupMailDrop();
+  setupImages();
   setupHome();
   // Browsers show their own message, and only to a page the human has interacted with.
   addEventListener("beforeunload", (e) => { if (unsaved()) { e.preventDefault(); e.returnValue = ""; } });
